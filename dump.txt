@@ -1,0 +1,31 @@
+from flask import Flask, jsonify
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
+
+# Initialize Flask app
+app = Flask(__name__)
+
+# Test endpoint to verify server is running
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"message": "Welcome to the FLEX Fitness Platform API"}), 200
+
+# Test endpoint to simulate a simple response
+@app.route('/api/test', methods=['GET'])
+def test_endpoint():
+    return jsonify({"status": "success", "data": "Server is working correctly"}), 200
+
+# Test endpoint to echo back POST data
+@app.route('/api/echo', methods=['POST'])
+def echo():
+    data = request.json
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    return jsonify({"message": "Data received", "received": data}), 200
+
+if __name__ == '__main__':
+    port = int(os.getenv('PORT', 5000))  # Default to 5000 if PORT not set in .env
+    app.run(host='0.0.0.0', port=port, debug=True)
