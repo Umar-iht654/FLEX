@@ -1,0 +1,20 @@
+{
+  "name": "flex",
+  "version": "1.0.0",
+  "description": "Comp208 Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Umar-iht654/FLEX.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Umar-iht654/FLEX/issues"
+  },
+  "homepage": "https://github.com/Umar-iht654/FLEX#readme"
+}
