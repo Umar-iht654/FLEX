@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { SafeAreaView, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import styles from '../styles/styles';
 
 const GoalSetting = ({ navigation }) => { 
@@ -96,7 +96,7 @@ const GoalSetting = ({ navigation }) => {
           <Text style={styles.buttonText}>Save Goal</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.replace('ActivityLog')} style={[styles.button, styles.secondaryButton]}>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')} style={[styles.button, styles.secondaryButton]}>
           <Text style={styles.buttonText}>Go to Activity Log</Text>
         </TouchableOpacity>
       </ScrollView>

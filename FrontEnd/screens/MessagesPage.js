@@ -5,7 +5,6 @@ import styles from '../styles/styles';
 const MessagesPage = () => {
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <TopBar></TopBar>
       <View style={styles.container}>
         <Text style={styles.title}>Messages</Text>
       </View>

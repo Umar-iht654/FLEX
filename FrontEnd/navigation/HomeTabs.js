@@ -6,7 +6,7 @@ import SearchPage from '../screens/SearchPage';
 import ActivityLogPage from '../screens/ActivityLogPage';
 import MessagesPage from '../screens/MessagesPage';
 import ProfilePage from '../screens/ProfilePage';
-
+import GoalSetting from '../screens/GoalSetting';
 const Tab = createBottomTabNavigator();
 
 const HomeTabs = () => {
@@ -24,27 +24,27 @@ const HomeTabs = () => {
         component={FeedPage} 
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image source={require('../../assets/FeedIcon.png')} style={{ width: 120, height: 120 }} />
+            <Image source={require('../assets/FeedIcon.png')} style={{ width: 120, height: 120 }} />
           ), 
           headerShown: false
         }}
-      />
+      /> 
       <Tab.Screen 
         name="Search" 
         component={SearchPage} 
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image source={require('../../assets/SearchIcon.png')} style={{ width: 120, height: 120 }} />
+            <Image source={require('../assets/SearchIcon.png')} style={{ width: 120, height: 120 }} />
           ), 
           headerShown: false
         }}
       />
       <Tab.Screen 
         name="ActivityLog" 
-        component={ActivityLogPage} 
+        component={GoalSetting} 
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image source={require('../../assets/ActivityLogIcon.png')} style={{ width: 120, height: 120 }} />
+            <Image source={require('../assets/ActivityLogIcon.png')} style={{ width: 120, height: 120 }} />
           ), 
           headerShown: false
         }}
@@ -54,7 +54,7 @@ const HomeTabs = () => {
         component={MessagesPage} 
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image source={require('../../assets/MessageIcon.png')} style={{ width: 120, height: 120 }} />
+            <Image source={require('../assets/MessageIcon.png')} style={{ width: 120, height: 120 }} />
           ), 
           headerShown: false
         }}
@@ -64,7 +64,7 @@ const HomeTabs = () => {
         component={ProfilePage} 
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image source={require('../../assets/ProfileIcon.png')} style={{ width: 120, height: 120 }} />
+            <Image source={require('../assets/ProfileIcon.png')} style={{ width: 120, height: 120 }} />
           ), 
           headerShown: false
         }}

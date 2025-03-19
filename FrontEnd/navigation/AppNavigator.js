@@ -6,11 +6,25 @@ import LoginPage from '../screens/LoginPage';
 import CreateAccountPage from '../screens/CreateAccountPage';
 import TermsAndConditionsPage from '../screens/TermsAndConditionsPage';
 import CreateActivitySelectionPage from '../screens/CreateActivitySelectionPage';
+
 import GoalSetting from '../screens/GoalSetting';
 import HomeTabs from './HomeTabs'; 
 import ActivityLogPage from '../screens/ActivityLogPage';
 
 const Stack = createStackNavigator();
 
-
-export default AppNavigator;
+const AppNavigator = () =>{
+    return(
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName="Login">
+                <Stack.Screen name="Login" component={LoginPage} options={{headerShown:false}}/>
+                <Stack.Screen name="CreateAccount" component={CreateAccountPage} options={{headerShown:false}}/>
+                <Stack.Screen name="TermsAndConditions" component={TermsAndConditionsPage} options={{headerShown:false}}/>
+                <Stack.Screen name="CreateActivitySelection" component={CreateActivitySelectionPage} options={{headerShown:false}}/>
+                <Stack.Screen name="GoalSetting" component={GoalSetting} options={{headerShown:false}}/>
+                <Stack.Screen name="Home" component={HomeTabs} options={{headerShown:false}}/>
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+}
+export default  AppNavigator;

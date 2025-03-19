@@ -5,7 +5,6 @@ import styles from '../styles/styles';
 const FeedPage = ( {navigation} ) => {
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <TopBar></TopBar>
       <View style={styles.container}>
         <Text style={styles.title}>Feed</Text>
       </View>
@@ -22,4 +21,4 @@ const FeedPage = ( {navigation} ) => {
     </SafeAreaView>
   );
 };
-export default FeedScreen;
+export default FeedPage;
