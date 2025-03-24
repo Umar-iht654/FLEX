@@ -3,17 +3,18 @@ import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Image, ScrollVi
 import styles from '../styles/styles';
 
 const MessagesPage = ({ navigation }) => {
-
+  //contains the current screen
   const [userStreak, setUserStreak] = useState(5);
 
   const [currentScreen, setCurrentScreen] = useState("groups");
-
+  
+  //this data is a placeholder, there should be a function that collects this data from
+  //the database so it can be displayed on the screen
   const groupsInfo = [
     {groupID: 1, groupName: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 5},
     {groupID: 2, groupName: 'Group2', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 2},
     {groupID: 3, groupName: 'Group3', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 0,},
   ]
-
   const friendsInfo = [
     {friendID: 1, friendName: 'Friend1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 2},
     {friendID: 2, friendName: 'Friend2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 5},
@@ -26,23 +27,34 @@ const MessagesPage = ({ navigation }) => {
     
   ]
 
+  //opens the chat page
   function OpenChat(chatName, chatID, chatPF){
     navigation.navigate('Chat', { chatName, chatID, chatPF })
   }
+
+  //renders the chat card
   const ChatCard = ({ID, name, profilePicture, pinned, unreadMessageCount}) => {
     return(
       <TouchableOpacity onPress={() => {OpenChat(name, ID, profilePicture)}}>
+
+        {/*chat card container*/}
         <View style={messagesPageStyles.infoCardContainer}>
+
+          {/*profile picture and name*/}
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Image style={messagesPageStyles.infoCardProfilePicture} source={{ uri: profilePicture}}/>
             <Text style={messagesPageStyles.infoCardName}>{name}</Text>
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
+
+            {/*only shows the number of unread if there are unread messages*/}
             {unreadMessageCount != 0 && (
               <View style={messagesPageStyles.numOfMessagesContainer}>
                 <Text style={messagesPageStyles.numOfMessagesText}>{unreadMessageCount}</Text>
               </View>
             )}
+
+            {/*shows the pinned chat icon if the chat is pinned*/}
             {pinned && (
               <Image style={messagesPageStyles.pinnedIcon} source={require('../assets/PinIcon.png')}/>
             )}
@@ -80,9 +92,11 @@ const MessagesPage = ({ navigation }) => {
             <Text style={messagesPageStyles.MenuOptionText}>Friends</Text>
           </TouchableOpacity>
         </View>
+
         {/*Group Screen*/}
         {currentScreen === 'groups' && (
           <ScrollView>
+            {/*Shows list of groups*/}
             <View style={{alignItems: 'center'}}>
               {groupsInfo.map(group=> (
               <ChatCard
@@ -97,18 +111,21 @@ const MessagesPage = ({ navigation }) => {
             </View>
           </ScrollView>
         )}
+
+        {/*Friend Screen*/}
         {currentScreen === 'friends' && (
           <ScrollView>
-          <View style={{alignItems: 'center'}}>
+            {/*Shows list of friends*/}
+            <View style={{alignItems: 'center'}}>
             {friendsInfo.map(friend=> (
-            <ChatCard
-              key = {friend.friendID}
-              ID = {friend.friendID}
-              name = {friend.friendName}
-              profilePicture = {friend.profilePicture}
-              pinned = {friend.pinned}
-              unreadMessageCount = {friend.unreadMessageCount}
-            />
+              <ChatCard
+                key = {friend.friendID}
+                ID = {friend.friendID}
+                name = {friend.friendName}
+                profilePicture = {friend.profilePicture}
+                pinned = {friend.pinned}
+                unreadMessageCount = {friend.unreadMessageCount}
+              />
             ))}
           </View>
         </ScrollView>
@@ -120,6 +137,7 @@ const MessagesPage = ({ navigation }) => {
 };
 
 const messagesPageStyles = StyleSheet.create({
+  //container box for the page
   overlayBox: {
     width: '95%', 
     height: '88%', 
@@ -127,6 +145,7 @@ const messagesPageStyles = StyleSheet.create({
     borderRadius: 15, 
     justifyContent: 'flex-start'
   },
+  //menu options
   MenuOptionText: {
     fontSize: 36,
     fontWeight: '700',
@@ -140,6 +159,7 @@ const messagesPageStyles = StyleSheet.create({
     justifyContent: 'center', 
     alignItems: 'center'
   },
+  //group/friend details
   infoCardContainer:{
     width: '90%', 
     height: 80, 
