@@ -41,7 +41,7 @@ const HomeTabs = () => {
       />
       <Tab.Screen 
         name="ActivityLog" 
-        component={GoalSetting} 
+        component={ActivityLogPage} 
         options={{
           tabBarIcon: ({ focused }) => (
             <Image source={require('../assets/ActivityLogIcon.png')} style={{ width: 120, height: 120 }} />

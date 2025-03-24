@@ -102,9 +102,46 @@ const styles = StyleSheet.create({
       borderRadius: 12,
       elevation: 10
     },
-    profilePicture:{
-  
+    topBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width:'100%',
+      height:80, 
+      marginBottom: 10,
+      backgroundColor: 'white',
+      elevation: 10
+    },
+    streakIcon: {
+      width: 50, 
+      height: 50, 
+      marginLeft: 10, 
+      marginRight: 10
+    },
+    streakNumber: {
+      fontSize: 42,
+      fontWeight: '700',
+      color: '#1e1e1e',
+      alignItems: 'center',
+    },
+    weatherIcon: {
+      width: 40, 
+      height: 40, 
+      marginRight: 20,
+      marginLeft: 5
+    },
+    temperatureText: {
+      fontSize: 30,
+      fontWeight: '700',
+      color: '#1e1e1e',
+      alignItems: 'center',
+    },
+    settingsIcon: {
+      width: 50, 
+      height: 50, 
+      marginRight: 10
     }
 });
+
 
 export default styles;
