@@ -5,6 +5,7 @@ import styles from '../styles/styles';
 const MessagesPage = ({ navigation }) => {
   //contains the current screen
   const [userStreak, setUserStreak] = useState(5);
+  const [weather, setWeather] = useState('4°');
 
   const [currentScreen, setCurrentScreen] = useState("groups");
   
@@ -19,7 +20,7 @@ const MessagesPage = ({ navigation }) => {
     {friendID: 1, friendName: 'Friend1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 2},
     {friendID: 2, friendName: 'Friend2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 5},
     {friendID: 3, friendName: 'Friend3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 5},
-    {friendID: 4, friendName: 'Friend4',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 10},
+    {friendID: 4, friendName: 'Stan the man',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/2023_Watter_Holger_Prof._Dr._x1_53_Quadrat.jpg', pinned: false, unreadMessageCount: 10},
     {friendID: 5, friendName: 'Friend5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
     {friendID: 6, friendName: 'Friend6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
     {friendID: 7, friendName: 'Friend7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
@@ -73,6 +74,11 @@ const MessagesPage = ({ navigation }) => {
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Image style={styles.streakIcon} source={require('../assets/StreakIcon.png')}/>
           <Text style={styles.streakNumber}>{userStreak}</Text>
+        </View>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          {/*Displays Weather*/}
+          <Text style={styles.temperatureText}>{weather}</Text>
+          <Image style={styles.weatherIcon} source={require('../assets/WeatherIcon.png')}/>
         </View>
       </View>
 

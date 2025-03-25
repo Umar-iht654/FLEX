@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { SafeAreaView, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import styles from '../styles/styles';
 
 const TermsAndConditionsPage = ({ navigation }) => {
