@@ -8,6 +8,7 @@ import TermsAndConditionsPage from '../screens/TermsAndConditionsPage';
 import CreateActivitySelectionPage from '../screens/CreateActivitySelectionPage';
 import SettingsPage from '../screens/SettingsPage';
 import ChatPage from '../screens/ChatPage';
+import RecommendationPage from '../screens/RecommendationPage';
 
 import GoalSetting from '../screens/GoalSetting';
 import HomeTabs from './HomeTabs'; 
@@ -27,6 +28,7 @@ const AppNavigator = () =>{
                 <Stack.Screen name="Home" component={HomeTabs} options={{headerShown:false}}/>
                 <Stack.Screen name="Settings" component={SettingsPage} options={{headerShown:false}}/>
                 <Stack.Screen name="Chat" component={ChatPage} options={{headerShown:false}}/>
+                <Stack.Screen name="Recommendation" component={RecommendationPage} options={{headerShown:false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     );

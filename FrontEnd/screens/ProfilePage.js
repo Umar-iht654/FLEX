@@ -1,5 +1,5 @@
 
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, StyleSheet } from "react-native";
 import styles from '../styles/styles';
 
@@ -9,23 +9,15 @@ const ProfilePage = ({ navigation }) => {
   const [groupOverlayVisable, setGroupOverlayVisable] = useState(false);
   const [activityOverlayVisable, setActivityOverlayVisable] = useState(false);
   //this is a placeholder, there should be a function that can be called to collect all the data below from the database
-  const userInfo = {
+
+
+  const [userInfo, setUserInfo] = useState({
     username: 'John Segway',
     bio: 'Hi im a small time jazzz singer from new rock california and I enjoy sports of many types, like swimming and cycling and others',
     profilePic: 'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg',
-    friendCount: 35,
-    groupCount: 6,
-    activityCount: 8,
     loggedActivitiesCount: 24,
-    //realistically should only contain the last 10 activities logged, if the user pressed the "See More" option then this list will be updated to also contain the next 10
-    activities: [
-      {activityID: 1, activityType: '1v1',activityName: 'Activity 1',dateTime: 'Date/Time',age: 'Xd',duration: 'duration',scores: [5,3]},
-      {activityID: 2, activityType: 'solo', activityName: 'Activity 2', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
-      {activityID: 3, activityType: '1v1', activityName: 'Activity 3', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
-      {activityID: 4,activityType: '1v1v1', activityName: 'Activity 4', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
-      {activityID: 5, activityType: '1v1', activityName: 'Activity 5', dateTime: 'Date/Time', age: 'Xd', duration: 'duration',scores: [9,3]}
-    ]
-  }
+  });
+  const [activityLog, setActivityLog] = useState([]);
   
   const [userStreak, setUserStreak] = useState('5');
   const [weather, setWeather] = useState('4°');
@@ -34,11 +26,26 @@ const ProfilePage = ({ navigation }) => {
   const [activityData, setActivityData] = useState([]);
 
 
-  //Gets a list of user activities
-  function GetFriends(user) {
-    //here would be a function which collects the users list of friends from the database
-    //for testing i've created this list myself
-    const collectedFriendData = [
+  function UploadPageInfo(username) {
+    const newUserInfo = {
+      username: 'John Segway',
+      bio: 'Hi im a small time jazzz singer from new rock california and I enjoy sports of many types, like swimming and cycling and others',
+      profilePic: 'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg',
+      loggedActivitiesCount: 24,
+    };
+    setUserInfo(newUserInfo);
+    //realistically should only contain the last 10 activities logged, 
+    //if the user pressed the "See More" option then this list will be updated to also contain the next 10
+    const newActivityLog = [
+      {activityID: 1, activityType: '1v1',activityName: 'Activity 1',dateTime: 'Date/Time',age: 'Xd',duration: 'duration',scores: [5,3]},
+      {activityID: 2, activityType: 'solo', activityName: 'Activity 2', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
+      {activityID: 3, activityType: '1v1', activityName: 'Activity 3', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
+      {activityID: 4,activityType: '1v1v1', activityName: 'Activity 4', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
+      {activityID: 5, activityType: '1v1', activityName: 'Activity 5', dateTime: 'Date/Time', age: 'Xd', duration: 'duration',scores: [9,3]}
+    ];
+    setActivityLog(newActivityLog);
+
+    const newFriendData = [
       { username: 'Pee Pee Wherman', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
       { username: 'Dan Scooterist', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
       { username: 'Luka Scumperlot', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
@@ -63,14 +70,9 @@ const ProfilePage = ({ navigation }) => {
       { username: 'Alex Sweets', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
       { username: 'Nina Stepperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' }
     ];
-    setFriendData(collectedFriendData);
-    setFriendOverlayVisable(true);
-  }
+    setFriendData(newFriendData);
 
-  function GetGroups(user) {
-    //here would be a function which collects the users list of friends from the database
-    //for testing i've created this list myself
-    const collectedGroupData = [
+    const newGroupData = [
       { groupname: 'The Footy Dwellers', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
       { groupname: 'Scarcity Tennis', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
       { groupname: 'Manchester Maddens', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Sai_mahotsav_manjhanpur.jpg?20231128214559' },
@@ -79,14 +81,9 @@ const ProfilePage = ({ navigation }) => {
       { groupname: 'Krazy Kenyans', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
       { groupname: 'Slapping Sailors', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
     ];
-    setGroupData(collectedGroupData);
-    setGroupOverlayVisable(true);
-  }
- 
-  function GetActivities(user) {
-    //here would be a function which collects the users list of friends from the database
-    //for testing i've created this list myself
-    const collectedActivityData = [
+    setGroupData(newGroupData);
+
+    const newActivityData = [
       { activityname: 'Tennis'},
       { activityname: 'Football'},
       { activityname: 'Cycling'},
@@ -94,8 +91,8 @@ const ProfilePage = ({ navigation }) => {
       { activityname: 'Shuffle Board'},
       { activityname: 'Tap Dancing'},
     ];
-    setActivityData(collectedActivityData);
-    setActivityOverlayVisable(true);
+    setActivityData(newActivityData);
+
   }
   //The card that shows details about the users activities
   const ActivityDataCard = (props) => {
@@ -207,6 +204,11 @@ const ProfilePage = ({ navigation }) => {
     );
   };
 
+  useEffect(() => {
+    UploadPageInfo("user");
+  }, []);
+
+
   return (
     <SafeAreaView style={[styles.safeAreaView, {justifyContent: 'flex-start', alignItems: 'center'}]}>
       {/*Top Bar*/}
@@ -237,7 +239,7 @@ const ProfilePage = ({ navigation }) => {
             {/*Profile picture*/}
             <Image 
               style={profilePageStyles.profilePicture}
-              source={{ uri: userInfo.profilePic}}
+              source={{uri: userInfo.profilePic}}
             />
 
             {/*Username and Bio*/}
@@ -249,21 +251,21 @@ const ProfilePage = ({ navigation }) => {
 
           {/*Shows Friend, Group and Activity Number*/}
           <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'flex-start', marginTop: 15}}>
-            <TouchableOpacity onPress={() => GetFriends("blank")}>
-              <InfoBox name='Friends' count={userInfo.friendCount}/>
+            <TouchableOpacity onPress={() => {setFriendOverlayVisable(true)}}>
+              <InfoBox name='Friends' count={friendData.length}/>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => GetGroups("blank")}>
-              <InfoBox name='Groups' count={userInfo.groupCount}/>
+            <TouchableOpacity onPress={() => {setGroupOverlayVisable(true)}}>
+              <InfoBox name='Groups' count={groupData.length}/>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {GetActivities("blank")}}>
-              <InfoBox name='Activities' count={userInfo.activityCount}/>
+            <TouchableOpacity onPress={() => {setActivityOverlayVisable(true)}}>
+              <InfoBox name='Activities' count={activityData.length}/>
             </TouchableOpacity>
           </View>
 
           {/*Displays recent activities*/}
           <View style={{alignItems:'center'}}>
             <Text style={profilePageStyles.recentActivitiesHeader}>Recent Activities</Text>
-            {userInfo.activities.map(activity=> (
+            {activityLog.map(activity=> (
               <ActivityDataCard
                   key={activity.activityID}
                   activityType={activity.activityType}
@@ -277,7 +279,7 @@ const ProfilePage = ({ navigation }) => {
           </View>
 
           {/*Displays show more button, the button disappears once all activities are shown*/}
-          {userInfo.loggedActivitiesCount > userInfo.activities.length && (
+          {userInfo.loggedActivitiesCount > activityLog.length && (
           <TouchableOpacity>
             <Text style={profilePageStyles.showMoreButton}>Show More</Text>
           </TouchableOpacity>)}

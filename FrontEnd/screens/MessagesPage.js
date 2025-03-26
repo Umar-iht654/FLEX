@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import styles from '../styles/styles';
 
@@ -11,26 +11,33 @@ const MessagesPage = ({ navigation }) => {
   
   //this data is a placeholder, there should be a function that collects this data from
   //the database so it can be displayed on the screen
-  const groupsInfo = [
-    {groupID: 1, groupName: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 5},
-    {groupID: 2, groupName: 'Group2', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 2},
-    {groupID: 3, groupName: 'Group3', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 0,},
-  ]
-  const friendsInfo = [
-    {friendID: 1, friendName: 'Friend1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 2},
-    {friendID: 2, friendName: 'Friend2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 5},
-    {friendID: 3, friendName: 'Friend3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 5},
-    {friendID: 4, friendName: 'Stan the man',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/2023_Watter_Holger_Prof._Dr._x1_53_Quadrat.jpg', pinned: false, unreadMessageCount: 10},
-    {friendID: 5, friendName: 'Friend5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
-    {friendID: 6, friendName: 'Friend6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
-    {friendID: 7, friendName: 'Friend7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
-    {friendID: 8, friendName: 'Friend8',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 1},
-    
-  ]
+  const [groupsInfo, setGroupsInfo] = useState([]);
+  const [friendsInfo, setFriendsInfo] = useState([]);
 
   //opens the chat page
   function OpenChat(chatName, chatID, chatPF){
     navigation.navigate('Chat', { chatName, chatID, chatPF })
+  }
+
+  function UploadPageInfo(username){
+    const newGroupsInfo = [
+      {groupID: 1, groupName: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 5},
+      {groupID: 2, groupName: 'Group2', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 2},
+      {groupID: 3, groupName: 'Group3', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 0,},
+    ]
+    setGroupsInfo(newGroupsInfo);
+
+    const newFriendsInfo = [
+      {friendID: 1, friendName: 'Friend1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 2},
+      {friendID: 2, friendName: 'Friend2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 5},
+      {friendID: 3, friendName: 'Friend3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 5},
+      {friendID: 4, friendName: 'Stan the man',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/2023_Watter_Holger_Prof._Dr._x1_53_Quadrat.jpg', pinned: false, unreadMessageCount: 10},
+      {friendID: 5, friendName: 'Friend5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
+      {friendID: 6, friendName: 'Friend6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
+      {friendID: 7, friendName: 'Friend7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
+      {friendID: 8, friendName: 'Friend8',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 1},
+    ]
+    setFriendsInfo(newFriendsInfo);
   }
 
   //renders the chat card
@@ -64,6 +71,10 @@ const MessagesPage = ({ navigation }) => {
       </TouchableOpacity>
     )
   }
+
+  useEffect(() => {
+    UploadPageInfo("user");
+  }, []);
   return (
     <SafeAreaView style={[styles.safeAreaView, {justifyContent: 'flex-start', alignItems: 'center'}]}>
 
