@@ -2,7 +2,7 @@ import React, {useState, useEffect, act} from 'react';
 import { SafeAreaView, View, Text,Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
 import styles from '../styles/styles';
 
-const SearchPage = () => {
+const SearchPage = ( {navigation}) => {
     {/*top bar data*/}
     const [userStreak, setUserStreak] = useState(5);
     const [weather, setWeather] = useState('4°');
@@ -51,6 +51,7 @@ const SearchPage = () => {
         {key: 7, name: 'Group7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
         {key: 8, name: 'Group8',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
       ]
+      setSearchResultsGroups(currentSearchResultsGroups);
 
       const currentSearchResultsUsers = [
         {name: 'User1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
@@ -63,8 +64,8 @@ const SearchPage = () => {
 
       ]
       {/*Updates the lists of search results*/}
-      setSearchResultsGroups(currentSearchResultsGroups);
       setSearchResultsUsers(currentSearchResultsUsers);
+      
     };
 
     function ClearSearch(){
@@ -182,7 +183,7 @@ const SearchPage = () => {
             <Image style={styles.weatherIcon} source={require('../assets/WeatherIcon.png')}/>
 
             {/*Displays User Recommendation button*/}
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => {navigation.navigate("Recommendation")}}>
               <Image style={styles.magicWandIcon} source={require('../assets/MagicWandButton.png')}/>
             </TouchableOpacity>
           </View>
