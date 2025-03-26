@@ -170,11 +170,12 @@ const messagesPageStyles = StyleSheet.create({
     width: '90%', 
     height: 80, 
     backgroundColor: '#D7D7D7', 
-    marginTop: 10, 
-    marginBottom: 15,
+    marginTop: 8, 
+    marginBottom: 8,
     borderRadius: 15, 
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderWidth: 2
   },
   infoCardProfilePicture:{
     width: 50,

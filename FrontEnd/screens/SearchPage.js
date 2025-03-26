@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import { SafeAreaView, View, Text,Image, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, {useState, useEffect, act} from 'react';
+import { SafeAreaView, View, Text,Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
 import styles from '../styles/styles';
 
 const SearchPage = () => {
@@ -13,9 +13,22 @@ const SearchPage = () => {
     {/*Controls visability of views within the page*/}
     const [groupsVisable, setGroupsVisable] = useState(true);
     const [usersVisable, setUsersVisable] = useState(true);
+    const [activityOptionsVisable, setActivityOptionsVisable] = useState(false);
+    const [locationOptionsVisable, setLocationOptionsVisable] = useState(false);
 
     {/*List of activities*/}
-    const allActivities = ["Archery", "Badminton", "Baseball", "Basketball", "Boxing", "Cricket", "Cycling", "Esports", "Fencing", "Field Hockey", "Golf", "Gymnastics", "Ice Hockey", "Mixed Martial Arts", "Rowing", "Rugby", "Skateboarding", "Skiing", "Soccer", "Snowboarding", "Surfing", "Swimming", "Table Tennis", "Tennis", "Track and Field", "Triathlon", "Volleyball", "Weightlifting", "Wrestling", "American Football"];
+    const allActivities = [
+      { Activity: "Archery", Selected: true }, { Activity: "Badminton", Selected: true }, { Activity: "Baseball", Selected: true }, 
+      { Activity: "Basketball", Selected: true }, { Activity: "Boxing", Selected: true }, { Activity: "Cricket", Selected: true }, 
+      { Activity: "Cycling", Selected: true }, { Activity: "Esports", Selected: true }, { Activity: "Fencing", Selected: true }, 
+      { Activity: "Field Hockey", Selected: true }, { Activity: "Golf", Selected: true }, { Activity: "Gymnastics", Selected: true }, 
+      { Activity: "Ice Hockey", Selected: true }, { Activity: "Mixed Martial Arts", Selected: true }, { Activity: "Rowing", Selected: true }, 
+      { Activity: "Rugby", Selected: true }, { Activity: "Skateboarding", Selected: true }, { Activity: "Skiing", Selected: true }, 
+      { Activity: "Soccer", Selected: true }, { Activity: "Snowboarding", Selected: true }, { Activity: "Surfing", Selected: true }, 
+      { Activity: "Swimming", Selected: true }, { Activity: "Table Tennis", Selected: true }, { Activity: "Tennis", Selected: true }, 
+      { Activity: "Track and Field", Selected: true }, { Activity: "Triathlon", Selected: true }, { Activity: "Volleyball", Selected: true }, 
+      { Activity: "Weightlifting", Selected: true }, { Activity: "Wrestling", Selected: true }, { Activity: "American Football", Selected: true }
+    ]
     
     {/*Settings for the search*/}
     const [activitiesSelected, setActivitiesSelected] = useState(allActivities)
@@ -53,6 +66,28 @@ const SearchPage = () => {
       setSearchResultsGroups(currentSearchResultsGroups);
       setSearchResultsUsers(currentSearchResultsUsers);
     };
+
+    function ClearSearch(){
+      setSearchInput('');
+    }
+
+    function ToggleActivity(activityName){
+      setActivitiesSelected(prevActivities =>
+        prevActivities.map(thisActivity => thisActivity.Activity === activityName ? { ...thisActivity, Selected: !thisActivity.Selected } : thisActivity)
+      );
+    }
+
+    function SelectedAllActivities(){
+      setActivitiesSelected(prevActivities =>
+        prevActivities.map(thisActivity => ({ ...thisActivity, Selected: true }))
+      );
+    }
+
+    function UnselectAllActivities(){
+      setActivitiesSelected(prevActivities =>
+        prevActivities.map(thisActivity => ({ ...thisActivity, Selected: false }))
+      );
+    }
 
     {/*Displays group information*/}
     const GroupCard = ({ groupName, groupProfilePicture, groupLocation, groupActivity, groupDescription, groupNumberOfMembers, groupIsPrivate }) => {
@@ -114,6 +149,17 @@ const SearchPage = () => {
       );
     };
 
+    const ActivityCard = ({ activityName, isSelected }) => {
+      return(
+        <TouchableOpacity onPress={() => {ToggleActivity(activityName);}}>
+          <View style={{width: '100%', height: 40, backgroundColor: 'white',borderWidth: 1, flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{width: 20, height: 20, borderRadius: 8,marginHorizontal: 10,backgroundColor: isSelected ? 'blue' : 'gray'}}/>
+            <Text style={searchPageStyles.activityCardText}>{activityName}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
+
     {/*called when the page is opened*/}
     useEffect(() => {
       GetSearchResults();
@@ -156,7 +202,7 @@ const SearchPage = () => {
             />
 
             {/*Clear Search bytton*/}
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => {ClearSearch()}}>
               <Image style={searchPageStyles.clearSearchButton} source={require('../assets/ClearSearchButton.png')}/>
             </TouchableOpacity>
 
@@ -168,7 +214,7 @@ const SearchPage = () => {
 
           {/*Search settings button*/}
           <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15}}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => {setActivityOptionsVisable(true)}}>
                 <View style={{width: 100, height: 40, backgroundColor: 'teal', borderWidth: 1, borderRadius: 5, justifyContent: 'center'}}>
                   <Text style={searchPageStyles.customizeSearchButtons}>Activity</Text>
                 </View>
@@ -224,7 +270,38 @@ const SearchPage = () => {
             </ScrollView>
           </View>
         </View>
-        
+        {/*Options Menu Display*/}
+        <Modal animationType='fade' transparent={true} visible={activityOptionsVisable} onRequestClose={() => setActivityOptionsVisable(false)}>
+          <TouchableOpacity style={searchPageStyles.optionsMenuBackground} activeOpacity={1} onPress={() => setActivityOptionsVisable(false)}>
+            <View style={searchPageStyles.popupScreenOutline}>
+              <View style={{flexDirection: 'row', width: '100%'}}>
+                <View style={{width: '50%', height: 60}}>
+                  <TouchableOpacity onPress={() => {SelectedAllActivities()}}>
+                    <View style={{width: '100%', height: 60, justifyContent: 'center', alignItems: 'center', borderRightWidth: 1}}>
+                      <Text style={searchPageStyles.activityPopupButtonText}>Select All</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View style={{width: '50%', height: 60}}>
+                  <TouchableOpacity onPress={() => {UnselectAllActivities()}}>
+                    <View style={{width: '100%', height: 60, justifyContent: 'center', alignItems: 'center', borderLeftWidth: 1}}>
+                      <Text style={searchPageStyles.activityPopupButtonText}>Unselect All</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <ScrollView>
+                {activitiesSelected.map(thisActivity=> (
+                  <ActivityCard
+                    key = {thisActivity.Activity}
+                    activityName = {thisActivity.Activity}
+                    isSelected = {thisActivity.Selected}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          </TouchableOpacity>
+        </Modal>
       </SafeAreaView>
   );
 };
@@ -351,6 +428,28 @@ const searchPageStyles = StyleSheet.create({
   padlockIcon: {
     width: 35,
     height: 35
+  },
+  optionsMenuBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popupScreenOutline: {
+    width: '70%', 
+    height: '50%', 
+    backgroundColor: 'white', 
+    borderRadius: 20
+  },
+  activityCardText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#1e1e1e',
+  },
+  activityPopupButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#1e1e1e',
+    textAlign: 'center'
   }
 })
 

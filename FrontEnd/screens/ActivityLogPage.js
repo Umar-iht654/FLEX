@@ -336,6 +336,6 @@ const activityLogPageStyles = StyleSheet.create({
     color: '#1e1e1e',
     marginBottom: 8,
     textAlign: 'center',
-  }
+  },
 })
   export default ActivityLogPage;
