@@ -9,10 +9,11 @@ const ChatPage = ({ navigation }) => {
     const route = useRoute();
     const { chatName, chatID, chatPF } = route.params;
 
-
     //contains the message being typed in the message input field
     const [message, setMessage] = useState();
 
+    //chat controls
+    const [numberOfMessages, setNumberOfMessages] = useState(20);
     //controls when cetain views are visable
     const [optionsMenuVisable, setOptionsMenuVisable] = useState(false);
     
@@ -33,6 +34,10 @@ const ChatPage = ({ navigation }) => {
         //uses the chat ID to collect the pinned and muted settings from the database
         const chatOptions = [{optionName: 'Pin', status: true}, {optionName: 'Mute', status: false}];
         return chatOptions;
+    }
+
+    function GetChat(){
+        
     }
 
     {/*Options*/}
@@ -60,13 +65,21 @@ const ChatPage = ({ navigation }) => {
         <View style={chatPageStyles.infoBar}>
             <View style={chatPageStyles.infoBarLeft}>
                 {/*Back button*/}
-                <TouchableOpacity onPress={() => {navigation.goBack()}}>
+                <TouchableOpacity onPress={() => {navigation.navigate('Home', {screen: 'Messages'})}}>
                     <Image style={chatPageStyles.backArrow} source={require('../assets/BackArrow.png')}/>
                 </TouchableOpacity>
 
                 {/*chat profile picture and name*/}
-                <Image style={chatPageStyles.chatProfilePicture} source={{ uri: chatPF}}/>
-                <Text style={chatPageStyles.chatName}>{chatName}</Text>
+                <TouchableOpacity onPress={() => {navigation.navigate('UserProfile', { userID: chatName, previousPage: 'Chat' })}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        {chatPF ? (
+                            <Image style={chatPageStyles.chatProfilePicture} source={{ uri: chatPF }} />
+                            ) : (
+                            <View style={[chatPageStyles.chatProfilePicture, {backgroundColor: 'gray'}]}/>
+                        )}
+                        <Text style={chatPageStyles.chatName}>{chatName}</Text>
+                    </View>
+                </TouchableOpacity>
             </View>
 
             {/*Options button*/}

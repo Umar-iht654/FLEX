@@ -50,7 +50,11 @@ const MessagesPage = ({ navigation }) => {
 
           {/*profile picture and name*/}
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image style={messagesPageStyles.infoCardProfilePicture} source={{ uri: profilePicture}}/>
+            {profilePicture ? (
+              <Image style={messagesPageStyles.infoCardProfilePicture} source={{ uri: profilePicture }} />
+              ) : (
+                <View style={[messagesPageStyles.infoCardProfilePicture, {backgroundColor: 'gray'}]}/>
+            )}
             <Text style={messagesPageStyles.infoCardName}>{name}</Text>
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -160,7 +164,8 @@ const messagesPageStyles = StyleSheet.create({
     height: '88%', 
     backgroundColor: '#E5E5E5', 
     borderRadius: 15, 
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    overflow: 'hidden'
   },
   //menu options
   MenuOptionText: {
