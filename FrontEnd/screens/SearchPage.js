@@ -42,7 +42,7 @@ const SearchPage = ( {navigation}) => {
       {/*Again this data is just to test, a function should be called that
          searches the database based on the current search criteria*/}
       const currentSearchResultsGroups = [
-        {key: 1, name: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: '355', isPrivate: true},
+        {key: 1, name: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences, but this is what happens if its even longer, even longer even, but what if it was eeeveeen longer that is',numberOfMembers: '355', isPrivate: true},
         {key: 2, name: 'Group2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: '342', isPrivate: true},
         {key: 3, name: 'Group3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: true},
         {key: 4, name: 'Group4',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
@@ -65,7 +65,7 @@ const SearchPage = ( {navigation}) => {
       ]
       {/*Updates the lists of search results*/}
       setSearchResultsUsers(currentSearchResultsUsers);
-      
+
     };
 
     function ClearSearch(){
@@ -98,17 +98,20 @@ const SearchPage = ( {navigation}) => {
             <View style={{flexDirection: 'row'}}>
 
               {/*Group Profile Picture*/}
-              <Image style={searchPageStyles.groupProfilePicture} source={{ uri: groupProfilePicture}}/>
+              {groupProfilePicture ? (
+                <Image style={searchPageStyles.groupProfilePicture} source={{ uri: groupProfilePicture }} />
+                ) : (
+                <View style={[searchPageStyles.groupProfilePicture, {backgroundColor: 'gray'}]}/>
+              )}
               {/*Group Information*/}
-              <View style={{width: 180}}>
+              <View style={{width: '60%', height: '100%', zIndex: 1}}>
                 <Text style={searchPageStyles.groupCardTitle}>{groupName}</Text>
                 <Text style={searchPageStyles.groupCardInfoText}>{groupLocation}</Text>
                 <Text style={searchPageStyles.groupCardInfoText}>{groupActivity}</Text>
-                <Text style={searchPageStyles.groupCardDescriptionText}>{groupDescription}</Text>
+                <Text style={searchPageStyles.groupCardDescriptionText} adjustsFontSizeToFit numberOfLines={4}>{groupDescription}</Text>
               </View>
             </View>
-            <View>
-
+            <View style={{position: 'absolute', height: '100%', right: 10, top: 10, justifyContent: 'center'}}>
               {/*Displays if the group is private*/}
               {groupIsPrivate && (
                   <View style={{height: '100%', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -137,7 +140,11 @@ const SearchPage = ( {navigation}) => {
             <View style={{flexDirection: 'row'}}>
 
               {/*User profile picture*/}
-              <Image style={searchPageStyles.userProfilePicture} source={{ uri: userProfilePicture}}/>
+              {userProfilePicture ? (
+                <Image style={searchPageStyles.userProfilePicture} source={{ uri: userProfilePicture }} />
+                ) : (
+                <View style={[searchPageStyles.userProfilePicture, {backgroundColor: 'gray'}]}/>
+              )}
               <View style={{width: 180}}>
 
                 {/*User information*/}
@@ -385,7 +392,7 @@ const searchPageStyles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 10,
     width: '100%', 
-    height: 140, 
+    height: 180, 
     backgroundColor: 'white', 
     borderWidth: 1, 
     borderRadius: 15, 
@@ -415,7 +422,6 @@ const searchPageStyles = StyleSheet.create({
     marginLeft: 5,
   },
   groupCardDescriptionText: {
-    fontSize: 12,
     fontWeight: '500',
     color: '#929292',
     marginLeft: 5,
@@ -425,6 +431,7 @@ const searchPageStyles = StyleSheet.create({
     fontWeight: '500',
     color: '#1e1e1e',
     marginLeft: 5,
+    textAlign: 'right'
   },
   padlockIcon: {
     width: 35,
@@ -439,7 +446,9 @@ const searchPageStyles = StyleSheet.create({
     width: '70%', 
     height: '50%', 
     backgroundColor: 'white', 
-    borderRadius: 20
+    borderRadius: 20,
+    overflow: 'hidden',
+    borderWidth: 2
   },
   activityCardText: {
     fontSize: 16,

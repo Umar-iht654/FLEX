@@ -1,10 +1,14 @@
 
-import React, { useState, useEffect } from "react";
-import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, StyleSheet } from "react-native";
+
+import React, { useState, useCallback } from "react";
+import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, StyleSheet, } from "react-native";
+import { useFocusEffect, useRoute } from '@react-navigation/native';
 import styles from '../styles/styles';
 
 
 const ProfilePage = ({ navigation }) => {
+
+
   const [friendOverlayVisable, setFriendOverlayVisable] = useState(false);
   const [groupOverlayVisable, setGroupOverlayVisable] = useState(false);
   const [activityOverlayVisable, setActivityOverlayVisable] = useState(false);
@@ -12,21 +16,23 @@ const ProfilePage = ({ navigation }) => {
 
 
   const [userInfo, setUserInfo] = useState({
-    username: 'John Segway',
-    bio: 'Hi im a small time jazzz singer from new rock california and I enjoy sports of many types, like swimming and cycling and others',
-    profilePic: 'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg',
-    loggedActivitiesCount: 24,
+    username: '',
+    bio: '',
+    profilePic: '',
+    loggedActivitiesCount: 0,
   });
+
   const [activityLog, setActivityLog] = useState([]);
+  const [currentActivityNumber, setCurrentActivityNumber] = useState(5);
   
   const [userStreak, setUserStreak] = useState('5');
   const [weather, setWeather] = useState('4°');
   const [friendData, setFriendData] = useState([]);
   const [groupData, setGroupData] = useState([]);
   const [activityData, setActivityData] = useState([]);
-
-
-  function UploadPageInfo(username) {
+  const [userRelationship, setUserRelationship] = useState([]);
+  //should upload the user data from the database
+  function UploadPageInfo() {
     const newUserInfo = {
       username: 'John Segway',
       bio: 'Hi im a small time jazzz singer from new rock california and I enjoy sports of many types, like swimming and cycling and others',
@@ -34,41 +40,31 @@ const ProfilePage = ({ navigation }) => {
       loggedActivitiesCount: 24,
     };
     setUserInfo(newUserInfo);
-    //realistically should only contain the last 10 activities logged, 
-    //if the user pressed the "See More" option then this list will be updated to also contain the next 10
-    const newActivityLog = [
-      {activityID: 1, activityType: '1v1',activityName: 'Activity 1',dateTime: 'Date/Time',age: 'Xd',duration: 'duration',scores: [5,3]},
-      {activityID: 2, activityType: 'solo', activityName: 'Activity 2', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
-      {activityID: 3, activityType: '1v1', activityName: 'Activity 3', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
-      {activityID: 4,activityType: '1v1v1', activityName: 'Activity 4', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
-      {activityID: 5, activityType: '1v1', activityName: 'Activity 5', dateTime: 'Date/Time', age: 'Xd', duration: 'duration',scores: [9,3]}
-    ];
-    setActivityLog(newActivityLog);
 
     const newFriendData = [
-      { username: 'Pee Pee Wherman', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Dan Scooterist', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Luka Scumperlot', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Gooper Gooperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Sickalicka trying', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Sir Yemen', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Timothy Skelton', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Lenny Crapperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Milo Biggers', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Carlos Swindler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Jimmy Pickles', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Billy McNugget', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Maddie Two-Times', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Vince Vermin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Fiona Biggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Chuck Banter', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Zane Crankford', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Bea Wiggler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Oscar Baggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Tina Wallflower', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Zoe Fizzbin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Alex Sweets', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Nina Stepperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' }
+      { userID: 1, username: 'Pee Pee Wherman', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 2, username: 'Dan Scooterist', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 3, username: 'Luka Scumperlot', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 4, username: 'Gooper Gooperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 5, username: 'Sickalicka trying', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 6, username: 'Sir Yemen', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 7, username: 'Timothy Skelton', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 8, username: 'Lenny Crapperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 9, username: 'Milo Biggers', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 10, username: 'Carlos Swindler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 11, username: 'Jimmy Pickles', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 12, username: 'Billy McNugget', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 13, username: 'Maddie Two-Times', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 14, username: 'Vince Vermin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 15, username: 'Fiona Biggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 16, username: 'Chuck Banter', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 17, username: 'Zane Crankford', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 18, username: 'Bea Wiggler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 19, username: 'Oscar Baggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 20, username: 'Tina Wallflower', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 21, username: 'Zoe Fizzbin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 22, username: 'Alex Sweets', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+      { userID: 23, username: 'Nina Stepperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' }
     ];
     setFriendData(newFriendData);
 
@@ -92,6 +88,50 @@ const ProfilePage = ({ navigation }) => {
       { activityname: 'Tap Dancing'},
     ];
     setActivityData(newActivityData);
+
+    setUserRelationship('friend');
+
+  }
+
+  
+
+  function openProfile(newUserID){
+    navigation.push('UserProfile', { userID: newUserID, previousPage: 'Profile' });
+  }
+  //retrieves user activities from the database
+  function UploadActivities(isInitial){
+    const newActivityLog = [
+      {activityID: 1, activityType: '1v1', activityName: 'Activity 1', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
+      {activityID: 2, activityType: 'solo', activityName: 'Activity 2', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
+      {activityID: 3, activityType: '1v1', activityName: 'Activity 3', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
+      {activityID: 4, activityType: '1v1v1', activityName: 'Activity 4', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
+      {activityID: 5, activityType: '1v1', activityName: 'Activity 5', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
+      {activityID: 6, activityType: '1v1', activityName: 'Activity 6', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
+      {activityID: 7, activityType: 'solo', activityName: 'Activity 7', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
+      {activityID: 8, activityType: '1v1', activityName: 'Activity 8', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
+      {activityID: 9, activityType: '1v1v1', activityName: 'Activity 9', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
+      {activityID: 10, activityType: '1v1', activityName: 'Activity 10', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
+      {activityID: 11, activityType: '1v1', activityName: 'Activity 11', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
+      {activityID: 12, activityType: 'solo', activityName: 'Activity 12', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
+      {activityID: 13, activityType: '1v1', activityName: 'Activity 13', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
+      {activityID: 14, activityType: '1v1v1', activityName: 'Activity 14', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
+      {activityID: 15, activityType: '1v1', activityName: 'Activity 15', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
+      {activityID: 16, activityType: '1v1', activityName: 'Activity 16', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
+      {activityID: 17, activityType: 'solo', activityName: 'Activity 17', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
+      {activityID: 18, activityType: '1v1', activityName: 'Activity 18', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
+      {activityID: 19, activityType: '1v1v1', activityName: 'Activity 19', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
+      {activityID: 20, activityType: '1v1', activityName: 'Activity 20', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
+      {activityID: 21, activityType: '1v1', activityName: 'Activity 21', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
+      {activityID: 22, activityType: 'solo', activityName: 'Activity 22', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
+      {activityID: 23, activityType: '1v1', activityName: 'Activity 23', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
+      {activityID: 24, activityType: '1v1v1', activityName: 'Activity 24', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
+      
+    ];
+    if(isInitial){
+      setCurrentActivityNumber(5)
+    }
+    setActivityLog(newActivityLog.slice(0, currentActivityNumber));
+    setCurrentActivityNumber(prev => prev+5);
 
   }
   //The card that shows details about the users activities
@@ -157,7 +197,7 @@ const ProfilePage = ({ navigation }) => {
 
         {/*Contributing Users button, if pressed displays all users involved in activity*/}
         <TouchableOpacity>
-          <Text style={profilePageStyles.contributingUsersButton}>Contributing Users</Text>
+          <Text style={profilePageStyles.contributingUsersButton}>participants</Text>
         </TouchableOpacity>
       </View>
     );
@@ -175,7 +215,7 @@ const ProfilePage = ({ navigation }) => {
 
   const FriendCard = ({username, profilePicture}) => {
     return (
-      <TouchableOpacity onPress={() => {/*Directs user to friends profile page*/}}>
+      <TouchableOpacity onPress={() => {openProfile(username)}}>
         <View style={{flexDirection: "row"}}>
           <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
           <Text style={profilePageStyles.popupItemText}>{username}</Text>
@@ -204,9 +244,14 @@ const ProfilePage = ({ navigation }) => {
     );
   };
 
-  useEffect(() => {
-    UploadPageInfo("user");
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      // This function will run every time the screen is focused
+      UploadPageInfo("user");
+      UploadActivities(true);
+      console.log("navigated to")
+    }, [])
+  );
 
 
   return (
@@ -237,10 +282,11 @@ const ProfilePage = ({ navigation }) => {
           <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', marginTop: 24}}>
 
             {/*Profile picture*/}
-            <Image 
-              style={profilePageStyles.profilePicture}
-              source={{uri: userInfo.profilePic}}
-            />
+            {userInfo.profilePic ? (
+              <Image style={profilePageStyles.profilePicture} source={{ uri: userInfo.profilePic }} />
+            ) : (
+              <View style={[profilePageStyles.profilePicture, {backgroundColor: 'gray'}]}/>
+            )}
 
             {/*Username and Bio*/}
             <View style={{marginLeft: 20}}>
@@ -251,38 +297,51 @@ const ProfilePage = ({ navigation }) => {
 
           {/*Shows Friend, Group and Activity Number*/}
           <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'flex-start', marginTop: 15}}>
-            <TouchableOpacity onPress={() => {setFriendOverlayVisable(true)}}>
+            <TouchableOpacity onPress={() => {
+              if((userRelationship == 'friend') || (userRelationship == 'self')){
+                setFriendOverlayVisable(true)
+              }
+              }}>
               <InfoBox name='Friends' count={friendData.length}/>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {setGroupOverlayVisable(true)}}>
+            <TouchableOpacity onPress={() => {
+              if((userRelationship == 'friend') || (userRelationship == 'self')){
+                setGroupOverlayVisable(true)
+              }
+              }}>
               <InfoBox name='Groups' count={groupData.length}/>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {setActivityOverlayVisable(true)}}>
+            <TouchableOpacity onPress={() => {
+              if((userRelationship == 'friend') || (userRelationship == 'self')){
+                setActivityOverlayVisable(true)
+              }
+              }}>
               <InfoBox name='Activities' count={activityData.length}/>
             </TouchableOpacity>
           </View>
 
-          {/*Displays recent activities*/}
-          <View style={{alignItems:'center'}}>
+          <View style={{ alignItems: 'center' }}>
+            {/* Displays recent activities */}
             <Text style={profilePageStyles.recentActivitiesHeader}>Recent Activities</Text>
-            {activityLog.map(activity=> (
+            {activityLog.map(activity => (
               <ActivityDataCard
-                  key={activity.activityID}
-                  activityType={activity.activityType}
-                  activityName={activity.activityName}
-                  dateTime={activity.dateTime}
-                  age={activity.age}
-                  duration={activity.duration}
-                  scores={activity.scores}
+                key={activity.activityID}
+                activityType={activity.activityType}
+                activityName={activity.activityName}
+                dateTime={activity.dateTime}
+                age={activity.age}
+                duration={activity.duration}
+                scores={activity.scores}
               />
             ))}
-          </View>
 
-          {/*Displays show more button, the button disappears once all activities are shown*/}
-          {userInfo.loggedActivitiesCount > activityLog.length && (
-          <TouchableOpacity>
-            <Text style={profilePageStyles.showMoreButton}>Show More</Text>
-          </TouchableOpacity>)}
+            {/* Displays show more button, the button disappears once all activities are shown */}
+            {userInfo.loggedActivitiesCount > activityLog.length && (
+              <TouchableOpacity onPress={() => UploadActivities(false)}>
+                <Text style={profilePageStyles.showMoreButton}>Show More</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </ScrollView>
       </View>
 
@@ -294,7 +353,7 @@ const ProfilePage = ({ navigation }) => {
               <ScrollView>
                 {friendData.map(friend=> (
                 <FriendCard
-                    key = {friend.username}
+                    key = {friend.userID}
                     username = {friend.username}
                     profilePicture = {friend.profilePicture}
                 />
