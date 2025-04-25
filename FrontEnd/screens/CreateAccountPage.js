@@ -28,89 +28,89 @@ const CreateAccountPage = ({ navigation }) => {
 
 
   const validateEntries = async () => {
-    setValidateError('');
-    setEmailError('');
-    setUsernameError('');
-    setPasswordError('');
-    setConfirmError('')
+    // setValidateError('');
+    // setEmailError('');
+    // setUsernameError('');
+    // setPasswordError('');
+    // setConfirmError('')
 
-    validated = true;
-    if (!firstName || !lastName || !newEmail || !dateOfBirth || !postcode || !addressLine || !newUsername || !newPassword || !confirmPassword) {
-      setValidateError('Please fill in all fields')
-      return;
-    }
-    setValidateError('');
+    // validated = true;
+    // if (!firstName || !lastName || !newEmail || !dateOfBirth || !postcode || !addressLine || !newUsername || !newPassword || !confirmPassword) {
+    //   setValidateError('Please fill in all fields')
+    //   return;
+    // }
+    // setValidateError('');
 
-    try {
-      const response = await axios.post(`http://localhost:5000/api/checkEmail`, { email: newEmail });
-      console.log("✅ Server response:", response.data);
-      if(response.data.message === "email is available") {
-        setEmailError('');
-      }
-    }
-    catch(error){
-      console.log("❌ Error:", error.toJSON ? error.toJSON() : error);
-      if (error.response) {
-        setPasswordError(error.response.data?.detail || 'Something went wrong');
-      } else if (error.request) {
-        setPasswordError('No response from server');
-      } else {
-        setPasswordError('Error setting up request');
-      }
-      validated = false;
-    }
+    // try {
+    //   const response = await axios.post(`http://localhost:5000/api/checkEmail`, { email: newEmail });
+    //   console.log("✅ Server response:", response.data);
+    //   if(response.data.message === "email is available") {
+    //     setEmailError('');
+    //   }
+    // }
+    // catch(error){
+    //   console.log("❌ Error:", error.toJSON ? error.toJSON() : error);
+    //   if (error.response) {
+    //     setPasswordError(error.response.data?.detail || 'Something went wrong');
+    //   } else if (error.request) {
+    //     setPasswordError('No response from server');
+    //   } else {
+    //     setPasswordError('Error setting up request');
+    //   }
+    //   validated = false;
+    // }
     
-    try {
-      const response = await axios.post('http://localhost:5000/api/checkUsername', { username: newUsername });
+    // try {
+    //   const response = await axios.post('http://localhost:5000/api/checkUsername', { username: newUsername });
   
-      if (response.data.message === "username is available") {
-        setUsernameError('');
-      }
-    } catch (error) {
-      setUsernameError(error.response?.data?.detail || 'Something went wrong');
-      validated = false;
-    } 
+    //   if (response.data.message === "username is available") {
+    //     setUsernameError('');
+    //   }
+    // } catch (error) {
+    //   setUsernameError(error.response?.data?.detail || 'Something went wrong');
+    //   validated = false;
+    // } 
 
-    try {
-      const response = await axios.post(`http://localhost:5000/api/checkPassword`, { password: newPassword });
-      if(response.data.message === "password is valid") {
-        setPasswordError('');
-        if (newPassword != confirmPassword) {
-          setConfirmError('Passwords do not match')
-        }
-        else {
-          setConfirmError('')
-        }
-      }
-    }
-    catch(error){
-      setPasswordError(error.response?.data?.detail || 'Something went wrong');
-      validated = false;
-    }
-    if (validated){
-      if (tacButtonColor !== 'blue') {
-        setValidateError('Please accept Terms and Conditions');
-        return;
-      }
-      const userData = {
-        username: newUsername,
-        email: newEmail,
-        password: newPassword,
-        full_name: `${firstName} ${lastName}`,
-        address: addressLine,
-        DOB: dateOfBirth,
-        postcode: postcode
-      };
+    // try {
+    //   const response = await axios.post(`http://localhost:5000/api/checkPassword`, { password: newPassword });
+    //   if(response.data.message === "password is valid") {
+    //     setPasswordError('');
+    //     if (newPassword != confirmPassword) {
+    //       setConfirmError('Passwords do not match')
+    //     }
+    //     else {
+    //       setConfirmError('')
+    //     }
+    //   }
+    // }
+    // catch(error){
+    //   setPasswordError(error.response?.data?.detail || 'Something went wrong');
+    //   validated = false;
+    // }
+    // if (validated){
+    //   if (tacButtonColor !== 'blue') {
+    //     setValidateError('Please accept Terms and Conditions');
+    //     return;
+    //   }
+    //   const userData = {
+    //     username: newUsername,
+    //     email: newEmail,
+    //     password: newPassword,
+    //     full_name: `${firstName} ${lastName}`,
+    //     address: addressLine,
+    //     DOB: dateOfBirth,
+    //     postcode: postcode
+    //   };
 
-      try {
-        const response = await axios.post(`http://localhost:5000/api/register`, userData);
-        if (response.data && response.data.data) {
+    //   try {
+        // const response = await axios.post(`http://localhost:5000/api/register`, userData);
+        // if (response.data && response.data.data) {
           navigation.navigate('CreateActivitySelection');
-        }
-      } catch (error) {
-        setValidateError(error.response?.data?.detail || 'Something went wrong');
-      }
-    }
+    //     }
+    //   } catch (error) {
+    //     setValidateError(error.response?.data?.detail || 'Something went wrong');
+    //   }
+    // }
   }
   return (
     <SafeAreaView style={styles.safeAreaView}>
