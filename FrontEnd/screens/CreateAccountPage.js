@@ -92,19 +92,20 @@ const CreateAccountPage = ({ navigation }) => {
     //     setValidateError('Please accept Terms and Conditions');
     //     return;
     //   }
-    //   const userData = {
-    //     username: newUsername,
-    //     email: newEmail,
-    //     password: newPassword,
-    //     full_name: `${firstName} ${lastName}`,
-    //     address: addressLine,
-    //     DOB: dateOfBirth,
-    //     postcode: postcode
-    //   };
+      const userData = {
+        username: newUsername,
+        email: newEmail,
+        password: newPassword,
+        full_name: `${firstName} ${lastName}`,
+        address: addressLine,
+        DOB: dateOfBirth,
+        postcode: postcode
+      };
 
     //   try {
         // const response = await axios.post(`http://localhost:5000/api/register`, userData);
         // if (response.data && response.data.data) {
+    await AsyncStorage.setItem('userDetail', JSON.stringify(userData));
           navigation.navigate('CreateActivitySelection');
     //     }
     //   } catch (error) {
