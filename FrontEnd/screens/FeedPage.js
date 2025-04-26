@@ -2,10 +2,11 @@ import React, {useState, useRef, useCallback} from 'react';
 import { SafeAreaView, View, Text, TextInput, TouchableOpacity, Image, Dimensions, Animated, StyleSheet, Touchable } from 'react-native';
 import styles from '../styles/styles';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
-import { LineChart, BarChart, PieChart, ProgressChart, ContributionGraph, StackedBarChart } from "react-native-chart-kit";
+import { VictoryChart, VictoryLine, VictoryAxis, VictoryScatter, VictoryTheme } from 'victory-native';
+
 
 const FeedPage = ( {navigation} ) => {
-
+  
   //contains the current screen
   const [userStreak, setUserStreak] = useState(5);
   const [weather, setWeather] = useState('4°');
@@ -17,18 +18,6 @@ const FeedPage = ( {navigation} ) => {
   const slideAnim = useRef(new Animated.Value(0)).current;
   const [currentView, setCurrentView] = useState(0);
   const cardWidth = screenWidth * 0.9;
-
-
-  const chartConfig = {
-    backgroundGradientFrom: "#1E2923",
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: "#08130D",
-    backgroundGradientToOpacity: 0.5,
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-    strokeWidth: 2, // optional, default 3
-    barPercentage: 0.5,
-    useShadowColorFromDataset: false // optional
-  };
 
   function GetUserGoals(){
     /*
@@ -42,15 +31,15 @@ const FeedPage = ( {navigation} ) => {
     */
     const thisUserGoals = [
       {id: 1, goalType: 0, goal: ['60']},
-      {id: 2, goalType: 1, goal: ['10']},
+      {id: 2, goalType: 1, goal: ['5']},
       {id: 3, goalType: 2, goal: ['50']},
       {id: 4, goalType: 3, goal: ['5', '2-']},
       {id: 5, goalType: 4, goal: ['30', '60']},
       {id: 6, goalType: 5, goal: ['Bench Press', '80']},
-      {id: 7, goalType: 6, goal: 'do 100 pressups in row'},
-      {id: 8, goalType: 6, goal: 'do 200 squats in a row'},
-      {id: 9, goalType: 6, goal: 'do a pull up'},
-      {id: 10, goalType: 6, goal: 'play tennis 4 times this week'},
+      {id: 7, goalType: 6, goal: ['do 100 pressups in row']},
+      {id: 8, goalType: 6, goal: ['do 200 squats in a row']},
+      {id: 9, goalType: 6, goal: ['do a pull up']},
+      {id: 10, goalType: 6, goal: ['play tennis 4 times this week']},
     ]
     setUserGoals(thisUserGoals);
   }
@@ -58,45 +47,62 @@ const FeedPage = ( {navigation} ) => {
   function GetProgressData(catagory){
     if(catagory == 0){
       //gets the users weight from the database
-      const userWeight = 68;
+      const userWeight = [68];
       return userWeight
     }
 
     if(catagory == 1){
       //gets a list of running distances over the last month from the database
-      const runningDistanceData = {
-        labels: ['2/6/2025', '6/6/2025','10/6/2025','16/6/2025','24/6/2026'],
-        datasets: [
-          {
-            data: [3.6, 4, 3.8, 4.3, 4.8, 5.1]
 
-          }
-        ]
-      }
+      const runningDistanceData = [
+        { x: '2/6', y: 3.6 },
+        { x: '6/6', y: 4 },
+        { x: '10/6', y: 3.8 },
+        { x: '16/6', y: 4.3 },
+        { x: '24/6', y: 5.1 }
+      ]
       return runningDistanceData
     }
 
     if(catagory == 2){
       //gets the users biggest cycling distance for that week (if no activity logged that week, look at previous week and so on) 
-      const userCyclingDistance = 36.2;
+      const userCyclingDistance = [
+        { x: '2/6', y: 3.6 },
+        { x: '6/6', y: 4 },
+        { x: '10/6', y: 3.8 },
+        { x: '16/6', y: 4.3 },
+        { x: '24/6', y: 5.1 }
+      ]
       return userCyclingDistance
     }
 
     if(catagory == 3){
       //gets users fastest running time for the distance stated in goal for that week (if no activity logged that week, look at previous week and so on) 
-      const userRunningSpeed = 26.2;
+      const userRunningSpeed = [
+        { x: '2/6', y: 3.6 },
+        { x: '6/6', y: 4 },
+        { x: '10/6', y: 3.8 },
+        { x: '16/6', y: 4.3 },
+        { x: '24/6', y: 5.1 }
+      ]
       return userRunningSpeed
     }
 
     if(catagory == 4){
       //gets users fastest cycling time for the distance stated in goal for that week (if no activity logged that week, look at previous week and so on) 
-      const userCyclingSpeed = 46.8;
+      const userCyclingSpeed = [
+        { x: '2/6', y: 3.6 },
+        { x: '6/6', y: 4 },
+        { x: '10/6', y: 3.8 },
+        { x: '16/6', y: 4.3 },
+        { x: '24/6', y: 5.1 }
+      ]
       return userCyclingSpeed
     }
 
     if(catagory == 5){
       //gets users best weight for the workout stated in the goal (if no activity logged that week, look at previous week and so on)
-      const userWeightLifted = 85;
+      const userWeightLifted = [85];
       return userWeightLifted
     }
   }
@@ -143,20 +149,70 @@ const FeedPage = ( {navigation} ) => {
   };
 
   const ProgressCard = ({ goalType, goal }) => {
+    const progressData = GetProgressData(goalType);
     return(
       <View style={{width: screenWidth *0.9, height: '100%',flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
         <TouchableOpacity onPress={() => {slidePrev()}}>
           <View style={{width: 50, height: 50, borderRadius: 12, backgroundColor: 'gray'}}/>
         </TouchableOpacity>
         {goalType === 1 && (
-          <View style={{position: 'relative'}}>
-            <Text>Running Distance Progress</Text>
-            <LineChart
-              data={GetProgressData(1)}
-              width={250}
-              height={300}
-              chartConfig={chartConfig}
-            />
+          <View>
+          {(!Array.isArray(progressData) || progressData.length === 0) ? (
+            <Text style={{ textAlign: 'center', marginTop: 20 }}>No progress data available.</Text>
+          ) : (
+            <View style={{width: cardWidth-100}}>
+              <Text style={feedPageStyles.GoalProgressTitle}>Running Distance Progress</Text>
+              <VictoryChart theme={VictoryTheme.material} width={cardWidth-70} height={250}>
+                <VictoryAxis
+                  label="Dates"
+                  style={{
+                    axisLabel: { padding: 35, fontSize: 13, fontWeight: '600', fill: '#333' },
+                    tickLabels: { fontSize: 10, angle: -30, padding: 15 },
+                    grid: { stroke: 'lightgray', strokeDasharray: '4,4' },
+                  }}
+                />
+
+                {/* Y Axis */}
+                <VictoryAxis
+                  dependentAxis
+                  label="Distance (km)"
+                  tickFormat={(tick) => `${tick}km`}
+                  style={{
+                    axisLabel: { padding: 40, fontSize: 13, fontWeight: '600', fill: '#333' },
+                    tickLabels: { fontSize: 10 },
+                    grid: { stroke: 'lightgray', strokeDasharray: '4,4' },
+                  }}
+                />
+
+                {/* Main Line */}
+                <VictoryScatter
+                  data={progressData}
+                  size={4}
+                  style={{
+                    data: {
+                      fill: '#3b82f6',
+                      stroke: '#ffffff',
+                      strokeWidth: 1.5,
+                    },
+                  }}
+                />
+
+                <VictoryLine 
+                  data={progressData}
+                />
+                <VictoryLine
+                  style={{
+                    data: { stroke: "red", strokeWidth: 2, strokeDasharray: "6,3"  },
+                  }}
+                  data={[
+                    { x: 0, y: goal },
+                    { x: 100, y: goal }, // Make sure this x value covers your chart's range
+                  ]}
+                />
+              </VictoryChart>
+            </View>
+          )}
+          
           </View>
         )}
         <TouchableOpacity onPress={() => {slideNext()}}>
@@ -189,7 +245,7 @@ const FeedPage = ( {navigation} ) => {
         </View>
       </View>
       <View style={{flex: 1,alignItems: 'center'}}>
-        <View style={{width: '90%', height: 400, marginHorizontal: 10, marginVertical: 10, backgroundColor: 'white', borderRadius: 12, overflow: 'hidden'}}>
+        <View style={{width: '90%', height: 300, marginHorizontal: 10, marginVertical: 10, backgroundColor: 'white', borderRadius: 12, overflow: 'hidden'}}>
           <Animated.View style={{ transform: [{ translateX: slideAnim }], flexDirection: 'row', width: (cardWidth * GetNumberOfSlides(userGoals)), height: '100%' }}>
             {userGoals.map(thisGoal => (
               <ProgressCard
@@ -206,6 +262,12 @@ const FeedPage = ( {navigation} ) => {
 };
 
 const feedPageStyles = StyleSheet.create({
-  
+  GoalProgressTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1e1e1e',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
 })
 export default FeedPage;
