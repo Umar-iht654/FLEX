@@ -294,7 +294,14 @@ const ProfilePage = ({ navigation }) => {
               <Text style={[styles.title, {fontSize:12, textAlign: 'left', width: 200}]}>{userInfo.bio}</Text>
             </View>
           </View>
-
+              {/*edit profile button*/}
+          <View style={styles.formAction}>
+            <TouchableOpacity onPress={() => { navigation.navigate('Settings'); }}>
+              <View style={styles.button}>
+                <Text style={styles.buttonText}>Edit Profile</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
           {/*Shows Friend, Group and Activity Number*/}
           <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'flex-start', marginTop: 15}}>
             <TouchableOpacity onPress={() => {
