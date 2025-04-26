@@ -1,32 +1,48 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
+
+class EmailRequest(BaseModel):
+    email: str
+
+class UsernameRequest(BaseModel):
+    username: str
+
+class PasswordRequest(BaseModel):
+    password: str
 
 class UserBase(BaseModel):
     email: EmailStr
-    username: str
     full_name: str
-    bio: Optional[str] = None
+    username: Optional[str] = None
 
 class UserCreate(UserBase):
+    username: str
+    email: EmailStr
+    postcode: str
+    DOB: str
+    address: str
+    full_name: str
     password: str
+
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
-    username: Optional[str] = None
     full_name: Optional[str] = None
-    bio: Optional[str] = None
+    username: Optional[str] = None
     password: Optional[str] = None
 
 class UserResponse(UserBase):
     id: int
-    profile_picture: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
     class Config:
         from_attributes = True
 
+class MessageResponse(BaseModel):
+    message: str
+    
 class Token(BaseModel):
     access_token: str
     token_type: str
