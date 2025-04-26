@@ -1,7 +1,9 @@
 from sqlalchemy import Column, Integer, Float, DateTime, ForeignKey, String
 from sqlalchemy.orm import relationship
-from app.db.base import Base
+from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
+
+Base = declarative_base()
 
 class Progress(Base):
     __tablename__ = "progress"

@@ -1,7 +1,9 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
-from app.db.base import Base
+from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
+
+Base = declarative_base()
 
 class Message(Base):
     __tablename__ = "messages"
@@ -9,10 +11,14 @@ class Message(Base):
     id = Column(Integer, primary_key=True, index=True)
     content = Column(String)
     sender_id = Column(Integer, ForeignKey("users.id"))
-    receiver_id = Column(Integer, ForeignKey("users.id"))
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=True)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    recipient_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    is_read = Column(Boolean, default=False)
+    is_pinned = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    sender = relationship("User", foreign_keys=[sender_id], back_populates="sent_messages")
-    receiver = relationship("User", foreign_keys=[receiver_id], back_populates="received_messages")
-    group = relationship("Group", back_populates="messages") 
+    # Relationships
+    sender = relationship("User", back_populates="messages", foreign_keys=[sender_id])
+    group = relationship("Group", back_populates="messages")
+    recipient = relationship("User", foreign_keys=[recipient_id]) 

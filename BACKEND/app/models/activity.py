@@ -1,7 +1,9 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Table
 from sqlalchemy.orm import relationship
-from app.db.base import Base
+from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime, timezone
+
+Base = declarative_base()
 
 # Association table for user interests
 user_interests = Table(
@@ -9,6 +11,16 @@ user_interests = Table(
     Base.metadata,
     Column("user_id", Integer, ForeignKey("users.id")),
     Column("activity_type", String)
+)
+
+# Association table for activity participants
+activity_participants = Table(
+    "activity_participants",
+    Base.metadata,
+    Column("activity_id", Integer, ForeignKey("activities.id")),
+    Column("user_id", Integer, ForeignKey("users.id")),
+    Column("team", String, nullable=True),
+    Column("score", Float, nullable=True)
 )
 
 class Activity(Base):
@@ -25,18 +37,12 @@ class Activity(Base):
     end_time = Column(DateTime)
     max_participants = Column(Integer)
     created_by = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    creator = relationship("User", foreign_keys=[created_by])
-    participants = relationship("User", secondary="activity_participants")
-
-# Association table for activity participants
-activity_participants = Table(
-    "activity_participants",
-    Base.metadata,
-    Column("activity_id", Integer, ForeignKey("activities.id")),
-    Column("user_id", Integer, ForeignKey("users.id"))
-)
+    # Relationships
+    creator = relationship("User", back_populates="activities")
+    participants = relationship("User", secondary=activity_participants)
 
 class UserLocation(Base):
     __tablename__ = "user_locations"
