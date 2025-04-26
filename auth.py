@@ -1,72 +1,48 @@
 from datetime import timedelta
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from typing import Optional
 from sqlalchemy.orm import Session
-from app.core.security import create_access_token, verify_password
-from app.db.session import get_db
-from FLEX.backend.app.models.user import User
+from app.core.security import verify_password, get_password_hash, create_access_token
+from app.core.exceptions import InvalidCredentialsError, UserNotFoundError, UserAlreadyExistsError
+from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse, Token
-from app.config.settings import get_settings
 
-router = APIRouter()
+class AuthService:
+    def __init__(self, db: Session):
+        self.db = db
 
-settings = get_settings()
+    def authenticate_user(self, email: str, password: str) -> Optional[User]:
+        """Authenticate a user with email and password"""
+        user = self.db.query(User).filter(User.email == email).first()
+        if not user:
+            raise UserNotFoundError()
+        if not verify_password(password, user.hashed_password):
+            raise InvalidCredentialsError()
+        return user
 
-# JWT Configuration
-JWT_SECRET_KEY = settings.SECRET_KEY
-JWT_ALGORITHM = settings.ALGORITHM
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+    def create_user(self, user_create: UserCreate) -> User:
+        """Create a new user"""
+        # Check if user already exists
+        existing_user = self.db.query(User).filter(User.email == user_create.email).first()
+        if existing_user:
+            raise UserAlreadyExistsError()
 
-# Password hashing configuration
-PWD_CONTEXT_SCHEMES = ["bcrypt"]
-PWD_DEPRECATED = "auto"
-
-# Token types
-TOKEN_TYPE_ACCESS = "access"
-TOKEN_TYPE_REFRESH = "refresh"
-
-# Security headers
-SECURITY_HEADERS = {
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "X-XSS-Protection": "1; mode=block",
-    "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
-}
-
-@router.post("/login", response_model=Token)
-async def login(
-    db: Session = Depends(get_db),
-    form_data: OAuth2PasswordRequestForm = Depends()
-):
-    user = db.query(User).filter(User.email == form_data.username).first()
-    if not user or not verify_password(form_data.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
+        # Create new user
+        hashed_password = get_password_hash(user_create.password)
+        db_user = User(
+            email=user_create.email,
+            hashed_password=hashed_password,
+            full_name=user_create.full_name
         )
-    
-    access_token_expires = timedelta(minutes=30)
-    access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+        self.db.add(db_user)
+        self.db.commit()
+        self.db.refresh(db_user)
+        return db_user
 
-@router.post("/register", response_model=UserResponse)
-async def register(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == user.email).first()
-    if db_user:
-        raise HTTPException(
-            status_code=400,
-            detail="Email already registered"
+    def create_access_token_for_user(self, user: User) -> Token:
+        """Create access token for user"""
+        access_token_expires = timedelta(minutes=30)
+        access_token = create_access_token(
+            data={"sub": user.email},
+            expires_delta=access_token_expires
         )
-    
-    new_user = User(
-        email=user.email,
-        username=user.username,
-        hashed_password=user.password  # Password hashing should be done in the model
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user 
+        return Token(access_token=access_token, token_type="bearer") 
