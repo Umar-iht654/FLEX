@@ -4,20 +4,24 @@ from datetime import datetime
 
 class MessageBase(BaseModel):
     content: str
-    receiver_id: int
+    group_id: Optional[int] = None
+    recipient_id: Optional[int] = None
 
 class MessageCreate(MessageBase):
     pass
 
 class MessageUpdate(BaseModel):
     content: Optional[str] = None
+    is_read: Optional[bool] = None
+    is_pinned: Optional[bool] = None
 
 class MessageResponse(MessageBase):
     id: int
     sender_id: int
+    is_read: bool
+    is_pinned: bool
     created_at: datetime
     updated_at: datetime
-    is_read: bool = False
 
     class Config:
         from_attributes = True
@@ -28,7 +32,7 @@ class Conversation(BaseModel):
     other_user_name: str
 
 class MessageList(BaseModel):
-    messages: List[MessageResponse]
+    messages: list[MessageResponse]
     total: int
     page: int
     size: int 

@@ -2,48 +2,43 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 
-class ActivityParticipant(BaseModel):
+class GroupMember(BaseModel):
     user_id: int
-    team: Optional[str] = None
-    score: Optional[float] = None
+    role: str
 
-class ActivityBase(BaseModel):
+class GroupBase(BaseModel):
     name: str
     description: Optional[str] = None
     activity_type: str
     location: str
     latitude: float
     longitude: float
-    start_time: datetime
-    end_time: datetime
-    max_participants: Optional[int] = None
+    is_private: bool = False
 
-class ActivityCreate(ActivityBase):
-    participants: List[ActivityParticipant]
+class GroupCreate(GroupBase):
+    members: List[GroupMember]
 
-class ActivityUpdate(BaseModel):
+class GroupUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     activity_type: Optional[str] = None
     location: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
-    start_time: Optional[datetime] = None
-    end_time: Optional[datetime] = None
-    max_participants: Optional[int] = None
+    is_private: Optional[bool] = None
 
-class ActivityResponse(ActivityBase):
+class GroupResponse(GroupBase):
     id: int
     created_by: int
     created_at: datetime
     updated_at: datetime
-    participants: List[ActivityParticipant]
+    members: List[GroupMember]
 
     class Config:
         from_attributes = True
 
-class ActivityList(BaseModel):
-    activities: List[ActivityResponse]
+class GroupList(BaseModel):
+    groups: List[GroupResponse]
     total: int
     page: int
     size: int 
