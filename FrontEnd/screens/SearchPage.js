@@ -1,5 +1,5 @@
 import React, {useState, useEffect, act} from 'react';
-import { SafeAreaView, View, Text,Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
+import { SafeAreaView, View, Text,Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal,Alert } from 'react-native';
 import styles from '../styles/styles';
 
 const SearchPage = ( {navigation}) => {
@@ -37,6 +37,13 @@ const SearchPage = ( {navigation}) => {
     {/*the current groups and users being shown*/}
     const [searchResultsGroups, setSearchResultsGroups] = useState([]);
     const [searchResultsUsers, setSearchResultsUsers] = useState([]);
+
+
+    // Modal states
+  const [groupModalVisible, setGroupModalVisible] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [userModalVisible, setUserModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
     function GetSearchResults(){
       {/*Again this data is just to test, a function should be called that
@@ -89,73 +96,85 @@ const SearchPage = ( {navigation}) => {
         prevActivities.map(thisActivity => ({ ...thisActivity, Selected: false }))
       );
     }
+    // Handle group join/request
+    function handleGroupAction() {
+      if (!selectedGroup) return;
+      if (selectedGroup.isPrivate) {
+        Alert.alert('Request Sent', `Join request sent to ${selectedGroup.name}`);
+      } else {
+        Alert.alert('Joined', `You have joined ${selectedGroup.name}`);
+      }
+      setGroupModalVisible(false);
+    }
 
-    {/*Displays group information*/}
-    const GroupCard = ({ groupName, groupProfilePicture, groupLocation, groupActivity, groupDescription, groupNumberOfMembers, groupIsPrivate }) => {
-      return(
-        <TouchableOpacity>
-          <View style={searchPageStyles.groupCardContainer}>
-            <View style={{flexDirection: 'row'}}>
+    // Handle user invite
+    function handleUserInvite() {
+      if (!selectedUser) return;
+      Alert.alert('Invitation Sent', `Friend invite sent to ${selectedUser.name}`);
+    setUserModalVisible(false);
+  }
 
-              {/*Group Profile Picture*/}
-              {groupProfilePicture ? (
-                <Image style={searchPageStyles.groupProfilePicture} source={{ uri: groupProfilePicture }} />
-                ) : (
-                <View style={[searchPageStyles.groupProfilePicture, {backgroundColor: 'gray'}]}/>
-              )}
-              {/*Group Information*/}
-              <View style={{width: '60%', height: '100%', zIndex: 1}}>
-                <Text style={searchPageStyles.groupCardTitle}>{groupName}</Text>
-                <Text style={searchPageStyles.groupCardInfoText}>{groupLocation}</Text>
-                <Text style={searchPageStyles.groupCardInfoText}>{groupActivity}</Text>
-                <Text style={searchPageStyles.groupCardDescriptionText} adjustsFontSizeToFit numberOfLines={4}>{groupDescription}</Text>
-              </View>
-            </View>
-            <View style={{position: 'absolute', height: '100%', right: 10, top: 10, justifyContent: 'center'}}>
-              {/*Displays if the group is private*/}
-              {groupIsPrivate && (
-                  <View style={{height: '100%', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <Image style={searchPageStyles.padlockIcon} source={require('../assets/PadlockIcon.png')}/>
-                    <Text style={searchPageStyles.numberOfMembersText}>{groupNumberOfMembers}</Text>
-                  </View>
-                )}
 
-              {/*Displays if the group is public*/}
-              {!groupIsPrivate && (
-                <View style={{height: '100%',justifyContent: 'flex-end', alignItems: 'center'}}>
-                  <Text style={searchPageStyles.numberOfMembersText}>{groupNumberOfMembers}</Text>
-                </View>
-              )}
-            </View>
+
+  const GroupCard = ({ group, onPress }) => (
+    <TouchableOpacity onPress={onPress}>
+      <View style={searchPageStyles.groupCardContainer}>
+        <View style={{ flexDirection: 'row' }}>
+          <Image
+            style={searchPageStyles.groupProfilePicture}
+            source={{ uri: group.profilePicture }}
+          />
+          <View style={{ width: 180 }}>
+            <Text style={searchPageStyles.groupCardTitle}>{group.name}</Text>
+            <Text style={searchPageStyles.groupCardInfoText}>{group.location}</Text>
+            <Text style={searchPageStyles.groupCardInfoText}>{group.activity}</Text>
+            <Text
+              style={searchPageStyles.groupCardDescriptionText}
+              numberOfLines={2}
+            >
+              {group.description}
+            </Text>
           </View>
-        </TouchableOpacity>
-      );
-    };
+        </View>
+        <View style={searchPageStyles.iconColumn}>
+          {group.isPrivate && (
+            <Image
+              style={searchPageStyles.padlockIcon}
+              source={require('../assets/PadlockIcon.png')}
+            />
+          )}
+          <Text style={searchPageStyles.numberOfMembersText}>
+            {group.numberOfMembers}
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+  
 
     {/*Displays user information*/}
-    const UserCard = ({ userName, userProfilePicture, userLocation }) => {
-      return(
-        <TouchableOpacity>
-          <View style={searchPageStyles.userCardContainer}>
-            <View style={{flexDirection: 'row'}}>
+// 1. Define UserCard
+const UserCard = ({ user, onPress }) => (
+  <TouchableOpacity onPress={onPress}>
+    <View style={searchPageStyles.userCardContainer}>
+      <View style={{ flexDirection: 'row' }}>
+        <Image
+          style={searchPageStyles.userProfilePicture}
+          source={{ uri: user.profilePicture }}
+        />
+        <View style={{ width: 180 }}>
+          <Text style={searchPageStyles.groupCardTitle}>
+            {user.name}
+          </Text>
+          <Text style={searchPageStyles.groupCardInfoText}>
+            {user.location}
+          </Text>
+        </View>
+      </View>
+    </View>
+  </TouchableOpacity>
+);
 
-              {/*User profile picture*/}
-              {userProfilePicture ? (
-                <Image style={searchPageStyles.userProfilePicture} source={{ uri: userProfilePicture }} />
-                ) : (
-                <View style={[searchPageStyles.userProfilePicture, {backgroundColor: 'gray'}]}/>
-              )}
-              <View style={{width: 180}}>
-
-                {/*User information*/}
-                <Text style={searchPageStyles.groupCardTitle}>{userName}</Text>
-                <Text style={searchPageStyles.groupCardInfoText}>{userLocation}</Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      );
-    };
 
     const ActivityCard = ({ activityName, isSelected }) => {
       return(
@@ -246,15 +265,13 @@ const SearchPage = ( {navigation}) => {
                 <View>
                   {searchResultsGroups.map(group=> (
                     <GroupCard
-                      key = {group.key}
-                      groupName = {group.name}
-                      groupProfilePicture = {group.profilePicture}
-                      groupLocation = {group.location}
-                      groupActivity = {group.activity}
-                      groupDescription = {group.description}
-                      groupNumberOfMembers = {group.numberOfMembers}
-                      groupIsPrivate = {group.isPrivate}
-                    />
+                    key={group.key}
+                    group={group}
+                    onPress={() => {
+                      setSelectedGroup(group);
+                      setGroupModalVisible(true);
+                    }}
+                  />
                   ))}
                 </View>
               )}
@@ -267,17 +284,53 @@ const SearchPage = ( {navigation}) => {
                 <View>
                   {searchResultsUsers.map(user=> (
                     <UserCard
-                      key = {user.name}
-                      userName = {user.name}
-                      userProfilePicture = {user.profilePicture}
-                      userLocation = {user.location}
-                    />
+                    key={user.name}
+                    user={user}
+                    onPress={() => {
+                      setSelectedUser(user);
+                      setUserModalVisible(true);
+                    }}
+                  />
                   ))}
                 </View>
               )}
             </ScrollView>
           </View>
         </View>
+                {/* Group Detail Modal */}
+                <Modal transparent visible={groupModalVisible} animationType='slide' onRequestClose={() => setGroupModalVisible(false)}>
+          <TouchableOpacity style={searchPageStyles.modalBackground} activeOpacity={1} onPress={() => setGroupModalVisible(false)}>
+            <View style={searchPageStyles.modalContainer}>
+              <Image
+                style={searchPageStyles.modalProfilePicture}
+                source={{ uri: selectedGroup?.profilePicture }}
+              />
+              <Text style={searchPageStyles.modalTitle}>{selectedGroup?.name}</Text>
+              <Text style={searchPageStyles.modalDescription}>{selectedGroup?.description}</Text>
+              <TouchableOpacity style={searchPageStyles.modalButton} onPress={handleGroupAction}>
+                <Text style={searchPageStyles.modalButtonText}>
+                  {selectedGroup?.isPrivate ? 'Request to Join' : 'Join Group'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+                {/* User Invite Modal */}
+                <Modal transparent visible={userModalVisible} animationType='slide' onRequestClose={() => setUserModalVisible(false)}>
+          <TouchableOpacity style={searchPageStyles.modalBackground} activeOpacity={1} onPress={() => setUserModalVisible(false)}>
+            <View style={searchPageStyles.modalContainer}>
+              <Image
+                style={searchPageStyles.modalProfilePicture}
+                source={{ uri: selectedUser?.profilePicture }}
+              />
+              <Text style={searchPageStyles.modalTitle}>{selectedUser?.name}</Text>
+              <Text style={searchPageStyles.modalDescription}>Location: {selectedUser?.location}</Text>
+              <TouchableOpacity style={searchPageStyles.modalButton} onPress={handleUserInvite}>
+                <Text style={searchPageStyles.modalButtonText}>Invite to be Friends</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
         {/*Options Menu Display*/}
         <Modal animationType='fade' transparent={true} visible={activityOptionsVisable} onRequestClose={() => setActivityOptionsVisable(false)}>
           <TouchableOpacity style={searchPageStyles.optionsMenuBackground} activeOpacity={1} onPress={() => setActivityOptionsVisable(false)}>
@@ -437,6 +490,15 @@ const searchPageStyles = StyleSheet.create({
     width: 35,
     height: 35
   },
+  iconColumn: { height: '100%', justifyContent: 'space-between', alignItems: 'center' },
+  modalBackground: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
+  modalContainer: { width: '80%', backgroundColor: 'white', borderRadius: 20, padding: 20, alignItems: 'center' },
+  modalProfilePicture: { width: 100, height: 100, borderRadius: 50, marginBottom: 15 },
+  modalTitle: { fontSize: 24, fontWeight: '600', marginBottom: 10 },
+  modalDescription: { fontSize: 16, color: '#666', marginBottom: 20, textAlign: 'center' },
+  modalButton: { backgroundColor: 'teal', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 10 },
+  modalButtonText: { fontSize: 16, fontWeight: '500', color: 'white' },
+
   optionsMenuBackground: {
     flex: 1,
     justifyContent: 'center',
@@ -464,3 +526,4 @@ const searchPageStyles = StyleSheet.create({
 })
 
 export default SearchPage;
+
