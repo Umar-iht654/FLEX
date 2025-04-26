@@ -29,7 +29,7 @@ const ActivityLogPage = () => {
      in the final app there must be functions which retrieve this information from either
      a local datastore or the database*/}
   const recentActivities = ["Snowboarding", "Badminton", "Wrestling", "Surfing", "Table Tennis"];
-  const allActivities = ["Archery", "Badminton", "Baseball", "Basketball", "Boxing", "Cricket", "Cycling", "Esports", "Fencing", "Field Hockey", "Golf", "Gymnastics", "Ice Hockey", "Mixed Martial Arts", "Rowing", "Rugby", "Skateboarding", "Skiing", "Soccer", "Snowboarding", "Surfing", "Swimming", "Table Tennis", "Tennis", "Track and Field", "Triathlon", "Volleyball", "Weightlifting", "Wrestling", "American Football"];
+  const allActivities = ["Archery", "Badminton", "Baseball", "Basketball", "Boxing", "Cricket", "Cycling", "Fencing", "Football", "Golf", "Gymnastics", "Hockey", "Mixed Martial Arts", "Rowing", "Rugby", "Skiing", "Snowboarding", "Swimming", "Table Tennis", "Tennis", "Track and Field", "Triathlon", "Volleyball", "Weightlifting", "Wrestling", "American Football"];
   
   {/*gets a list of activities similar to the search input*/}
   function GetSearchSuggestions(currentSearchInput){
