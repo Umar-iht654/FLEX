@@ -7,14 +7,13 @@ const ChatPage = ({ navigation }) => {
     //collects information chat information needed to load the messages
     //the chat id should be used to identify the chat
     const route = useRoute();
-    const { chatName, chatID, chatPF } = route.params;
+    const { chatType, chatName, chatID, chatPF } = route.params;
 
     //contains the message being typed in the message input field
     const [message, setMessage] = useState();
     
     const [currentUser, setCurrentUser] = useState(0);
-    const [numberOfMessage, setNumberofMessages] = useState();
-    const [currentChat, setCurrentChat] = useState()
+    const [currentChat, setCurrentChat] = useState([])
     const [currentChatInfo, setCurrentChatInfo] = useState();
 
     //chat controls
@@ -52,8 +51,70 @@ const ChatPage = ({ navigation }) => {
             {userID: 1, username: 'User1', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'},
             {userID: 2, username: 'User2', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'},
         ]
+
         setCurrentChatInfo(chatUsersInfo);
         const messages = [
+            {id: 68, content: 'Whats your plan for tomorrow?', senderID: 2, timeStamp: '2025-04-24 22:52:00'},
+            {id: 67, content: 'That movie was insane!', senderID: 1, timeStamp: '2025-04-24 22:53:00'},
+            {id: 66, content: 'Can you send me the notes?', senderID: 0, timeStamp: '2025-04-24 22:54:00'},
+            {id: 65, content: 'Bro you missed a mad session today', senderID: 2, timeStamp: '2025-04-24 22:55:00'},
+            {id: 64, content: 'What you eating rn?', senderID: 1, timeStamp: '2025-04-24 22:56:00'},
+            {id: 63, content: 'I need new gym shoes lol', senderID: 0, timeStamp: '2025-04-24 22:57:00'},
+            {id: 62, content: 'Might hit the library later', senderID: 2, timeStamp: '2025-04-24 22:58:00'},
+            {id: 61, content: 'Your outfit was fire today 🔥', senderID: 1, timeStamp: '2025-04-24 22:59:00'},
+            {id: 60, content: 'Bruv im so tired', senderID: 0, timeStamp: '2025-04-24 23:00:00'},
+            {id: 59, content: 'Did you finish that assignment?', senderID: 2, timeStamp: '2025-04-24 23:01:00'},
+            {id: 58, content: 'Nah bro im still on question 3', senderID: 1, timeStamp: '2025-04-24 23:02:00'},
+            {id: 57, content: 'Lets link up tomorrow', senderID: 0, timeStamp: '2025-04-24 23:03:00'},
+            {id: 56, content: 'You still awake?', senderID: 2, timeStamp: '2025-04-24 23:04:00'},
+            {id: 55, content: 'Yeah just chilling wbu', senderID: 1, timeStamp: '2025-04-24 23:05:00'},
+            {id: 54, content: 'Bout to sleep tbh', senderID: 0, timeStamp: '2025-04-24 23:06:00'},
+            {id: 53, content: 'You see the match earlier?', senderID: 2, timeStamp: '2025-04-24 23:07:00'},
+            {id: 52, content: 'Bro that goal was nuts', senderID: 1, timeStamp: '2025-04-24 23:08:00'},
+            {id: 51, content: 'We winning the league fr', senderID: 0, timeStamp: '2025-04-24 23:09:00'},
+            {id: 50, content: 'Haha dream on mate', senderID: 2, timeStamp: '2025-04-24 23:10:00'},
+            {id: 49, content: 'Oi what time you free tomorrow', senderID: 1, timeStamp: '2025-04-24 23:11:00'},
+            {id: 48, content: 'After 5pm probably', senderID: 0, timeStamp: '2025-04-24 23:12:00'},
+            {id: 47, content: 'Safe safe', senderID: 2, timeStamp: '2025-04-24 23:13:00'},
+            {id: 46, content: 'Get some rest g', senderID: 1, timeStamp: '2025-04-24 23:14:00'},
+            {id: 45, content: 'You too bro', senderID: 0, timeStamp: '2025-04-24 23:15:00'},
+            {id: 44, content: 'Night fam', senderID: 2, timeStamp: '2025-04-24 23:16:00'},
+            {id: 43, content: 'Night night', senderID: 1, timeStamp: '2025-04-24 23:17:00'},
+            {id: 42, content: 'Sweet dreams lol', senderID: 0, timeStamp: '2025-04-24 23:18:00'},
+            {id: 41, content: 'U up?', senderID: 2, timeStamp: '2025-04-24 23:19:00'},
+            {id: 40, content: 'Just woke up why?', senderID: 1, timeStamp: '2025-04-24 23:20:00'},
+            {id: 39, content: 'Forgot to tell you smth', senderID: 0, timeStamp: '2025-04-24 23:21:00'},
+            {id: 38, content: 'What what', senderID: 2, timeStamp: '2025-04-24 23:22:00'},
+            {id: 37, content: 'We got free food at the event tmw', senderID: 1, timeStamp: '2025-04-24 23:23:00'},
+            {id: 36, content: 'Say less im pulling up', senderID: 0, timeStamp: '2025-04-24 23:24:00'},
+            {id: 35, content: 'Dress code casual?', senderID: 2, timeStamp: '2025-04-24 23:25:00'},
+            {id: 34, content: 'Yeah bro normal stuff', senderID: 1, timeStamp: '2025-04-24 23:26:00'},
+            {id: 33, content: 'Lit', senderID: 0, timeStamp: '2025-04-24 23:27:00'},
+            {id: 32, content: 'Good vibes only', senderID: 2, timeStamp: '2025-04-24 23:28:00'},
+            {id: 31, content: 'You know the vibe', senderID: 1, timeStamp: '2025-04-24 23:29:00'},
+            {id: 30, content: 'Gonna be a mad one', senderID: 0, timeStamp: '2025-04-24 23:30:00'},
+            {id: 29, content: 'Bring the speaker?', senderID: 2, timeStamp: '2025-04-24 23:31:00'},
+            {id: 28, content: 'Bet ill pack it', senderID: 1, timeStamp: '2025-04-24 23:32:00'},
+            {id: 27, content: 'Bless', senderID: 0, timeStamp: '2025-04-24 23:33:00'},
+            {id: 26, content: 'Need anything else?', senderID: 2, timeStamp: '2025-04-24 23:34:00'},
+            {id: 25, content: 'Maybe some drinks?', senderID: 1, timeStamp: '2025-04-24 23:35:00'},
+            {id: 24, content: 'On it', senderID: 0, timeStamp: '2025-04-24 23:36:00'},
+            {id: 23, content: 'You a real one', senderID: 2, timeStamp: '2025-04-24 23:37:00'},
+            {id: 22, content: 'Anything for the mandem', senderID: 1, timeStamp: '2025-04-24 23:38:00'},
+            {id: 21, content: 'Safe bro', senderID: 0, timeStamp: '2025-04-24 23:39:00'},
+            {id: 20, content: 'Blessed', senderID: 2, timeStamp: '2025-04-24 23:40:00'},
+            {id: 19, content: 'You hear new Drake album?', senderID: 1, timeStamp: '2025-04-24 23:41:00'},
+            {id: 18, content: 'Yeah its cold', senderID: 0, timeStamp: '2025-04-24 23:42:00'},
+            {id: 17, content: 'Favourite track?', senderID: 2, timeStamp: '2025-04-24 23:43:00'},
+            {id: 16, content: 'First one goes hard', senderID: 1, timeStamp: '2025-04-24 23:44:00'},
+            {id: 15, content: 'Might listen on repeat lol', senderID: 0, timeStamp: '2025-04-24 23:45:00'},
+            {id: 14, content: 'Same haha', senderID: 2, timeStamp: '2025-04-24 23:46:00'},
+            {id: 13, content: 'Music therapy fr', senderID: 1, timeStamp: '2025-04-24 23:47:00'},
+            {id: 12, content: 'Facts', senderID: 0, timeStamp: '2025-04-24 23:48:00'},
+            {id: 11, content: 'Ok im actually sleeping now', senderID: 2, timeStamp: '2025-04-24 23:49:00'},
+            {id: 10, content: 'Nighttt', senderID: 1, timeStamp: '2025-04-24 23:50:00'},
+            {id: 9, content: 'Sleep tight g', senderID: 0, timeStamp: '2025-04-24 23:51:00'},
+            {id: 8, content: 'Catch you tomorrow', senderID: 2, timeStamp: '2025-04-24 23:52:00'},
             {id: 7, content: 'Hey i saw you on tik tok and thought you were cure', senderID: 0, timeStamp: '2025-04-25 00:07:00'},
             {id: 6, content: 'Yh what time you going gym later>', senderID: 2, timeStamp: '2025-04-25 00:06:00'},
             {id: 5, content: 'dothst though not protest like a sinner?', senderID: 1, timeStamp: '2025-04-25 00:05:00'},
@@ -63,15 +124,15 @@ const ChatPage = ({ navigation }) => {
             {id: 1, content: 'Hey', senderID: 1, timeStamp: '2025-04-25 00:01:00'},
             {id: 0, content: 'Hello', senderID: 0, timeStamp: '2025-04-25 00:00:00'}
           ];
+        const splitMessages = messages.slice(0, numberOfMessages)
+        setCurrentChat(splitMessages);
+        setNumberOfMessages(prev => prev + 20);
 
-        setCurrentChat(messages);
-
-        
+         
     }
 
     const MessageCard = ({ item }) => {
         const isCurrentUser = item.senderID === currentUser;
-        console.log(isCurrentUser);
         return(
             <View style={{width: '100%'}}>
                 <Text style={{color: 'white', textAlign: 'center'}}>{item.timeStamp}</Text>
@@ -109,11 +170,12 @@ const ChatPage = ({ navigation }) => {
     useFocusEffect(
         useCallback(() => {
             // This function will run every time the screen is focused
+            setNumberOfMessages(20);
             GetChat();
         }, [])
     );
     return (
-      <SafeAreaView style={[styles.safeAreaView, {justifyContent: 'flex-start'}]}>
+      <SafeAreaView style={[styles.safeAreaView, {justifyContent: 'flex-start', flexDirection: 'column'}]}>
 
         {/*Chat Infobar*/}
         <View style={chatPageStyles.infoBar}>
@@ -124,7 +186,12 @@ const ChatPage = ({ navigation }) => {
                 </TouchableOpacity>
 
                 {/*chat profile picture and name*/}
-                <TouchableOpacity onPress={() => {navigation.navigate('UserProfile', { userID: chatName, previousPage: 'Chat' })}}>
+                <TouchableOpacity onPress={() => {
+                    if(chatType == "friend"){
+                        navigation.navigate('UserProfile', { userID: chatName, previousPage: 'Chat' })
+                    }else{
+                        navigation.navigate('GroupChatInfo', { groupName: chatName, groupPF: chatPF})
+                    }}}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         {chatPF ? (
                             <Image style={chatPageStyles.chatProfilePicture} source={{ uri: chatPF }} />
@@ -160,17 +227,33 @@ const ChatPage = ({ navigation }) => {
         </Modal>
 
         {/*Ensures the items on the page shift up when the keyboard opens*/}
-        <KeyboardAvoidingView style={{ flex: 1 }}>
-            <FlatList
-                ref={flatListRef}
-                data={currentChat}
-                keyExtractor={(item) => item.id}
-                renderItem={MessageCard}
-                inverted
-                contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
-            />
-            {/*Message Bar at the bottom of the screen*/}
-            <View style={{flex:1, justifyContent: 'flex-end'}}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+            <View style={{ flex: 1 }}>
+                <FlatList
+                    ref={flatListRef}
+                    data={currentChat}
+                    keyExtractor={(item) => item.id}
+                    renderItem={MessageCard}
+                    inverted
+                    style={{ flex: 1 }}
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    ListFooterComponent={
+                        <TouchableOpacity 
+                            onPress={() => {GetChat()}}
+                            style={{ paddingVertical: 10 }}
+                        >
+                            <Image 
+                                style={{
+                                    width: 50, 
+                                    height: 50, 
+                                    alignSelf: 'center'
+                                }} 
+                                source={require('../assets/RefreshIcon.png')}
+                            />
+                        </TouchableOpacity>
+                    }
+                />
+                {/*Message Bar at the bottom of the screen*/}
                 <View style={chatPageStyles.messageContainer}>
                     <TextInput 
                         style={chatPageStyles.messageBar}
