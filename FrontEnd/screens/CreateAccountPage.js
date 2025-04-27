@@ -43,7 +43,7 @@ const CreateAccountPage = ({ navigation }) => {
     setValidateError('');
 
     try {
-      const response = await axios.post('https://364d-138-253-184-53.ngrok-free.app/checkEmail', { email: newEmail });
+      const response = await axios.post('https://f6a3-138-253-184-53.ngrok-free.app/checkEmail', { email: newEmail });
       console.log("✅ Server response:", response.data);
       if(response.data.message === "email is available") {
         setEmailError('');
@@ -53,11 +53,11 @@ const CreateAccountPage = ({ navigation }) => {
     catch(error){
       console.log("❌ Error:", error.toJSON ? error.toJSON() : error);
       if (error.response) {
-        setPasswordError(error.response.data?.detail || 'Something went wrong');
+        setEmailError(error.response.data?.detail || 'Something went wrong');
       } else if (error.request) {
-        setPasswordError('No response from server');
+        setEmailError('No response from server');
       } else {
-        setPasswordError('Error setting up request');
+        setEmailError('Error setting up request');
       }
       validated = false;
     }
@@ -104,19 +104,14 @@ const CreateAccountPage = ({ navigation }) => {
         postcode: postcode
       };
 
-    //   try {
-        // const response = await axios.post(`http://localhost:5000/api/register`, userData);
-        // if (response.data && response.data.data) {
-          // try {
-          //   await AsyncStorage.setItem('userDetail', JSON.stringify(userData));
+      try {
+        const response = await axios.post('https://f6a3-138-253-184-53.ngrok-free.app/register', userData);
+        if (response.data && response.data.data) {
             navigation.navigate('CreateActivitySelection');
-          // } catch (error) {
-          //   console.error('Failed to save user data:', error);
-          // }
-    //     }
-    //   } catch (error) {
-    //     setValidateError(error.response?.data?.detail || 'Something went wrong');
-    //   }
+        }
+      } catch (error) {
+        setValidateError(error.response?.data?.detail || 'Something went wrong');
+      }
     }
   }
   return (

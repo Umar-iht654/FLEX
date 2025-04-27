@@ -1,0 +1,62 @@
+ * Serving Flask app 'registration'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://138.253.184.53:5000
+[33mPress CTRL+C to quit[0m
+138.253.184.53 - - [27/Apr/2025 15:15:39] "POST /checkEmail HTTP/1.1" 200 -
+138.253.184.53 - - [27/Apr/2025 15:21:01] "POST /checkEmail HTTP/1.1" 200 -
+127.0.0.1 - - [27/Apr/2025 15:23:06] "GET / HTTP/1.1" 200 -
+ * Serving Flask app 'registration'
+ * Debug mode: off
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+127.0.0.1 - - [27/Apr/2025 15:43:20] "GET / HTTP/1.1" 200 -
+ * Serving Flask app 'registration'
+ * Debug mode: off
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+ * Serving Flask app 'registration'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://138.253.184.53:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [27/Apr/2025 15:49:56] "GET / HTTP/1.1" 200 -
+ * Serving Flask app 'registration'
+ * Debug mode: off
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+ * Serving Flask app 'registration'
+ * Debug mode: off
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+127.0.0.1 - - [27/Apr/2025 16:32:26] "POST /checkEmail HTTP/1.1" 200 -
+Usage: flask run [OPTIONS]
+Try 'flask run --help' for help.
+
+Error: Could not locate a Flask application. Use the 'flask --app' option, 'FLASK_APP' environment variable, or a 'wsgi.py' or 'app.py' file in the current directory.
+ * Serving Flask app 'registration.py'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://138.253.184.53:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [27/Apr/2025 22:04:27] "OPTIONS /checkEmail HTTP/1.1" 200 -
+127.0.0.1 - - [27/Apr/2025 22:04:27] "POST /checkEmail HTTP/1.1" 200 -
+127.0.0.1 - - [27/Apr/2025 22:04:27] "OPTIONS /register HTTP/1.1" 200 -
+127.0.0.1 - - [27/Apr/2025 22:04:27] "[35m[1mPOST /register HTTP/1.1[0m" 201 -
+ * Serving Flask app 'registration.py'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://138.253.184.53:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [27/Apr/2025 22:51:10] "POST /checkEmail HTTP/1.1" 200 -
+127.0.0.1 - - [27/Apr/2025 22:51:10] "[35m[1mPOST /register HTTP/1.1[0m" 201 -
+127.0.0.1 - - [27/Apr/2025 22:53:53] "POST /checkEmail HTTP/1.1" 200 -
+127.0.0.1 - - [27/Apr/2025 22:53:53] "[35m[1mPOST /register HTTP/1.1[0m" 201 -
