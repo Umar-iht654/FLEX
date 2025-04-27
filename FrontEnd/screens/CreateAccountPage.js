@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { SafeAreaView, View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import styles from '../styles/styles';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreateAccountPage = ({ navigation }) => {
   //stores the data needed to create account for now
@@ -28,37 +29,38 @@ const CreateAccountPage = ({ navigation }) => {
 
 
   const validateEntries = async () => {
-    // setValidateError('');
-    // setEmailError('');
-    // setUsernameError('');
-    // setPasswordError('');
-    // setConfirmError('')
+    setValidateError('');
+    setEmailError('');
+    setUsernameError('');
+    setPasswordError('');
+    setConfirmError('')
 
-    // validated = true;
-    // if (!firstName || !lastName || !newEmail || !dateOfBirth || !postcode || !addressLine || !newUsername || !newPassword || !confirmPassword) {
-    //   setValidateError('Please fill in all fields')
-    //   return;
-    // }
-    // setValidateError('');
+    validated = true;
+    if (!firstName || !lastName || !newEmail || !dateOfBirth || !postcode || !addressLine || !newUsername || !newPassword || !confirmPassword) {
+      setValidateError('Please fill in all fields')
+      return;
+    }
+    setValidateError('');
 
-    // try {
-    //   const response = await axios.post(`http://localhost:5000/api/checkEmail`, { email: newEmail });
-    //   console.log("✅ Server response:", response.data);
-    //   if(response.data.message === "email is available") {
-    //     setEmailError('');
-    //   }
-    // }
-    // catch(error){
-    //   console.log("❌ Error:", error.toJSON ? error.toJSON() : error);
-    //   if (error.response) {
-    //     setPasswordError(error.response.data?.detail || 'Something went wrong');
-    //   } else if (error.request) {
-    //     setPasswordError('No response from server');
-    //   } else {
-    //     setPasswordError('Error setting up request');
-    //   }
-    //   validated = false;
-    // }
+    try {
+      const response = await axios.post('https://364d-138-253-184-53.ngrok-free.app/checkEmail', { email: newEmail });
+      console.log("✅ Server response:", response.data);
+      if(response.data.message === "email is available") {
+        setEmailError('');
+        console.log('email is available')
+      }
+    }
+    catch(error){
+      console.log("❌ Error:", error.toJSON ? error.toJSON() : error);
+      if (error.response) {
+        setPasswordError(error.response.data?.detail || 'Something went wrong');
+      } else if (error.request) {
+        setPasswordError('No response from server');
+      } else {
+        setPasswordError('Error setting up request');
+      }
+      validated = false;
+    }
     
     // try {
     //   const response = await axios.post('http://localhost:5000/api/checkUsername', { username: newUsername });
@@ -87,11 +89,11 @@ const CreateAccountPage = ({ navigation }) => {
     //   setPasswordError(error.response?.data?.detail || 'Something went wrong');
     //   validated = false;
     // }
-    // if (validated){
-    //   if (tacButtonColor !== 'blue') {
-    //     setValidateError('Please accept Terms and Conditions');
-    //     return;
-    //   }
+    if (validated){
+      if (tacButtonColor !== 'blue') {
+        setValidateError('Please accept Terms and Conditions');
+        return;
+      }
       const userData = {
         username: newUsername,
         email: newEmail,
@@ -105,13 +107,17 @@ const CreateAccountPage = ({ navigation }) => {
     //   try {
         // const response = await axios.post(`http://localhost:5000/api/register`, userData);
         // if (response.data && response.data.data) {
-    await AsyncStorage.setItem('userDetail', JSON.stringify(userData));
-          navigation.navigate('CreateActivitySelection');
+          // try {
+          //   await AsyncStorage.setItem('userDetail', JSON.stringify(userData));
+            navigation.navigate('CreateActivitySelection');
+          // } catch (error) {
+          //   console.error('Failed to save user data:', error);
+          // }
     //     }
     //   } catch (error) {
     //     setValidateError(error.response?.data?.detail || 'Something went wrong');
     //   }
-    // }
+    }
   }
   return (
     <SafeAreaView style={styles.safeAreaView}>
