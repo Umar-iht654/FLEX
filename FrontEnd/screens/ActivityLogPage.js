@@ -1,9 +1,11 @@
 import React, {act, useState} from 'react';
-import { SafeAreaView, View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
+import { SafeAreaView, View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, Dimensions } from 'react-native';
 import styles from '../styles/styles';
+import data from '../styles/localdata';
 
 const ActivityLogPage = () => {
 
+  const { height } = Dimensions.get('window');
   //stores the input of the search bar
   const [searchInput, setSearchInput] = useState('');
 
@@ -19,7 +21,8 @@ const ActivityLogPage = () => {
 
   {/*contains the activity the user is currently attempting to log*/}
   const [currentActivity, setCurrentActivity] = useState('');
-  const currentActivityScores = [];
+  const [currentActivityScores, setCurrentActivityScores] = useState([]);
+  const [currentActivityParticipants, setCurrentActivityParticipants] = useState([]);
 
   {/*top bar data*/}
   const [userStreak, setUserStreak] = useState(5);
@@ -29,7 +32,7 @@ const ActivityLogPage = () => {
      in the final app there must be functions which retrieve this information from either
      a local datastore or the database*/}
   const recentActivities = ["Snowboarding", "Badminton", "Wrestling", "Surfing", "Table Tennis"];
-  const allActivities = ["Archery", "Badminton", "Baseball", "Basketball", "Boxing", "Cricket", "Cycling", "Fencing", "Football", "Golf", "Gymnastics", "Hockey", "Mixed Martial Arts", "Rowing", "Rugby", "Skiing", "Snowboarding", "Swimming", "Table Tennis", "Tennis", "Track and Field", "Triathlon", "Volleyball", "Weightlifting", "Wrestling", "American Football"];
+  const allActivities = ["Archery", "Badminton", "Baseball", "Basketball", "Boxing", "Cricket", "Cycling", "Fencing", "Football", "Golf", "Gymnastics", "Hockey", "Mixed Martial Arts", "Rowing", "Rugby", "Running", "Skiing", "Snowboarding", "Swimming", "Table Tennis", "Tennis", "Volleyball", "Weightlifting", "Wrestling"];
   
   {/*gets a list of activities similar to the search input*/}
   function GetSearchSuggestions(currentSearchInput){
@@ -73,6 +76,7 @@ const ActivityLogPage = () => {
     setActivityLogPopupVisable(false);
   }
 
+
 //card which displays search suggestions while the user is typing
   const SearchResultCard = ({activityName}) => {
     return(
@@ -96,6 +100,138 @@ const ActivityLogPage = () => {
           <View style={activityLogPageStyles.activityCardImage}/>
         </View>
       </TouchableOpacity>
+    );
+  };
+
+  const ScoreCard = ({ id, score, onChangePlayerScore }) => {
+    const thisBackgroundColor = id === 1 ? 'green'
+    : id === 2 ? 'orange'
+    : id === 3 ? 'blue'
+    : id === 4 ? 'yellow'
+    : 'gray';
+    return(
+      <View style={{width: 70, height: 60, backgroundColor: thisBackgroundColor, marginRight: 10, borderRadius: 8, borderWidth: 2,justifyContent: 'center', alignItems: 'center'  }}>
+        <TextInput
+            style={{flex: 1, borderRadius: 6, paddingHorizontal: 8, textAlign: 'center', textAlignVertical: 'center', fontSize: 28, fontWeight: 500}}
+            value={score}
+            placeholder="X"
+            onChangeText={(text) => onChangePlayerScore(id, text)}
+          />
+      </View>
+    )
+  }
+  const ParticipantCard = ({ id, userLinked, playerName, onChangePlayerName }) => {
+    const thisBackgroundColor = id === 1 ? 'green'
+      : id === 2 ? 'orange'
+      : id === 3 ? 'blue'
+      : id === 4 ? 'yellow'
+      : 'gray';
+    return(
+      <View style={{height: 50, backgroundColor: '#D9D9D9', borderRadius: 8, marginBottom: 16,padding: 4}}>
+        {userLinked === '' && (
+          <View style={{flex: 1,flexDirection: 'row', alignItems: 'center'}}>
+            <TouchableOpacity>
+              <View style={{width: 30, height: 30, backgroundColor: 'teal', borderRadius: 50, marginLeft: 10 }}/>
+            </TouchableOpacity>
+            <TextInput
+              style={{ marginLeft: 10, flex: 1, backgroundColor: 'white', borderRadius: 6, paddingHorizontal: 8 }}
+              value={playerName}
+              placeholder="Enter player name"
+              onChangeText={(text) => onChangePlayerName(id, text)}
+            />
+            <View style={{width: 30, height: 30, backgroundColor: thisBackgroundColor, borderRadius: 50, marginLeft: 10 }}/>
+          </View>
+        )}
+      </View>
+    )
+  }
+  
+  const ActivityInputCard = ({activityName}) => {
+    const activityInfo = data?.activities.find(activity => activity.name === activityName);
+    
+    const [participants, setParticipants] = useState(
+      Array.from({ length: activityInfo.initialPlayers }, (_, index) => ({
+        id: index + 1,
+        userLinked: '',
+        playerName: '',
+        score: null,
+      }))
+    );
+
+
+    function AddParticipant() {
+      const newParticipant = {
+        id: participants.length + 1,
+        userLinked: '',
+        playerName: ''
+      };
+      setParticipants([...participants, newParticipant]);
+    };
+
+    function ChangePlayerName(id, text) {
+      setParticipants(prevParticipants =>
+        prevParticipants.map(participant =>
+          participant.id === id
+            ? { ...participant, playerName: text }
+            : participant
+        )
+      );
+    }
+    function ChangePlayerScore(id, newScore) {
+      setParticipants(prevParticipants =>
+        prevParticipants.map(participant =>
+          participant.id === id
+            ? { ...participant, score: newScore }
+            : participant
+        )
+      );
+    }
+    return(
+      //if clicked then the clicked activity automatically is sent to the text input
+      <View style={[activityLogPageStyles.popupScreenOutline, {height: height*0.45}]}>
+          <Text style={activityLogPageStyles.popupScreenTitle} adjustsFontSizeToFit numberOfLines={1}>Activity: {currentActivity} </Text>
+          <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}}>
+              {/* ScrollView for the participants */}
+              <ScrollView style={{flexGrow: 1}}>
+                {participants.map(participant => (
+                  <ParticipantCard
+                    key={participant.id}
+                    id={participant.id}
+                    userLinked={participant.userLinked}
+                    playerName={participant.playerName}
+                    onChangePlayerName={ChangePlayerName}
+                  />
+                ))}
+                <View style={{width: '100%', alignItems: 'flex-end'}}>
+                  {participants.length < activityInfo.maxPlayers && (
+                    <TouchableOpacity onPress={AddParticipant}>
+                      <Text style={activityLogPageStyles.hyperlink}>Add Players</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+                <View style={{flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', marginVertical: 30}}>
+                  {participants.map(participant => (
+                    <ScoreCard
+                      key={participant.id}
+                      id={participant.id}
+                      score={participant.score}
+                      onChangePlayerScore={ChangePlayerScore}
+                    />
+                  ))}
+                </View>
+              </ScrollView>
+
+              {/* Submit Button */}
+              <View style={{alignItems: 'center', marginBottom: 20}}>
+                <TouchableOpacity onPress={() => {console.log(participants); SubmitActivityLog()}}>
+                  <View style={{width: 140, height: 50, backgroundColor: 'green', borderWidth: 1, borderRadius: 15, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={activityLogPageStyles.popupSubmitText}>Submit</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+            </View>
+        </View>
     );
   };
     return (
@@ -209,17 +345,7 @@ const ActivityLogPage = () => {
         {/*Overlay page where the user inputs their activity log data*/}
         <Modal animationType='fade' transparent={true} visible={activityLogPopupVisable} onRequestClose={() => setActivityLogPopupVisable(false)}>
           <TouchableOpacity style={activityLogPageStyles.popupScreenBackground} activeOpacity={1} onPress={() => setActivityLogPopupVisable(false)}>
-            <View style={activityLogPageStyles.popupScreenOutline}>
-              <Text style={activityLogPageStyles.popupScreenTitle} adjustsFontSizeToFit numberOfLines={1}>Activity: {currentActivity} </Text>
-              
-              <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-                <TouchableOpacity onPress={() => {SubmitActivityLog()}}>
-                  <View style={{width: 140, height: 50, backgroundColor: 'green', borderWidth: 1, borderRadius: 15, justifyContent:'center', alignItems: 'center'}}>
-                    <Text style={activityLogPageStyles.popupSubmitText}>Submit</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
+            <ActivityInputCard activityName={currentActivity}/>
           </TouchableOpacity>
         </Modal>
       </SafeAreaView>
@@ -318,7 +444,6 @@ const activityLogPageStyles = StyleSheet.create({
   //activity pop up screen
   popupScreenOutline: {
     width: '70%', 
-    height: '50%', 
     backgroundColor: 'white', 
     borderRadius: 20,
     padding: 10,
@@ -329,6 +454,7 @@ const activityLogPageStyles = StyleSheet.create({
     color: '#1e1e1e',
     marginBottom: 8,
     textAlign: 'center',
+    marginBottom: 20,
   },
   popupSubmitText: {
     fontSize: 24,
@@ -336,6 +462,13 @@ const activityLogPageStyles = StyleSheet.create({
     color: '#1e1e1e',
     marginBottom: 8,
     textAlign: 'center',
+  },
+  hyperlink: {
+    fontsize: 16,
+    fontWeight: '600',
+    color: 'blue',
+    textDecorationLine: 'underline',
+    textAlign: 'center'
   },
 })
   export default ActivityLogPage;

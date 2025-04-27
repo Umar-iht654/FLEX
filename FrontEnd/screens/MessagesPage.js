@@ -15,8 +15,8 @@ const MessagesPage = ({ navigation }) => {
   const [friendsInfo, setFriendsInfo] = useState([]);
 
   //opens the chat page
-  function OpenChat(chatName, chatID, chatPF){
-    navigation.navigate('Chat', { chatName, chatID, chatPF })
+  function OpenChat( chatType, chatName, chatID, chatPF){
+    navigation.navigate('Chat', { chatType, chatName, chatID, chatPF })
   }
 
   function UploadPageInfo(username){
@@ -41,9 +41,44 @@ const MessagesPage = ({ navigation }) => {
   }
 
   //renders the chat card
-  const ChatCard = ({ID, name, profilePicture, pinned, unreadMessageCount}) => {
+  const GroupChatCard = ({ID, name, profilePicture, pinned, unreadMessageCount}) => {
     return(
-      <TouchableOpacity onPress={() => {OpenChat(name, ID, profilePicture)}}>
+      <TouchableOpacity onPress={() => {OpenChat("group", name, ID, profilePicture)}}>
+
+        {/*chat card container*/}
+        <View style={messagesPageStyles.infoCardContainer}>
+
+          {/*profile picture and name*/}
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            {profilePicture ? (
+              <Image style={messagesPageStyles.infoCardProfilePicture} source={{ uri: profilePicture }} />
+              ) : (
+                <View style={[messagesPageStyles.infoCardProfilePicture, {backgroundColor: 'gray'}]}/>
+            )}
+            <Text style={messagesPageStyles.infoCardName}>{name}</Text>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+
+            {/*only shows the number of unread if there are unread messages*/}
+            {unreadMessageCount != 0 && (
+              <View style={messagesPageStyles.numOfMessagesContainer}>
+                <Text style={messagesPageStyles.numOfMessagesText}>{unreadMessageCount}</Text>
+              </View>
+            )}
+
+            {/*shows the pinned chat icon if the chat is pinned*/}
+            {pinned && (
+              <Image style={messagesPageStyles.pinnedIcon} source={require('../assets/PinIcon.png')}/>
+            )}
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  const FriendChatCard = ({ID, name, profilePicture, pinned, unreadMessageCount}) => {
+    return(
+      <TouchableOpacity onPress={() => {OpenChat("friend", name, ID, profilePicture)}}>
 
         {/*chat card container*/}
         <View style={messagesPageStyles.infoCardContainer}>
@@ -120,7 +155,7 @@ const MessagesPage = ({ navigation }) => {
             {/*Shows list of groups*/}
             <View style={{alignItems: 'center'}}>
               {groupsInfo.map(group=> (
-              <ChatCard
+              <GroupChatCard
                 key = {group.groupID}
                 ID = {group.groupID}
                 name = {group.groupName}
@@ -139,7 +174,7 @@ const MessagesPage = ({ navigation }) => {
             {/*Shows list of friends*/}
             <View style={{alignItems: 'center'}}>
             {friendsInfo.map(friend=> (
-              <ChatCard
+              <FriendChatCard
                 key = {friend.friendID}
                 ID = {friend.friendID}
                 name = {friend.friendName}
