@@ -1,0 +1,657 @@
+
+import React, { useState, useCallback } from "react";
+import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, StyleSheet, } from "react-native";
+import { useFocusEffect, useRoute } from '@react-navigation/native';
+import styles from '../styles/styles';
+
+
+const UserProfilePage = ({ navigation }) => {
+
+    const route = useRoute();
+    const { userID, previousPage } = route.params;
+
+    const [friendOverlayVisable, setFriendOverlayVisable] = useState(false);
+    const [groupOverlayVisable, setGroupOverlayVisable] = useState(false);
+    const [activityOverlayVisable, setActivityOverlayVisable] = useState(false);
+    //this is a placeholder, there should be a function that can be called to collect all the data below from the database
+
+
+    const [userInfo, setUserInfo] = useState({
+        username: '',
+        bio: '',
+        profilePic: '',
+        loggedActivitiesCount: 0,
+    });
+
+    const [activityLog, setActivityLog] = useState([]);
+    const [currentActivityNumber, setCurrentActivityNumber] = useState(5);
+    
+    const [userStreak, setUserStreak] = useState('5');
+    const [weather, setWeather] = useState('4°');
+    const [friendData, setFriendData] = useState([]);
+    const [groupData, setGroupData] = useState([]);
+    const [activityData, setActivityData] = useState([]);
+    const [userRelationship, setUserRelationship] = useState([]);
+    //should upload the user data from the database
+    function UploadPageInfo() {
+        const newUserInfo = {
+            username: userID,
+            bio: 'Bio',
+            profilePic: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',
+            loggedActivitiesCount: 24,
+        };
+        setUserInfo(newUserInfo);
+
+        const newFriendData = [
+            { userID: 1, username: 'Pee Pee Wherman', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 2, username: 'Dan Scooterist', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 3, username: 'Luka Scumperlot', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 4, username: 'Gooper Gooperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 5, username: 'Sickalicka trying', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 6, username: 'Sir Yemen', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 7, username: 'Timothy Skelton', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 8, username: 'Lenny Crapperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 9, username: 'Milo Biggers', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 10, username: 'Carlos Swindler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 11, username: 'Jimmy Pickles', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 12, username: 'Billy McNugget', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 13, username: 'Maddie Two-Times', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 14, username: 'Vince Vermin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 15, username: 'Fiona Biggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 16, username: 'Chuck Banter', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 17, username: 'Zane Crankford', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 18, username: 'Bea Wiggler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 19, username: 'Oscar Baggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 20, username: 'Tina Wallflower', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 21, username: 'Zoe Fizzbin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 22, username: 'Alex Sweets', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { userID: 23, username: 'Nina Stepperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' }
+        ];
+        setFriendData(newFriendData);
+
+        const newGroupData = [
+            { groupname: 'The Footy Dwellers', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { groupname: 'Scarcity Tennis', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { groupname: 'Manchester Maddens', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Sai_mahotsav_manjhanpur.jpg?20231128214559' },
+            { groupname: 'Badboyminton', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { groupname: 'Cycling Skeletons', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { groupname: 'Krazy Kenyans', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+            { groupname: 'Slapping Sailors', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+        ];
+        setGroupData(newGroupData);
+
+        const newActivityData = [
+            { activityname: 'Tennis'},
+            { activityname: 'Football'},
+            { activityname: 'Cycling'},
+            { activityname: 'Running'},
+            { activityname: 'Shuffle Board'},
+            { activityname: 'Tap Dancing'},
+        ];
+        setActivityData(newActivityData);
+
+        setUserRelationship('notfriend');
+
+    }
+
+    function sendFriendRequest(){
+        setUserRelationship('pending')
+        console.log("friend request sent")
+    }
+
+    function pullFriendRequest(){
+        setUserRelationship('notfriend')
+        console.log("Friend request pulled")
+    }
+
+    function removeFriend(){
+        setUserRelationship('notfriend')
+        console.log("Friend removed")
+    }
+
+    function openProfile(newUserID){
+        navigation.push('UserProfile', { userID: newUserID, previousPage:  previousPage});
+    }
+
+    function returnToPage(){
+        console.log(previousPage);
+        if(previousPage == 'Profile'){
+            navigation.navigate('Home', {screen: previousPage})
+        }
+        if(previousPage == 'Chat'){
+            navigation.navigate('Chat', { chatName: userInfo.username, chatID: userInfo.userID, chatPF: userInfo.profilePic})
+        }
+    }
+    //retrieves user activities from the database
+    function UploadActivities(isInitial){
+        const newActivityLog = [
+            {activityID: 1, activityType: '1v1', activityName: 'Activity 1', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
+            {activityID: 2, activityType: 'solo', activityName: 'Activity 2', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
+            {activityID: 3, activityType: '1v1', activityName: 'Activity 3', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
+            {activityID: 4, activityType: '1v1v1', activityName: 'Activity 4', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
+            {activityID: 5, activityType: '1v1', activityName: 'Activity 5', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
+            {activityID: 6, activityType: '1v1', activityName: 'Activity 6', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
+            {activityID: 7, activityType: 'solo', activityName: 'Activity 7', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
+            {activityID: 8, activityType: '1v1', activityName: 'Activity 8', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
+            {activityID: 9, activityType: '1v1v1', activityName: 'Activity 9', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
+            {activityID: 10, activityType: '1v1', activityName: 'Activity 10', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
+            {activityID: 11, activityType: '1v1', activityName: 'Activity 11', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
+            {activityID: 12, activityType: 'solo', activityName: 'Activity 12', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
+            {activityID: 13, activityType: '1v1', activityName: 'Activity 13', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
+            {activityID: 14, activityType: '1v1v1', activityName: 'Activity 14', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
+            {activityID: 15, activityType: '1v1', activityName: 'Activity 15', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
+            {activityID: 16, activityType: '1v1', activityName: 'Activity 16', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
+            {activityID: 17, activityType: 'solo', activityName: 'Activity 17', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
+            {activityID: 18, activityType: '1v1', activityName: 'Activity 18', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
+            {activityID: 19, activityType: '1v1v1', activityName: 'Activity 19', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
+            {activityID: 20, activityType: '1v1', activityName: 'Activity 20', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
+        ];
+        if(isInitial){
+            setCurrentActivityNumber(5)
+        }
+        setActivityLog(newActivityLog.slice(0, currentActivityNumber));
+        setCurrentActivityNumber(prev => prev+5);
+
+    }
+    //The card that shows details about the users activities
+    const ActivityDataCard = (props) => {
+        return (
+            <View style={profilePageStyles.activityCardOutline}>
+                {/*Displays information about the activity at the top of the card*/}
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+                        <View style={{flexDirection: 'column', alignItems: 'flex-start', marginLeft: 10}}>
+                            <Text style={profilePageStyles.activityTitle}>{props.activityName}</Text>
+                            <Text style={profilePageStyles.activityTimeInformation}>{props.dateTime}</Text>
+                            <Text style={profilePageStyles.activityTimeInformation}>{props.duration}</Text>
+                        </View>
+                        <View style={profilePageStyles.activityIcon}/>
+                    </View>
+                    <Text style={profilePageStyles.activityAge}>{props.age}</Text>
+                </View>
+
+                {/*Displays the scores if the activity only has 1 score*/}
+                {props.activityType == 'solo' && (
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 10}}>
+                        <View style={profilePageStyles.activityScoreContainer2}>
+                            <Text style={profilePageStyles.activityScoreText}>{props.scores[0]}</Text>
+                        </View>
+
+
+                    </View>
+                )}
+
+                {/*Displays the scores if the activity has 2 scores*/}
+                {props.activityType == '1v1' && (
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 10}}>
+                        {/*First score*/}
+                        <View style={profilePageStyles.activityScoreContainer1}>
+                            <Text style={profilePageStyles.activityScoreText}>{props.scores[0]}</Text>
+                        </View>
+                        {/*Second score*/}
+                        <View style={profilePageStyles.activityScoreContainer2}>
+                            <Text style={profilePageStyles.activityScoreText}>{props.scores[1]}</Text>
+                        </View>
+
+                    </View>
+                )}
+
+                {/*Displays the scores if the activity has 3 scores*/}
+                {props.activityType == '1v1v1' && (
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 10}}>
+                        {/*First score*/}
+                        <View style={profilePageStyles.activityScoreContainer1}>
+                            <Text style={profilePageStyles.activityScoreText}>{props.scores[0]}</Text>
+                        </View>
+                        {/*Second score*/}
+                        <View style={profilePageStyles.activityScoreContainer2}>
+                            <Text style={profilePageStyles.activityScoreText}>{props.scores[1]}</Text>
+                        </View>
+                        {/*Third score*/}
+                        <View style={profilePageStyles.activityScoreContainer3}>
+                            <Text style={profilePageStyles.activityScoreText}>{props.scores[2]}</Text>
+                        </View>
+                    </View>
+                )}
+
+                {/*Contributing Users button, if pressed displays all users involved in activity*/}
+                <TouchableOpacity>
+                    <Text style={profilePageStyles.contributingUsersButton}>participants</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
+    //The buttons which show the users friend, group and activity count
+    const InfoBox = ({name, count}) => {
+        return (
+            <View style={profilePageStyles.infoBoxOutline}>
+                <Text style={profilePageStyles.infoBoxTitle}>{name}</Text>
+                <Text style={profilePageStyles.infoBoxNumber}>{count}</Text>
+            </View>
+        );
+    };
+
+    const FriendCard = ({username, profilePicture}) => {
+        return (
+            <TouchableOpacity onPress={() => {openProfile(username)}}>
+                <View style={{flexDirection: "row"}}>
+                    <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
+                    <Text style={profilePageStyles.popupItemText}>{username}</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+    const GroupCard = ({groupname, profilePicture}) => {
+        return (
+            <TouchableOpacity onPress={() => {/*Directs user to groups profile page page*/}}>
+                <View style={{flexDirection: "row"}}>
+                    <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
+                    <Text style={profilePageStyles.popupItemText}>{groupname}</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+    const ActivityCard = ({activityname}) => {
+        return (
+            <View style={{flexDirection: "row"}}>
+                <View style={[profilePageStyles.popupItemProfilePicture, {backgroundColor: 'teal'}]}/>
+                <Text style={profilePageStyles.popupItemText}>{activityname}</Text>
+            </View>
+        );
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            // This function will run every time the screen is focused
+            UploadPageInfo("user");
+            UploadActivities(true);
+            console.log("navigated to")
+        }, [])
+    );
+
+
+    return (
+        <SafeAreaView style={[styles.safeAreaView, {justifyContent: 'flex-start', alignItems: 'center'}]}>
+            {/*Top Bar*/}
+            <View style={styles.topBar}>
+                {/*Displays Streak*/}
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Image style={styles.streakIcon} source={require('../assets/StreakIcon.png')}/>
+                    <Text style={styles.streakNumber}>{userStreak}</Text>
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    {/*Displays Weather*/}
+                    <Text style={styles.temperatureText}>{weather}</Text>
+                    <Image style={styles.weatherIcon} source={require('../assets/WeatherIcon.png')}/>
+                    {/*Displays Settings Button*/}
+                    <TouchableOpacity onPress={() => {navigation.navigate("Settings")}}>
+                        <Image style={styles.settingsIcon} source={require('../assets/Settings.png')}/>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            {/*Overlay box*/}
+            <View style={profilePageStyles.overlayBox}>
+                <ScrollView>
+                    <TouchableOpacity onPress={() => {returnToPage()}}>
+                        <View style={{marginTop: 10, marginLeft: 10}}>
+                            <Text style={profilePageStyles.hyperlink}>back</Text>
+                        </View>
+                    </TouchableOpacity>
+                    {/*profile picture/username/bio display*/}
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', marginTop: 24}}>
+
+                        {/*Profile picture*/}
+                        {userInfo.profilePic ? (
+                            <Image style={profilePageStyles.profilePicture} source={{ uri: userInfo.profilePic }} />
+                        ) : (
+                            <View style={[profilePageStyles.profilePicture, {backgroundColor: 'gray'}]}/>
+                        )}
+
+                        {/*Username and Bio*/}
+                        <View style={{marginLeft: 20}}>
+                            <Text style={profilePageStyles.usernameText}>{userInfo.username}</Text>
+                            <Text style={[styles.title, {fontSize:12, textAlign: 'left', width: 200}]}>{userInfo.bio}</Text>
+                        </View>
+                    </View>
+
+                    {/*Shows Friend, Group and Activity Number*/}
+                    <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'flex-start', marginTop: 15}}>
+                        <TouchableOpacity onPress={() => {
+                            if((userRelationship == 'friend') || (userRelationship == 'self')){
+                                setFriendOverlayVisable(true)
+                            }
+                            }}>
+                            <InfoBox name='Friends' count={friendData.length}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            if((userRelationship == 'friend') || (userRelationship == 'self')){
+                                setGroupOverlayVisable(true)
+                            }
+                            }}>
+                            <InfoBox name='Groups' count={groupData.length}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            if((userRelationship == 'friend') || (userRelationship == 'self')){
+                                setActivityOverlayVisable(true)
+                            }
+                            }}>
+                            <InfoBox name='Activities' count={activityData.length}/>
+                        </TouchableOpacity>
+                    </View>
+
+                    {!(userRelationship == 'self') && (
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between', padding: 20}}>
+                            {userRelationship == 'friend' && (
+                                <TouchableOpacity style={{width: '70%'}} onPress={() => {removeFriend()}}>
+                                    <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
+                                        <Text style={[profilePageStyles.title, {fontSize: 20}]}>Unfriend</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                            {userRelationship == 'pending' && (
+                                <TouchableOpacity style={{width: '70%'}} onPress={() => {pullFriendRequest()}}>
+                                    <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
+                                        <Text style={[profilePageStyles.title, {fontSize: 20}]}>Request Pending</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                            {userRelationship == 'notfriend' && (
+                                <TouchableOpacity style={{width: '70%'}} onPress={() => {sendFriendRequest()}}>
+                                    <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
+                                        <Text style={[profilePageStyles.title, {fontSize: 20}]}>Add Friend</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+
+                            <TouchableOpacity style={{width: '28%'}} onPress={() => {setUserRelationship('friend')}}>
+                                <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
+                                    <Text style={[profilePageStyles.title, {fontSize: 20}]}>Message</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+
+                    {!(userRelationship === 'notfriend' || userRelationship === 'pending') && (
+                        <View style={{ alignItems: 'center' }}>
+                            {/* Displays recent activities */}
+                            <Text style={profilePageStyles.recentActivitiesHeader}>Recent Activities</Text>
+                            {activityLog.map(activity => (
+                                <ActivityDataCard
+                                    key={activity.activityID}
+                                    activityType={activity.activityType}
+                                    activityName={activity.activityName}
+                                    dateTime={activity.dateTime}
+                                    age={activity.age}
+                                    duration={activity.duration}
+                                    scores={activity.scores}
+                                />
+                            ))}
+
+                            {/* Displays show more button, the button disappears once all activities are shown */}
+                            {userInfo.loggedActivitiesCount > activityLog.length && (
+                                <TouchableOpacity onPress={() => UploadActivities(false)}>
+                                    <Text style={profilePageStyles.showMoreButton}>Show More</Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    )}
+                </ScrollView>
+            </View>
+
+            {/*Friend List Overlay*/}
+            <Modal animationType='fade' transparent={true} visible={friendOverlayVisable} onRequestClose={() => setFriendOverlayVisable(false)}>
+                <TouchableOpacity style={profilePageStyles.popupScreenBackground} activeOpacity={1} onPress={() => setFriendOverlayVisable(false)}>
+                    <View style={profilePageStyles.popupScreenOutline}>
+                            <Text style={profilePageStyles.popupScreenTitle}>Friends</Text>
+                            <ScrollView>
+                                {friendData.map(friend=> (
+                                <FriendCard
+                                        key = {friend.userID}
+                                        username = {friend.username}
+                                        profilePicture = {friend.profilePicture}
+                                />
+                                ))}
+                            </ScrollView>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+            
+            {/*Group List Overlay*/}
+            <Modal animationType='fade' transparent={true} visible={groupOverlayVisable} onRequestClose={() => setGroupOverlayVisable(false)}>
+                {/*Blurry Backdrop from overlay*/}
+                <TouchableOpacity style={profilePageStyles.popupScreenBackground} activeOpacity={1} onPress={() => setGroupOverlayVisable(false)}>
+                    {/*Overlay Container*/}
+                    <View style={profilePageStyles.popupScreenOutline}>
+                            <Text style={profilePageStyles.popupScreenTitle}>Groups</Text>
+                            <ScrollView>
+                                {groupData.map(group=> (
+                                <GroupCard
+                                        key = {group.groupname}
+                                        groupname = {group.groupname}
+                                        profilePicture = {group.profilePicture}
+                                />
+                                ))}
+                            </ScrollView>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+            
+            {/*Activity List Overlay*/}
+            <Modal animationType='fade' transparent={true} visible={activityOverlayVisable} onRequestClose={() => setActivityOverlayVisable(false)}>
+                <TouchableOpacity style={profilePageStyles.popupScreenBackground} activeOpacity={1} onPress={() => setActivityOverlayVisable(false)}>
+                    <View style={profilePageStyles.popupScreenOutline}>
+                            <Text style={profilePageStyles.popupScreenTitle}>Activities</Text>
+                            <ScrollView>
+                                {activityData.map(activity=> (
+                                <ActivityCard
+                                        key = {activity.activityname}
+                                        activityname = {activity.activityname}
+                                />
+                                ))}
+                            </ScrollView>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+        </SafeAreaView>
+
+        
+        
+    );
+};
+
+const profilePageStyles = StyleSheet.create({
+    overlayBox: {
+        width: '95%', 
+        height: '88%', 
+        backgroundColor: '#E5E5E5', 
+        borderRadius: 20, 
+        justifyContent: 'flex-start'
+    },
+    //profile information
+    profilePicture:{
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginLeft:10
+    },
+    usernameText: {
+            fontSize: 30,
+            fontWeight: '700',
+            color: '#1e1e1e',
+            marginBottom: 8,
+            textAlign: 'left',
+    },
+    bioText: {
+        fontSize: 12,
+        fontWeight: '700',
+        color: '#1e1e1e',
+        marginBottom: 8,
+        textAlign: 'left',
+        width: 200
+    },
+    //info box
+    infoBoxOutline: {
+        width: 100, 
+        height: 100, 
+        backgroundColor: "teal", 
+        borderRadius: 14, 
+        justifyContent: "center", 
+        alignItems: "center",
+    },
+    infoBoxTitle: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#1e1e1e',
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    infoBoxNumber: {
+        fontSize: 35,
+        fontWeight: '700',
+        color: '#1e1e1e',
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    //headers
+    recentActivitiesHeader: {
+        fontSize: 30,
+        fontWeight: '700',
+        color: '#1e1e1e',
+        marginBottom: 8,
+        textAlign: 'center',
+        marginTop: 10,
+        textDecorationLine: 'underline'
+    },
+    showMoreButton: {
+        fontSize: 24,
+        fontWeight: '700',
+        textAlign: 'center',
+        color: 'gray', 
+        textDecorationLine: 'underline',
+        marginTop: 20, 
+        marginBottom: 20,
+    },
+    //activity cards
+    activityCardOutline: {
+        width: '90%', 
+        height: 200, 
+        elevation: 5, 
+        borderRadius: 15, 
+        backgroundColor: '#D7D7D7', 
+        marginTop: 15
+    },
+    activityTitle: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: '#1e1e1e',
+        marginBottom: 2,
+        textAlign: 'center',
+    },
+    activityTimeInformation: {
+        fontSize: 10,
+        fontWeight: '700',
+        color: '#1e1e1e',
+        marginBottom: 2,
+        marginLeft: 5,
+        textAlign: 'center',
+    },
+    activityIcon: {
+        width: 50, 
+        height: 50, 
+        backgroundColor: 'teal', 
+        borderRadius: 8,
+        marginLeft: 5
+    },
+    activityAge: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: '#1e1e1e',
+        marginBottom: 8,
+        marginRight: 10,
+        textAlign: 'center',
+    },
+    activityScoreContainer1: {
+        width: 60, 
+        height: 50, 
+        borderRadius: 15, 
+        backgroundColor: 'orange', 
+        justifyContent: 'center'
+    },
+    activityScoreContainer2: {
+        width: 60, 
+        height: 50, 
+        borderRadius: 15, 
+        backgroundColor: 'green', 
+        justifyContent: 'center'
+    },
+    activityScoreContainer3: {
+        width: 60, 
+        height: 50, 
+        borderRadius: 15, 
+        backgroundColor: 'yellow', 
+        justifyContent: 'center'
+    },
+    activityScoreText: {
+        fontSize: 30,
+        fontWeight: '700',
+        color: '#1e1e1e',
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    contributingUsersButton: {
+        marginTop: 10,
+        fontsize: 16,
+        fontWeight: '600',
+        color: 'blue',
+        textDecorationLine: 'underline',
+        textAlign: 'center'
+    },
+    //popup (friend, groups and activity extra information screen)
+    popupScreenBackground: {
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: "rgba(0,0,0,0.8)"
+    },
+    popupScreenOutline: {
+        width: '70%', 
+        height: '70%', 
+        backgroundColor: 'white', 
+        borderRadius: 20
+    },
+    popupScreenTitle: {
+        fontSize: 50,
+        fontWeight: '700',
+        color: '#1e1e1e',
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    popupScreenDoneButton: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#1e1e1e',
+        marginBottom: 8,
+        textAlign: 'center',
+        textDecorationLine: 'underline'
+    },
+    popupItemProfilePicture: {
+        width: 25,
+        height: 25,
+        borderRadius: 50,
+        marginLeft:10
+    },
+    popupItemText: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#1e1e1e',
+        marginBottom: 8,
+        marginLeft: 10,
+        textAlign: 'center',
+    }
+    
+});
+export default UserProfilePage;
