@@ -4,7 +4,7 @@ const data = {
         name: 'Archery',
         type: 'solo',
         initialPlayers: 1,
-        maxPlayers: 4,
+        maxPlayers: 8,
         pointName: '',
         winner: 'high',
       },
@@ -121,6 +121,14 @@ const data = {
         winner: 'high',
       },
       {
+        name: 'Running',
+        type: 'time/distance',
+        initialPlayers: 1,
+        maxPlayers: 1,
+        pointName: '',
+        winner: 'low',
+      },
+      {
         name: 'Mixed Martial Arts',
         type: '1v1',
         initialPlayers: 2,
@@ -168,12 +176,47 @@ const data = {
         pointName: '',
         winner: 'high',
       },
-
-
-
-      
-
-
-
+      {
+        name: 'Volleyball',
+        type: '1v1',
+        initialPlayers: 2,
+        maxPlayers: 2,
+        pointName: '',
+        winner: 'high',
+      },
+      {
+        name: 'Weight Lifting',
+        type: 'weight',
+        initialPlayers: 1,
+        maxPlayers: 1,
+        pointName: 'kg',
+        winner: 'high',
+      },
+      {
+        name: 'Weightlifting',
+        type: 'weight',
+        initialPlayers: 1,
+        maxPlayers: 1,
+        pointName: 'kg',
+        winner: 'high',
+      },
+      {
+        name: 'Wrestling',
+        type: '1v1',
+        initialPlayers: 2,
+        maxPlayers: 2,
+        pointName: '',
+        winner: 'high',
+      },
+      {
+        name: 'Weight Lifting',
+        type: 'weight',
+        initialPlayers: 1,
+        maxPlayers: 1,
+        pointName: 'kg',
+        winner: 'high',
+      },
     ]
 }
+
+export default data;
