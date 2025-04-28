@@ -8,17 +8,17 @@ const CreateActivitySelectionPage = ({ navigation }) => {
     const [validateError, setValidateError] = useState('');
 
     const uploadData =  async () => {
-      setValidateError('');
+      // setValidateError('');
 
-      try {
-        const response = await axios.post('https://f6a3-138-253-184-53.ngrok-free.app/create_activity', selectedActivities);
-        if (response.data && response.data.data) {
-          setValidateError('');
+      // try {
+      //   const response = await axios.post('https://26d2-138-253-184-53.ngrok-free.app/create_activity', selectedActivities);
+      //   if (response.data && response.data.data) {
+      //     setValidateError('');
           navigation.navigate('GoalSetting');
-        }
-      } catch (error) {
-        setValidateError(error.response?.data?.detail || 'Something went wrong');
-      }
+      //   }
+      // } catch (error) {
+      //   setValidateError(error.response?.data?.detail || 'Something went wrong');
+      // }
     }
 
     const handleActivityPress = (activity) => {
