@@ -1,1 +1,16 @@
-
+Backend/
+├── app/
+│   ├── __init__.py           # Initialize Flask app
+│   ├── config/              
+│   │   └── __init__.py       # Configuration settings
+│   ├── models/               # Your SQLAlchemy models
+│   ├── routes/               # Your route blueprints
+│   ├── services/             # Business logic
+│   └── utils/                # Helper functions
+├── instance/                 # Instance-specific files
+├── migrations/               # Database migrations
+├── tests/                    # Test files
+├── .env                      # Environment variables
+├── config.py                # Configuration classes
+├── requirements.txt         # Project dependencies
+└── run.py                   # Application entry point
