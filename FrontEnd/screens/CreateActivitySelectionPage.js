@@ -5,7 +5,22 @@ import styles from '../styles/styles';
 const CreateActivitySelectionPage = ({ navigation }) => {
  
     const [selectedActivities, setSelectedActivities] = useState([]);
-    
+    const [validateError, setValidateError] = useState('');
+
+    const uploadData =  async () => {
+      setValidateError('');
+
+      try {
+        const response = await axios.post('https://f6a3-138-253-184-53.ngrok-free.app/create_activity', selectedActivities);
+        if (response.data && response.data.data) {
+          setValidateError('');
+          navigation.navigate('GoalSetting');
+        }
+      } catch (error) {
+        setValidateError(error.response?.data?.detail || 'Something went wrong');
+      }
+    }
+
     const handleActivityPress = (activity) => {
       if (selectedActivities.includes(activity.id)) {
         setSelectedActivities(selectedActivities.filter((id) => id !== activity.id));
@@ -42,9 +57,14 @@ const CreateActivitySelectionPage = ({ navigation }) => {
           />
         </View>
         <View style={styles.formAction}>
+          {validateError ? (
+            <Text style={{ color: 'red', fontSize: 21, marginBottom: 8 }}>
+              {validateError}
+            </Text>
+          ) : null}
           <TouchableOpacity 
             onPress={() => {
-              navigation.navigate('GoalSetting')
+              uploadData();
             }}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Confirm Activities</Text>
