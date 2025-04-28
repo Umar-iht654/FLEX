@@ -1,16 +1,20 @@
-from Backend.app.api.v1.endpoints import group
-from fastapi import APIRouter
-from app.api.v1.endpoints import auth, users, activities, recommendations, messaging
-from Backend.app.api.v1.endpoints import progress
+from flask import Blueprint
+from app.api.endpoints import auth, users, activities, recommendations, messaging, group, progress, registration
 
-# Create main API router
-api_router = APIRouter()
-
-# Include endpoint routers
-api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
-api_router.include_router(users.router, prefix="/users", tags=["users"])
-api_router.include_router(activities.router, prefix="/activities", tags=["activities"])
-api_router.include_router(recommendations.router, prefix="/recommendations", tags=["recommendations"])
-api_router.include_router(messaging.router, prefix="/messaging", tags=["messaging"])
-api_router.include_router(group.group_router, prefix="/groups", tags=["groups"])
-api_router.include_router(progress.progress_router, prefix="/progress", tags=["progress"]) 
+def register_blueprints(app):
+    # Create blueprints
+    api_bp = Blueprint('api', __name__, url_prefix='/api/v1')
+    
+    # Register blueprints
+    api_bp.register_blueprint(auth.bp, url_prefix='/auth')
+    api_bp.register_blueprint(users.bp, url_prefix='/users')
+    api_bp.register_blueprint(activities.bp, url_prefix='/activities')
+    api_bp.register_blueprint(recommendations.bp, url_prefix='/recommendations')
+    api_bp.register_blueprint(messaging.bp, url_prefix='/messaging')
+    api_bp.register_blueprint(group.bp, url_prefix='/groups')
+    api_bp.register_blueprint(progress.bp, url_prefix='/progress')
+    api_bp.register_blueprint(registration.bp, url_prefix='/register')
+    
+    # Register the main API blueprint
+    app.register_blueprint(api_bp) 
+    

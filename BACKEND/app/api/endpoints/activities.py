@@ -1,21 +1,17 @@
 from datetime import datetime, timezone
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import Session
-from FLEX.backend.app.config.database import get_db
+from app.config.database import get_db
 from app.core.auth import get_current_user
 from app.models.activity import Activity, activity_participants
 from app.schemas.activity import ActivityCreate, ActivityUpdate, ActivityResponse
-from FLEX.backend.app.models.user import User
+from app.models.user import User
 
-router = APIRouter()
+bp = Blueprint('activities', __name__)
 
-@router.post("/", response_model=ActivityResponse)
-def create_activity(
-    activity: ActivityCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+@bp.route('/', methods=['POST'])
+def create_activity():
     """
     Create a new activity.
     
@@ -30,6 +26,9 @@ def create_activity(
     Raises:
         HTTPException: If there's an error creating the activity
     """
+    db = next(get_db())
+    data = request.get_json()
+    activity = ActivityCreate(**data)
     db_activity = Activity(
         name=activity.name,
         description=activity.description,
@@ -45,15 +44,10 @@ def create_activity(
     db.add(db_activity)
     db.commit()
     db.refresh(db_activity)
-    return db_activity
+    return jsonify(ActivityResponse.from_orm(db_activity).dict()), 201
 
-@router.get("/", response_model=List[ActivityResponse])
-def get_activities(
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+@bp.route('/', methods=['GET'])
+def get_activities():
     """
     Get a list of all activities with pagination support.
     
@@ -66,15 +60,14 @@ def get_activities(
     Returns:
         List[ActivityResponse]: List of activity objects
     """
+    db = next(get_db())
+    skip = request.args.get('skip', 0, type=int)
+    limit = request.args.get('limit', 100, type=int)
     activities = db.query(Activity).offset(skip).limit(limit).all()
-    return activities
+    return jsonify([ActivityResponse.from_orm(a).dict() for a in activities])
 
-@router.get("/{activity_id}", response_model=ActivityResponse)
-def get_activity(
-    activity_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+@bp.route('/<int:activity_id>', methods=['GET'])
+def get_activity(activity_id):
     """
     Get a specific activity by its ID.
     
@@ -89,18 +82,14 @@ def get_activity(
     Raises:
         HTTPException: If activity is not found
     """
+    db = next(get_db())
     activity = db.query(Activity).filter(Activity.id == activity_id).first()
     if not activity:
-        raise HTTPException(status_code=404, detail="Activity not found")
-    return activity
+        return jsonify({"detail": "Activity not found"}), 404
+    return jsonify(ActivityResponse.from_orm(activity).dict())
 
-@router.put("/{activity_id}", response_model=ActivityResponse)
-def update_activity(
-    activity_id: int,
-    activity_update: ActivityUpdate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+@bp.route('/<int:activity_id>', methods=['PUT'])
+def update_activity(activity_id):
     """
     Update an existing activity.
     
@@ -116,27 +105,25 @@ def update_activity(
     Raises:
         HTTPException: If activity is not found or user is not authorized
     """
-    db_activity = db.query(Activity).filter(Activity.id == activity_id).first()
-    if not db_activity:
-        raise HTTPException(status_code=404, detail="Activity not found")
+    db = next(get_db())
+    activity_update = request.get_json()
+    activity = db.query(Activity).filter(Activity.id == activity_id).first()
+    if not activity:
+        return jsonify({"detail": "Activity not found"}), 404
     
-    if db_activity.created_by != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized to update this activity")
+    if activity.created_by != current_user.id:
+        return jsonify({"detail": "Not authorized to update this activity"}), 403
     
-    for field, value in activity_update.dict(exclude_unset=True).items():
-        setattr(db_activity, field, value)
+    for field, value in activity_update.items():
+        setattr(activity, field, value)
     
-    db_activity.last_updated = datetime.now(timezone.utc)
+    activity.last_updated = datetime.now(timezone.utc)
     db.commit()
-    db.refresh(db_activity)
-    return db_activity
+    db.refresh(activity)
+    return jsonify(ActivityResponse.from_orm(activity).dict())
 
-@router.delete("/{activity_id}")
-def delete_activity(
-    activity_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+@bp.route('/<int:activity_id>', methods=['DELETE'])
+def delete_activity(activity_id):
     """
     Delete an activity.
     
@@ -151,23 +138,20 @@ def delete_activity(
     Raises:
         HTTPException: If activity is not found or user is not authorized
     """
-    db_activity = db.query(Activity).filter(Activity.id == activity_id).first()
-    if not db_activity:
-        raise HTTPException(status_code=404, detail="Activity not found")
+    db = next(get_db())
+    activity = db.query(Activity).filter(Activity.id == activity_id).first()
+    if not activity:
+        return jsonify({"detail": "Activity not found"}), 404
     
-    if db_activity.created_by != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized to delete this activity")
+    if activity.created_by != current_user.id:
+        return jsonify({"detail": "Not authorized to delete this activity"}), 403
     
-    db.delete(db_activity)
+    db.delete(activity)
     db.commit()
-    return {"message": "Activity deleted successfully"}
+    return jsonify({"message": "Activity deleted successfully"})
 
-@router.post("/{activity_id}/join")
-def join_activity(
-    activity_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+@bp.route('/<int:activity_id>/join', methods=['POST'])
+def join_activity(activity_id):
     """
     Join an activity as a participant.
     
@@ -182,16 +166,17 @@ def join_activity(
     Raises:
         HTTPException: If activity is not found, full, or user is already a participant
     """
+    db = next(get_db())
     activity = db.query(Activity).filter(Activity.id == activity_id).first()
     if not activity:
-        raise HTTPException(status_code=404, detail="Activity not found")
+        return jsonify({"detail": "Activity not found"}), 404
     
     current_participants = db.query(activity_participants).filter(
         activity_participants.c.activity_id == activity_id
     ).count()
     
     if current_participants >= activity.max_participants:
-        raise HTTPException(status_code=400, detail="Activity is full")
+        return jsonify({"detail": "Activity is full"}), 400
     
     existing_participant = db.query(activity_participants).filter(
         activity_participants.c.activity_id == activity_id,
@@ -199,7 +184,7 @@ def join_activity(
     ).first()
     
     if existing_participant:
-        raise HTTPException(status_code=400, detail="Already joined this activity")
+        return jsonify({"detail": "Already joined this activity"}), 400
     
     db.execute(
         activity_participants.insert().values(
@@ -208,14 +193,10 @@ def join_activity(
         )
     )
     db.commit()
-    return {"message": "Successfully joined activity"}
+    return jsonify({"message": "Successfully joined activity"})
 
-@router.post("/{activity_id}/leave")
-def leave_activity(
-    activity_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+@bp.route('/<int:activity_id>/leave', methods=['POST'])
+def leave_activity(activity_id):
     """
     Leave an activity as a participant.
     
@@ -230,9 +211,10 @@ def leave_activity(
     Raises:
         HTTPException: If activity is not found or user is not a participant
     """
+    db = next(get_db())
     activity = db.query(Activity).filter(Activity.id == activity_id).first()
     if not activity:
-        raise HTTPException(status_code=404, detail="Activity not found")
+        return jsonify({"detail": "Activity not found"}), 404
     
     existing_participant = db.query(activity_participants).filter(
         activity_participants.c.activity_id == activity_id,
@@ -240,7 +222,7 @@ def leave_activity(
     ).first()
     
     if not existing_participant:
-        raise HTTPException(status_code=400, detail="Not a participant of this activity")
+        return jsonify({"detail": "Not a participant of this activity"}), 400
     
     db.execute(
         activity_participants.delete().where(
@@ -249,4 +231,4 @@ def leave_activity(
         )
     )
     db.commit()
-    return {"message": "Successfully left activity"} 
+    return jsonify({"message": "Successfully left activity"}) 
