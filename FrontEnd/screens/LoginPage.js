@@ -10,7 +10,7 @@ const LoginPage  = ({ navigation }) => {
   const validateLogin = async () => {
     setValidateError('');
     try {
-      const response = await axios.post('https://26d2-138-253-184-53.ngrok-free.app/create_activity', {email: email}, {password: password});
+      const response = await axios.post('https://26d2-138-253-184-53.ngrok-free.app/Login', {email: email}, {password: password});
       if(response.data && response.data.data) {
         setValidateError('');
         navigation.navigate('CreateAccount')
