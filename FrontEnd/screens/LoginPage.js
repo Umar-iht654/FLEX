@@ -14,7 +14,7 @@ const LoginPage  = ({ navigation }) => {
         email: email,
         password: password
       });
-      if(response.data && response.data.data) {
+      if(response.data && response.data.user) {
         setValidateError('');
         navigation.navigate('CreateAccount')
       }
