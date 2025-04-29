@@ -1,11 +1,30 @@
 import React, {useState} from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import styles from '../styles/styles';
+import data from '../styles/localdata';
 
 const CreateActivitySelectionPage = ({ navigation }) => {
  
     const [selectedActivities, setSelectedActivities] = useState([]);
-    
+    const [validateError, setValidateError] = useState('');
+
+    const uploadData =  async () => {
+      const activityNames = data.activities
+      .filter(activity => selectedActivities.includes(activity.id)).map(activity => activity.name);
+
+      setValidateError('');
+      try{
+        const response = await axios.post('https://93a2-138-253-184-53.ngrok-free.app/activityLog', {activities: activityNames, email:email});
+        if(response.data && response.data.message){
+          const {user} = response.data.user
+          setValidateError('');
+          navigation.navigate('GoalSetting', {create_user:user});
+        }
+      } catch (error) {
+        setValidateError(error.response?.data?.detail || 'Something went wrong');
+      }
+    }
+
     const handleActivityPress = (activity) => {
       if (selectedActivities.includes(activity.id)) {
         setSelectedActivities(selectedActivities.filter((id) => id !== activity.id));
@@ -55,92 +74,4 @@ const CreateActivitySelectionPage = ({ navigation }) => {
     );
 };
 
-const data = {
-    activities: [
-      {
-        id: 'a1',
-        name: 'running',
-      },
-      {
-        id: 'a2',
-        name: 'tennis',
-      },
-      {
-        id: 'a3',
-        name: 'football',
-      },
-      {
-        id: 'a4',
-        name: 'cricket',
-      },
-      {
-        id: 'a5',
-        name: 'rugby',
-      },
-      {
-        id: 'a6',
-        name: 'athletics',
-      },
-      {
-        id: 'a7',
-        name: 'snooker',
-      },
-      {
-        id: 'a8',
-        name: 'racing',
-      },
-      {
-        id: 'a9',
-        name: 'boxing',
-      },
-      {
-        id: 'a10',
-        name: 'darts',
-      },
-      {
-        id: 'a11',
-        name: 'swimming',
-      },
-      {
-        id: 'a12',
-        name: 'gymnastics',
-      },
-      {
-        id: 'a13',
-        name: 'badminton',
-      },
-      {
-        id: 'a14',
-        name: 'squash',
-      },
-      {
-        id: 'a15',
-        name: 'watersport',
-      },
-      {
-        id: 'a16',
-        name: 'skiing',
-      },
-      {
-        id: 'a17',
-        name: 'hockey',
-      },
-      {
-        id: 'a18',
-        name: 'basketball',
-      },
-      {
-        id: 'a19',
-        name: 'table tennis',
-      },
-      {
-        id: 'a20',
-        name: 'golf',
-      },
-      {
-        id: 'a21',
-        name: 'netball',
-      },
-    ]
-};
 export default CreateActivitySelectionPage;
