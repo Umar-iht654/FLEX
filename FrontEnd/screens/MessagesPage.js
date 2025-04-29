@@ -114,6 +114,7 @@ const MessagesPage = ({ navigation }) => {
   useEffect(() => {
     UploadPageInfo("user");
   }, []);
+
   return (
     <SafeAreaView style={[styles.safeAreaView, {justifyContent: 'flex-start', alignItems: 'center'}]}>
 
@@ -152,6 +153,13 @@ const MessagesPage = ({ navigation }) => {
         {/*Group Screen*/}
         {currentScreen === 'groups' && (
           <ScrollView>
+            <View style={{width: '100%', alignItems: 'flex-end', padding: 16}}>
+              <TouchableOpacity style={{width: '100%'}}onPress={()=>{navigation.getParent().navigate("CreateGroup")}}>
+                <View style={{height: 60, width: '100%', backgroundColor: 'teal', borderRadius: 12, borderWidth: 2, alignItems: 'center', justifyContent: 'center'}}>
+                  <Text style={messagesPageStyles.buttonText}>Create Group</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
             {/*Shows list of groups*/}
             <View style={{alignItems: 'center'}}>
               {groupsInfo.map(group=> (
@@ -237,6 +245,12 @@ const messagesPageStyles = StyleSheet.create({
   },
   infoCardName:{
     fontSize: 30,
+    fontWeight: '700',
+    color: '#1e1e1e',
+    marginRight: 15
+  },
+  buttonText:{
+    fontSize: 24,
     fontWeight: '700',
     color: '#1e1e1e',
     marginRight: 15

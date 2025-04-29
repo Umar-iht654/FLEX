@@ -8,11 +8,14 @@ import styles from '../styles/styles';
 const UserProfilePage = ({ navigation }) => {
 
     const route = useRoute();
-    const { userID, previousPage } = route.params;
+    const { userID } = route.params;
 
     const [friendOverlayVisable, setFriendOverlayVisable] = useState(false);
     const [groupOverlayVisable, setGroupOverlayVisable] = useState(false);
     const [activityOverlayVisable, setActivityOverlayVisable] = useState(false);
+    const [participantOverlayVisable, setParticipantOverlayVisible] = useState(false);
+
+    const [currentParticipants, setCurrentParticipants] = useState([]);
     //this is a placeholder, there should be a function that can be called to collect all the data below from the database
 
 
@@ -90,7 +93,8 @@ const UserProfilePage = ({ navigation }) => {
         ];
         setActivityData(newActivityData);
 
-        setUserRelationship('notfriend');
+        const newUserRelationship = false
+        setUserRelationship('notfriend')
 
     }
 
@@ -110,118 +114,235 @@ const UserProfilePage = ({ navigation }) => {
     }
 
     function openProfile(newUserID){
-        navigation.push('UserProfile', { userID: newUserID, previousPage:  previousPage});
+        navigation.push('UserProfile', { userID: newUserID});
     }
 
+    function openGroup(newGroupID){
+        navigation.push('GroupProfile', { groupID: newGroupID });
+      }
+
     function returnToPage(){
-        console.log(previousPage);
-        if(previousPage == 'Profile'){
-            navigation.navigate('Home', {screen: previousPage})
-        }
-        if(previousPage == 'Chat'){
-            navigation.navigate('Chat', { chatName: userInfo.username, chatID: userInfo.userID, chatPF: userInfo.profilePic})
-        }
+        navigation.goBack();
     }
     //retrieves user activities from the database
     function UploadActivities(isInitial){
         const newActivityLog = [
-            {activityID: 1, activityType: '1v1', activityName: 'Activity 1', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
-            {activityID: 2, activityType: 'solo', activityName: 'Activity 2', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
-            {activityID: 3, activityType: '1v1', activityName: 'Activity 3', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
-            {activityID: 4, activityType: '1v1v1', activityName: 'Activity 4', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
-            {activityID: 5, activityType: '1v1', activityName: 'Activity 5', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
-            {activityID: 6, activityType: '1v1', activityName: 'Activity 6', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
-            {activityID: 7, activityType: 'solo', activityName: 'Activity 7', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
-            {activityID: 8, activityType: '1v1', activityName: 'Activity 8', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
-            {activityID: 9, activityType: '1v1v1', activityName: 'Activity 9', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
-            {activityID: 10, activityType: '1v1', activityName: 'Activity 10', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
-            {activityID: 11, activityType: '1v1', activityName: 'Activity 11', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
-            {activityID: 12, activityType: 'solo', activityName: 'Activity 12', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
-            {activityID: 13, activityType: '1v1', activityName: 'Activity 13', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
-            {activityID: 14, activityType: '1v1v1', activityName: 'Activity 14', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
-            {activityID: 15, activityType: '1v1', activityName: 'Activity 15', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
-            {activityID: 16, activityType: '1v1', activityName: 'Activity 16', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [5,3]},
-            {activityID: 17, activityType: 'solo', activityName: 'Activity 17', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
-            {activityID: 18, activityType: '1v1', activityName: 'Activity 18', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
-            {activityID: 19, activityType: '1v1v1', activityName: 'Activity 19', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
-            {activityID: 20, activityType: '1v1', activityName: 'Activity 20', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [9,3]},
-        ];
+          {
+            activityID: 1, activityName: 'Activity 1', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 2, activityName: 'Activity 2', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 5],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 18],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 3, activityName: 'Activity 3', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'] ], 2],
+            ]
+          },
+          {
+            activityID: 4, activityName: 'Activity 4', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 2],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'], [0,'user3'] ], 9],
+            ]
+          },
+          {
+            activityID: 5, activityName: 'Activity 5', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 27],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 2],
+            ]
+          },
+          {
+            activityID: 6, activityName: 'Activity 6', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+              
+            ]
+          },
+          {
+            activityID: 7, activityName: 'Activity 7', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 8, activityName: 'Activity 8', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 9, activityName: 'Activity 9', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 10, activityName: 'Activity 10', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 11, activityName: 'Activity 11', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 12, activityName: 'Activity 12', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 13, activityName: 'Activity 13', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 14, activityName: 'Activity 14', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 15, activityName: 'Activity 15', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 16, activityName: 'Activity 16', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 17, activityName: 'Activity 17', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 18, activityName: 'Activity 18', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 19, activityName: 'Activity 19', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 20, activityName: 'Activity 20', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 21, activityName: 'Activity 21', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 22, activityName: 'Activity 22', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 23, activityName: 'Activity 23', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+          {
+            activityID: 24, activityName: 'Activity 24', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+              [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+            ]
+          },
+        ]
         if(isInitial){
             setCurrentActivityNumber(5)
         }
         setActivityLog(newActivityLog.slice(0, currentActivityNumber));
         setCurrentActivityNumber(prev => prev+5);
-
+    
     }
     //The card that shows details about the users activities
-    const ActivityDataCard = (props) => {
-        return (
-            <View style={profilePageStyles.activityCardOutline}>
-                {/*Displays information about the activity at the top of the card*/}
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
-                    <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-                        <View style={{flexDirection: 'column', alignItems: 'flex-start', marginLeft: 10}}>
-                            <Text style={profilePageStyles.activityTitle}>{props.activityName}</Text>
-                            <Text style={profilePageStyles.activityTimeInformation}>{props.dateTime}</Text>
-                            <Text style={profilePageStyles.activityTimeInformation}>{props.duration}</Text>
-                        </View>
-                        <View style={profilePageStyles.activityIcon}/>
-                    </View>
-                    <Text style={profilePageStyles.activityAge}>{props.age}</Text>
-                </View>
-
-                {/*Displays the scores if the activity only has 1 score*/}
-                {props.activityType == 'solo' && (
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 10}}>
-                        <View style={profilePageStyles.activityScoreContainer2}>
-                            <Text style={profilePageStyles.activityScoreText}>{props.scores[0]}</Text>
-                        </View>
-
-
-                    </View>
-                )}
-
-                {/*Displays the scores if the activity has 2 scores*/}
-                {props.activityType == '1v1' && (
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 10}}>
-                        {/*First score*/}
-                        <View style={profilePageStyles.activityScoreContainer1}>
-                            <Text style={profilePageStyles.activityScoreText}>{props.scores[0]}</Text>
-                        </View>
-                        {/*Second score*/}
-                        <View style={profilePageStyles.activityScoreContainer2}>
-                            <Text style={profilePageStyles.activityScoreText}>{props.scores[1]}</Text>
-                        </View>
-
-                    </View>
-                )}
-
-                {/*Displays the scores if the activity has 3 scores*/}
-                {props.activityType == '1v1v1' && (
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 10}}>
-                        {/*First score*/}
-                        <View style={profilePageStyles.activityScoreContainer1}>
-                            <Text style={profilePageStyles.activityScoreText}>{props.scores[0]}</Text>
-                        </View>
-                        {/*Second score*/}
-                        <View style={profilePageStyles.activityScoreContainer2}>
-                            <Text style={profilePageStyles.activityScoreText}>{props.scores[1]}</Text>
-                        </View>
-                        {/*Third score*/}
-                        <View style={profilePageStyles.activityScoreContainer3}>
-                            <Text style={profilePageStyles.activityScoreText}>{props.scores[2]}</Text>
-                        </View>
-                    </View>
-                )}
-
-                {/*Contributing Users button, if pressed displays all users involved in activity*/}
-                <TouchableOpacity>
-                    <Text style={profilePageStyles.contributingUsersButton}>participants</Text>
-                </TouchableOpacity>
+    const ParticipantCard = ({participant}) => {
+        return(
+          <View style={{width: '90%', height: 60, backgroundColor: '#b5bdb5', borderRadius: 12, padding: 12, marginBottom: 10, justifyContent: 'center', alignItems: 'flex-start'}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{width: 30, height: 30, borderRadius: 50, backgroundColor: 'gray'}}></View>
+              <Text style={profilePageStyles.participantNameText}>{participant[1]}</Text>
             </View>
+          </View>
+        )
+      }
+      const ActivityScoreCard = ({participantCount, participant}) => {
+        const thisBackgroundColor = participantCount === 0 ? 'green'
+          : participantCount === 1 ? 'orange'
+          : participantCount === 2 ? 'blue'
+          : participantCount === 3 ? 'yellow'
+          : 'gray';
+        return(
+          <TouchableOpacity onPress={() => {
+            setCurrentParticipants(participant[0])
+            setParticipantOverlayVisible(true)
+          }}>
+            <View style={[profilePageStyles.activityScoreContainer1, {backgroundColor: thisBackgroundColor}]}>
+              <Text style={profilePageStyles.activityScoreText}>{participant[1]}</Text>
+            </View>
+          </TouchableOpacity>
+        )
+      }
+    
+      //The card that shows details about the users activities
+      const ActivityDataCard = (props) => {
+        return (
+          <View style={profilePageStyles.activityCardOutline}>
+            {/*Displays information about the activity at the top of the card*/}
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
+              <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+                <View style={{flexDirection: 'column', alignItems: 'flex-start', marginLeft: 10}}>
+                  <Text style={profilePageStyles.activityTitle}>{props.activityName}</Text>
+                  <Text style={profilePageStyles.activityTimeInformation}>{props.dateTime}</Text>
+                  <Text style={profilePageStyles.activityTimeInformation}>{props.duration}</Text>
+                </View>
+                <View style={profilePageStyles.activityIcon}/>
+              </View>
+              <Text style={profilePageStyles.activityAge}>{props.age}</Text>
+            </View>
+    
+            {/*Display scores*/}
+            <View styles={{width: '100%', alignItems: 'center'}}>
+              <Text style={[profilePageStyles.activityTitle, {textDecorationLine: 'underline', color: '#8f8f8f'}]}>Scores</Text>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 10}}>
+              {props.participants.map((participant, index) => (
+                <ActivityScoreCard
+                  key={index}
+                  participantCount={index}
+                  participant={participant}
+                />
+              ))}
+            </View>
+    
+          </View>
         );
-    };
-
+      };
     //The buttons which show the users friend, group and activity count
     const InfoBox = ({name, count}) => {
         return (
@@ -245,7 +366,7 @@ const UserProfilePage = ({ navigation }) => {
 
     const GroupCard = ({groupname, profilePicture}) => {
         return (
-            <TouchableOpacity onPress={() => {/*Directs user to groups profile page page*/}}>
+            <TouchableOpacity onPress={() => {openGroup(groupname)}}>
                 <View style={{flexDirection: "row"}}>
                     <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
                     <Text style={profilePageStyles.popupItemText}>{groupname}</Text>
@@ -268,6 +389,10 @@ const UserProfilePage = ({ navigation }) => {
             // This function will run every time the screen is focused
             UploadPageInfo("user");
             UploadActivities(true);
+            setFriendOverlayVisable(false);
+            setGroupOverlayVisable(false);
+            setActivityOverlayVisable(false);
+            setParticipantOverlayVisible(false);
             console.log("navigated to")
         }, [])
     );
@@ -380,15 +505,14 @@ const UserProfilePage = ({ navigation }) => {
                             {/* Displays recent activities */}
                             <Text style={profilePageStyles.recentActivitiesHeader}>Recent Activities</Text>
                             {activityLog.map(activity => (
-                                <ActivityDataCard
-                                    key={activity.activityID}
-                                    activityType={activity.activityType}
-                                    activityName={activity.activityName}
-                                    dateTime={activity.dateTime}
-                                    age={activity.age}
-                                    duration={activity.duration}
-                                    scores={activity.scores}
-                                />
+                            <ActivityDataCard
+                                key={activity.activityID}
+                                activityName={activity.activityName}
+                                dateTime={activity.dateTime}
+                                age={activity.age}
+                                duration={activity.duration}
+                                participants={activity.participants}
+                            />
                             ))}
 
                             {/* Displays show more button, the button disappears once all activities are shown */}
@@ -455,6 +579,25 @@ const UserProfilePage = ({ navigation }) => {
                             </ScrollView>
                     </View>
                 </TouchableOpacity>
+            </Modal>
+
+            {/*Participants List Overlay*/}
+            <Modal animationType='fade' transparent={true} visible={participantOverlayVisable} onRequestClose={() => setParticipantOverlayVisible(false)}>
+            <TouchableOpacity style={profilePageStyles.popupScreenBackground} activeOpacity={1} onPress={() => setParticipantOverlayVisible(false)}>
+                <View style={profilePageStyles.popupScreenOutline}>
+                    <Text style={profilePageStyles.popupScreenTitle}>Team Members</Text>
+                    <ScrollView>
+                    <View style={{alignItems: 'center'}}>
+                        {currentParticipants.map((thisParticipant, index)=> (
+                        <ParticipantCard
+                            key = {index}
+                            participant = {thisParticipant}
+                        />
+                        ))}
+                    </View>
+                    </ScrollView>
+                </View>
+            </TouchableOpacity>
             </Modal>
         </SafeAreaView>
 
@@ -649,6 +792,13 @@ const profilePageStyles = StyleSheet.create({
         fontWeight: '700',
         color: '#1e1e1e',
         marginBottom: 8,
+        marginLeft: 10,
+        textAlign: 'center',
+    },
+    participantNameText: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#1e1e1e',
         marginLeft: 10,
         textAlign: 'center',
     }
