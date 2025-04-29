@@ -16,6 +16,9 @@ const CreateGroupPage = ({ navigation }) => {
     const activities = data.activities.map(activity => activity.name);
     const [activitiesVisable, setActivitiesVisable] = useState(false);
 
+    function createGroup(){
+        navigation.goBack();
+    }
     const ActivityCard = ({ activityName }) => {
         return(
             <TouchableOpacity onPress={()=>{setActivitiesVisable(false); setGroupActivity(activityName)}}>
@@ -80,7 +83,7 @@ const CreateGroupPage = ({ navigation }) => {
                         </View>
                     )}
                     <View style={{width: '100%', padding: 24}}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{createGroup()}}>
                         <View style={createGroupPageStyles.selectActivitiesButton}>
                             <Text style={{}}>Create Group</Text>
                         </View>
