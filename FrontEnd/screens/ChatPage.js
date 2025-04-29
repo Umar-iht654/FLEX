@@ -37,7 +37,7 @@ const ChatPage = ({ navigation }) => {
     //gets the chat options of the current chat
     function GetChatOptions(){
         //uses the chat ID to collect the pinned and muted settings from the database
-        const chatOptions = [{optionName: 'Pin', status: true}, {optionName: 'Mute', status: false}];
+        const chatOptions = [{status: true}, {optionName: 'Mute', status: false}];
         return chatOptions;
     }
 
@@ -202,29 +202,9 @@ const ChatPage = ({ navigation }) => {
                     </View>
                 </TouchableOpacity>
             </View>
-
-            {/*Options button*/}
-            <TouchableOpacity onPress={() => {setOptionsMenuVisable(true)}}>
-                <Image style={chatPageStyles.optionsButton} source={require('../assets/OptionsIcon.png')}/>
-            </TouchableOpacity>
         </View>
 
-        {/*Options Menu Display*/}
-        <Modal animationType='fade' transparent={true} visible={optionsMenuVisable} onRequestClose={() => setOptionsMenuVisable(false)}>
-            <TouchableOpacity style={chatPageStyles.optionsMenuBackground} activeOpacity={1} onPress={() => setOptionsMenuVisable(false)}>
-                <View style={chatPageStyles.optionsMenuContainer}>
-
-                    {/*Displays Options*/}
-                    {GetChatOptions().map(thisOption=> (
-                        <ChatOptionsCard
-                            key = {thisOption.optionName}
-                            option = {thisOption.optionName}
-                            status = {thisOption.status}
-                        />
-                    ))}
-                </View>
-            </TouchableOpacity>
-        </Modal>
+        
 
         {/*Ensures the items on the page shift up when the keyboard opens*/}
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
