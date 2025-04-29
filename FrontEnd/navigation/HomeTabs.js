@@ -9,7 +9,8 @@ import ProfilePage from '../screens/ProfilePage';
 import GoalSetting from '../screens/GoalSetting';
 const Tab = createBottomTabNavigator();
 
-const HomeTabs = () => {
+const HomeTabs = (route) => {
+  const {user} = route.params.user;
   return (
     <Tab.Navigator
       screenOptions={{
@@ -22,6 +23,7 @@ const HomeTabs = () => {
       <Tab.Screen 
         name="Feed" 
         component={FeedPage} 
+        initialParams={{ user }}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image source={require('../assets/FeedIcon.png')} style={{ width: 120, height: 120 }} />
@@ -32,6 +34,7 @@ const HomeTabs = () => {
       <Tab.Screen 
         name="Search" 
         component={SearchPage} 
+        initialParams={{ user }}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image source={require('../assets/SearchIcon.png')} style={{ width: 120, height: 120 }} />
@@ -41,7 +44,8 @@ const HomeTabs = () => {
       />
       <Tab.Screen 
         name="ActivityLog" 
-        component={ActivityLogPage} 
+        component={ActivityLogPage}
+        initialParams={{ user }} 
         options={{
           tabBarIcon: ({ focused }) => (
             <Image source={require('../assets/ActivityLogIcon.png')} style={{ width: 120, height: 120 }} />
@@ -52,6 +56,7 @@ const HomeTabs = () => {
       <Tab.Screen 
         name="Messages" 
         component={MessagesPage} 
+        initialParams={{ user }}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image source={require('../assets/MessageIcon.png')} style={{ width: 120, height: 120 }} />
@@ -62,6 +67,7 @@ const HomeTabs = () => {
       <Tab.Screen 
         name="Profile" 
         component={ProfilePage} 
+        initialParams={{ user }}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image source={require('../assets/ProfileIcon.png')} style={{ width: 120, height: 120 }} />

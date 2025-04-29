@@ -4,7 +4,8 @@ import { useFocusEffect, useRoute } from '@react-navigation/native';
 import styles from '../styles/styles';
 
 
-const ProfilePage = ({ navigation }) => {
+const ProfilePage = ({ navigation, route }) => {
+  const { user } = route.params;
 
 
   const [friendOverlayVisable, setFriendOverlayVisable] = useState(false);

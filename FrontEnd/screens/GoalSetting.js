@@ -2,7 +2,10 @@ import React, {useState} from 'react';
 import { SafeAreaView, View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import styles from '../styles/styles';
 
-const GoalSetting = ({ navigation }) => { 
+const GoalSetting = ({ navigation, route }) => { 
+  const create_user = route?.params?.create_user ?? null;
+  const { user } = route?.params?.user ?? null;
+
   const [goalType, setGoalType] = useState('');
   const [inputValues, setInputValues] = useState({ start: '', goal: '' });
   const [customGoal, setCustomGoal] = useState('');
@@ -96,7 +99,15 @@ const GoalSetting = ({ navigation }) => {
           <Text style={styles.buttonText}>Save Goal</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Home')} style={[styles.button, styles.secondaryButton]}>
+        <TouchableOpacity onPress={() => {
+          if (create_user) {
+            navigation.navigate('Home', { user: create_user });
+          }
+          else{
+            navigation.navigate('Home')
+          }
+        }}
+        style={[styles.button, styles.secondaryButton]}>
           <Text style={styles.buttonText}>Go to Activity Log</Text>
         </TouchableOpacity>
       </ScrollView>
