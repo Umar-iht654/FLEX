@@ -83,17 +83,20 @@ CREATE TABLE group_members (
 CREATE TABLE messages (
     id INT AUTO_INCREMENT,
     content TEXT NOT NULL,
-    sender_id INT,
+    sender_id INT NOT NULL,
     group_id INT,
     recipient_id INT,
     is_read BOOLEAN DEFAULT FALSE,
-    is_pinned BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE,
-    FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT chk_message_type CHECK (
+        (group_id IS NULL AND recipient_id IS NOT NULL) OR
+        (group_id IS NOT NULL AND recipient_id IS NULL)
+    )
 );
 
 -- PROGRESS table
