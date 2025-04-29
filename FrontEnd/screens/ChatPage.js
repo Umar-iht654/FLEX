@@ -7,7 +7,7 @@ const ChatPage = ({ navigation }) => {
     //collects information chat information needed to load the messages
     //the chat id should be used to identify the chat
     const route = useRoute();
-    const { chatType, chatName, chatID, chatPF } = route.params;
+    const { chatType, chatName, chatID, chatPF, user } = route.params;
 
     //contains the message being typed in the message input field
     const [message, setMessage] = useState();

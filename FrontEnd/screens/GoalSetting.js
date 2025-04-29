@@ -3,8 +3,7 @@ import { SafeAreaView, View, Text, TextInput, TouchableOpacity, ScrollView, Aler
 import styles from '../styles/styles';
 
 const GoalSetting = ({ navigation, route }) => { 
-  const create_user = route?.params?.create_user ?? null;
-  const { user } = route?.params?.user ?? null;
+  const { create_user, user } = route?.params ?? {};
 
   const [goalType, setGoalType] = useState('');
   const [inputValues, setInputValues] = useState({ start: '', goal: '' });

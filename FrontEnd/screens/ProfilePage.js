@@ -68,6 +68,8 @@ const ProfilePage = ({ navigation, route }) => {
           activityname: activity.name
         }));
         setActivityData(newActivityData);
+
+        setUserRelationship('friend');
       }
     } catch (error) {
     }

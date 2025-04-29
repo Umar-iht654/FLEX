@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import styles from '../styles/styles';
 
-const MessagesPage = ({ navigation }) => {
+const MessagesPage = ({ navigation, route }) => {
   //contains the current screen
+  const {user} = route.params;
   const [userStreak, setUserStreak] = useState(5);
   const [weather, setWeather] = useState('4°');
 
@@ -16,7 +17,7 @@ const MessagesPage = ({ navigation }) => {
 
   //opens the chat page
   function OpenChat( chatType, chatName, chatID, chatPF){
-    navigation.navigate('Chat', { chatType, chatName, chatID, chatPF })
+    navigation.navigate('Chat', { chatType, chatName, chatID, chatPF, user })
   }
 
   function UploadPageInfo(username){

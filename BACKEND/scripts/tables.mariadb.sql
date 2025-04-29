@@ -61,22 +61,18 @@ CREATE TABLE score_record (
 
 -- GROUPS table
 CREATE TABLE `groups` (
-    id INT AUTO_INCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    bio TEXT,
+    bio VARCHAR (255),
     activity_type VARCHAR(255),
-    member_count INT DEFAULT 0,
-    PRIMARY KEY (id)
 );
 
 -- GROUP MEMBERS table
 CREATE TABLE group_members (
-    group_id INT,
-    user_id INT,
+    group_id INT PRIMARY KEY,
+    user_username INT,
     role VARCHAR(50) DEFAULT 'member',
-    PRIMARY KEY (group_id, user_id),
-    FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE
 );
 
 -- MESSAGES table
@@ -98,7 +94,6 @@ CREATE TABLE messages (
         (group_id IS NOT NULL AND recipient_id IS NULL)
     )
 );
-
 -- PROGRESS table
 CREATE TABLE progress (
     id INT AUTO_INCREMENT,
