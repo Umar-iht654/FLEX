@@ -14,7 +14,7 @@ const CreateActivitySelectionPage = ({ navigation, route }) => {
 
     setValidateError('');
     try{
-      const response = await axios.post('https://93a2-138-253-184-53.ngrok-free.app/activityLog', {activities: activityNames, email:email});
+      const response = await axios.post('https://0d7f-138-253-184-53.ngrok-free.app/activityLog', {activities: activityNames, email:email});
       if(response.data && response.data.message){
         setValidateError('');
         const {user} = response.data.user

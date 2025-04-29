@@ -11,7 +11,7 @@ const LoginPage  = ({ navigation }) => {
   const validateLogin = async () => {
     setValidateError('');
     try {
-      const response = await axios.post('https://93a2-138-253-184-53.ngrok-free.app/Login', {
+      const response = await axios.post('https://0d7f-138-253-184-53.ngrok-free.app/Login', {
         email: email,
         password: password
       });
