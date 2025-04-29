@@ -127,12 +127,11 @@ CREATE TABLE user_interests (
 );
 
 -- FRIENDS table
-CREATE TABLE friends (
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    friend_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    status VARCHAR(50) NOT NULL CHECK (status IN ('pending', 'accepted', 'rejected')),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, friend_id)
-);
 
+CREATE TABLE friends (    user_username VARCHAR(255) NOT NULL,    friend_username VARCHAR(255) NOT NULl);
+CREATE TABLE userProfile (    username VARCHAR(255) UNIQUE NOT NULL,    bio VARCHAR(255),    profile_picture VARCHAR(255) DEFAULT NULL,    notFriend TINYINT DEFAULT NULL);
+
+create table profile_group{
+    user_username VARCHAR (255) NOT NULL,
+    group_name VARCHAR(255) NOT NULl
+}

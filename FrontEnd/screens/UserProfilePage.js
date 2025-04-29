@@ -8,7 +8,6 @@ import styles from '../styles/styles';
 const UserProfilePage = ({ navigation }) => {
 
     const route = useRoute();
-    const { userID } = route.params;
 
     const [friendOverlayVisable, setFriendOverlayVisable] = useState(false);
     const [groupOverlayVisable, setGroupOverlayVisable] = useState(false);
@@ -37,6 +36,7 @@ const UserProfilePage = ({ navigation }) => {
     const [userRelationship, setUserRelationship] = useState([]);
     //should upload the user data from the database
     function UploadPageInfo() {
+      
         const newUserInfo = {
             username: userID,
             bio: 'Bio',
