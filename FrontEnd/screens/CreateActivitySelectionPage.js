@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import styles from '../styles/styles';
+import axios from 'axios';
 
 const CreateActivitySelectionPage = ({ navigation }) => {
  
@@ -11,7 +12,7 @@ const CreateActivitySelectionPage = ({ navigation }) => {
       // setValidateError('');
 
       // try {
-      //   const response = await axios.post('https://26d2-138-253-184-53.ngrok-free.app/create_activity', selectedActivities);
+      //   const response = await axios.post('https://ca1b-138-253-184-53.ngrok-free.app/create_activity', selectedActivities);
       //   if (response.data && response.data.data) {
       //     setValidateError('');
           navigation.navigate('GoalSetting');
