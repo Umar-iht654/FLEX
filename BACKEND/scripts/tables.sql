@@ -1,23 +1,20 @@
 -- USERS table
 CREATE TABLE users (
-    id INT NOT NULL AUTO_INCREMENT,
-    email VARCHAR(255) NOT NULL,
-    username VARCHAR(255) NOT NULL,
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    username VARCHAR(255) UNIQUE NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     bio TEXT,
     hashed_password TEXT NOT NULL,
     profile_picture TEXT,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    UNIQUE (email),
-    UNIQUE (username)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ACTIVITIES table
 CREATE TABLE activities (
-    id INT NOT NULL AUTO_INCREMENT,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     activity_type VARCHAR(255),
@@ -26,142 +23,115 @@ CREATE TABLE activities (
     longitude FLOAT,
     start_time TIMESTAMP,
     end_time TIMESTAMP,
-    duration_minutes INT,
-    max_participants INT,
-    created_by INT,
+    duration_minutes INTEGER,
+    max_participants INTEGER,
+    created_by INTEGER REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ACTIVITY PARTICIPANTS table
 CREATE TABLE activity_participants (
-    activity_id INT,
-    user_id INT,
+    activity_id INTEGER REFERENCES activities(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     team VARCHAR(255),
     score FLOAT,
-    PRIMARY KEY (activity_id, user_id),
-    FOREIGN KEY (activity_id) REFERENCES activities(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    PRIMARY KEY (activity_id, user_id)
 );
-
--- SCORE RECORDS table
-CREATE TABLE score_record (
-    id INT NOT NULL AUTO_INCREMENT,
-    activity_id INT,
-    user_id INT,
-    team VARCHAR(255),
-    score DOUBLE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (activity_id) REFERENCES activities(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+ CREATE TABLE activities (    id INT AUTO_INCREMENT PRIMARY KEY,    name VARCHAR(50) NOT NULL,    user_id INT,    FOREIGN KEY (user_id) REFERENCES userDetails(id) ON DELETE CASCADE);
+CREATE TABLE score_record (    activity_id INT,    user_id INT,    team VARCHAR(255),    score DOUBLE,   FOREIGN KEY (activity_id) REFERENCES activities(id) ON DELETE CASCADE,  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  FOREIGN KEY (user_id) REFERENCES userDetails(id) ON DELETE CASCADE);
 
 -- GROUPS table
-CREATE TABLE `groups` (
-    id INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE groups (
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    bio TEXT,
+    description TEXT,
+    profile_picture TEXT,
     activity_type VARCHAR(255),
-    member_count INT DEFAULT 0,
-    PRIMARY KEY (id)
+    location VARCHAR(255),
+    latitude FLOAT,
+    longitude FLOAT,
+    is_private BOOLEAN DEFAULT FALSE,
+    created_by INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- GROUP MEMBERS table
 CREATE TABLE group_members (
-    group_id INT,
-    user_id INT,
-    role VARCHAR(50) DEFAULT 'member',
-    PRIMARY KEY (group_id, user_id),
-    FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    role VARCHAR(255) DEFAULT 'member',
+    PRIMARY KEY (group_id, user_id)
 );
 
 -- MESSAGES table
 CREATE TABLE messages (
-    id INT NOT NULL AUTO_INCREMENT,
+    id SERIAL PRIMARY KEY,
     content TEXT NOT NULL,
-    sender_id INT,
-    group_id INT,
-    recipient_id INT,
+    sender_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE,
+    recipient_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     is_read BOOLEAN DEFAULT FALSE,
     is_pinned BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE,
-    FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- PROGRESS table
 CREATE TABLE progress (
-    id INT NOT NULL AUTO_INCREMENT,
-    user_id INT,
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     exercise_type VARCHAR(255) NOT NULL,
     value FLOAT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    notes TEXT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    notes TEXT
 );
 
 -- GOALS table
 CREATE TABLE goals (
-    id INT NOT NULL AUTO_INCREMENT,
-    user_id INT,
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     exercise_type VARCHAR(255) NOT NULL,
     target_value FLOAT NOT NULL,
     deadline TIMESTAMP NOT NULL,
     current_value FLOAT DEFAULT 0,
-    is_completed TINYINT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    is_completed INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- USER LOCATIONS table
 CREATE TABLE user_locations (
-    id INT NOT NULL AUTO_INCREMENT,
-    user_id INT,
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     latitude FLOAT NOT NULL,
     longitude FLOAT NOT NULL,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- RECOMMENDATIONS table
 CREATE TABLE recommendations (
-    id INT NOT NULL AUTO_INCREMENT,
-    user_id INT,
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     activity_type VARCHAR(255) NOT NULL,
     description TEXT,
     confidence_score FLOAT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- USER INTERESTS table
 CREATE TABLE user_interests (
-    user_id INT,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     interest VARCHAR(255) NOT NULL,
-    PRIMARY KEY (user_id, interest),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    PRIMARY KEY (user_id, interest)
 );
 
 -- FRIENDS table
-CREATE TABLE friends (
-    user_id INT,
-    friend_id INT,
-    status VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, friend_id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (friend_id) REFERENCES users(id) ON DELETE CASCADE
-);
 
+CREATE TABLE friends (    user_username VARCHAR(255) NOT NULL,    friend_username VARCHAR(255) NOT NULl);
+CREATE TABLE userProfile (    username VARCHAR(255) UNIQUE NOT NULL,    bio VARCHAR(255),    profile_picture VARCHAR(255) DEFAULT NULL,    notFriend TINYINT DEFAULT NULL);
+
+create table profile_group{
+    user_username VARCHAR (255) NOT NULL,
+    group_name VARCHAR(255) NOT NULl
+}
