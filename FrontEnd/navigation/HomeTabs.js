@@ -9,8 +9,8 @@ import ProfilePage from '../screens/ProfilePage';
 import GoalSetting from '../screens/GoalSetting';
 const Tab = createBottomTabNavigator();
 
-const HomeTabs = (route) => {
-  const {user} = route.params.user;
+const HomeTabs = ({ route }) => {
+  const { user } = route.params
   return (
     <Tab.Navigator
       screenOptions={{
