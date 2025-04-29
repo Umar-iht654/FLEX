@@ -40,8 +40,6 @@ const SearchPage = ( {navigation}) => {
 
 
     // Modal states
-  const [groupModalVisible, setGroupModalVisible] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState(null);
   const [userModalVisible, setUserModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -79,6 +77,8 @@ const SearchPage = ( {navigation}) => {
       setSearchInput('');
     }
 
+    
+
     function ToggleActivity(activityName){
       setActivitiesSelected(prevActivities =>
         prevActivities.map(thisActivity => thisActivity.Activity === activityName ? { ...thisActivity, Selected: !thisActivity.Selected } : thisActivity)
@@ -96,28 +96,18 @@ const SearchPage = ( {navigation}) => {
         prevActivities.map(thisActivity => ({ ...thisActivity, Selected: false }))
       );
     }
-    // Handle group join/request
-    function handleGroupAction() {
-      if (!selectedGroup) return;
-      if (selectedGroup.isPrivate) {
-        Alert.alert('Request Sent', `Join request sent to ${selectedGroup.name}`);
-      } else {
-        Alert.alert('Joined', `You have joined ${selectedGroup.name}`);
-      }
-      setGroupModalVisible(false);
+
+    function openGroup(newGroupID){
+      navigation.push('GroupProfile', { groupID: newGroupID});
     }
 
-    // Handle user invite
-    function handleUserInvite() {
-      if (!selectedUser) return;
-      Alert.alert('Invitation Sent', `Friend invite sent to ${selectedUser.name}`);
-    setUserModalVisible(false);
-  }
+    function openProfile(newUserID){
+      navigation.push('UserProfile', { userID: newUserID});
+    }
 
 
-
-  const GroupCard = ({ group, onPress }) => (
-    <TouchableOpacity onPress={onPress}>
+  const GroupCard = ({ group }) => (
+    <TouchableOpacity onPress={() => openGroup(group.name)}>
       <View style={searchPageStyles.groupCardContainer}>
         <View style={{ flexDirection: 'row' }}>
           <Image
@@ -151,29 +141,26 @@ const SearchPage = ( {navigation}) => {
     </TouchableOpacity>
   );
   
-
-    {/*Displays user information*/}
-// 1. Define UserCard
-const UserCard = ({ user, onPress }) => (
-  <TouchableOpacity onPress={onPress}>
-    <View style={searchPageStyles.userCardContainer}>
-      <View style={{ flexDirection: 'row' }}>
-        <Image
-          style={searchPageStyles.userProfilePicture}
-          source={{ uri: user.profilePicture }}
-        />
-        <View style={{ width: 180 }}>
-          <Text style={searchPageStyles.groupCardTitle}>
-            {user.name}
-          </Text>
-          <Text style={searchPageStyles.groupCardInfoText}>
-            {user.location}
-          </Text>
+    const UserCard = ({ user }) => (
+      <TouchableOpacity onPress={() => {openProfile(user.name)}}>
+        <View style={searchPageStyles.userCardContainer}>
+          <View style={{ flexDirection: 'row' }}>
+            <Image
+              style={searchPageStyles.userProfilePicture}
+              source={{ uri: user.profilePicture }}
+            />
+            <View style={{ width: 180 }}>
+              <Text style={searchPageStyles.groupCardTitle}>
+                {user.name}
+              </Text>
+              <Text style={searchPageStyles.groupCardInfoText}>
+                {user.location}
+              </Text>
+            </View>
+          </View>
         </View>
-      </View>
-    </View>
-  </TouchableOpacity>
-);
+      </TouchableOpacity>
+    );
 
 
     const ActivityCard = ({ activityName, isSelected }) => {
@@ -267,10 +254,6 @@ const UserCard = ({ user, onPress }) => (
                     <GroupCard
                     key={group.key}
                     group={group}
-                    onPress={() => {
-                      setSelectedGroup(group);
-                      setGroupModalVisible(true);
-                    }}
                   />
                   ))}
                 </View>
@@ -286,10 +269,6 @@ const UserCard = ({ user, onPress }) => (
                     <UserCard
                     key={user.name}
                     user={user}
-                    onPress={() => {
-                      setSelectedUser(user);
-                      setUserModalVisible(true);
-                    }}
                   />
                   ))}
                 </View>
@@ -297,40 +276,7 @@ const UserCard = ({ user, onPress }) => (
             </ScrollView>
           </View>
         </View>
-                {/* Group Detail Modal */}
-                <Modal transparent visible={groupModalVisible} animationType='slide' onRequestClose={() => setGroupModalVisible(false)}>
-          <TouchableOpacity style={searchPageStyles.modalBackground} activeOpacity={1} onPress={() => setGroupModalVisible(false)}>
-            <View style={searchPageStyles.modalContainer}>
-              <Image
-                style={searchPageStyles.modalProfilePicture}
-                source={{ uri: selectedGroup?.profilePicture }}
-              />
-              <Text style={searchPageStyles.modalTitle}>{selectedGroup?.name}</Text>
-              <Text style={searchPageStyles.modalDescription}>{selectedGroup?.description}</Text>
-              <TouchableOpacity style={searchPageStyles.modalButton} onPress={handleGroupAction}>
-                <Text style={searchPageStyles.modalButtonText}>
-                  {selectedGroup?.isPrivate ? 'Request to Join' : 'Join Group'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </Modal>
-                {/* User Invite Modal */}
-                <Modal transparent visible={userModalVisible} animationType='slide' onRequestClose={() => setUserModalVisible(false)}>
-          <TouchableOpacity style={searchPageStyles.modalBackground} activeOpacity={1} onPress={() => setUserModalVisible(false)}>
-            <View style={searchPageStyles.modalContainer}>
-              <Image
-                style={searchPageStyles.modalProfilePicture}
-                source={{ uri: selectedUser?.profilePicture }}
-              />
-              <Text style={searchPageStyles.modalTitle}>{selectedUser?.name}</Text>
-              <Text style={searchPageStyles.modalDescription}>Location: {selectedUser?.location}</Text>
-              <TouchableOpacity style={searchPageStyles.modalButton} onPress={handleUserInvite}>
-                <Text style={searchPageStyles.modalButtonText}>Invite to be Friends</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </Modal>
+
         {/*Options Menu Display*/}
         <Modal animationType='fade' transparent={true} visible={activityOptionsVisable} onRequestClose={() => setActivityOptionsVisable(false)}>
           <TouchableOpacity style={searchPageStyles.optionsMenuBackground} activeOpacity={1} onPress={() => setActivityOptionsVisable(false)}>

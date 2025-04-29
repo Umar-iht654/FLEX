@@ -96,7 +96,11 @@ const ProfilePage = ({ navigation }) => {
   
 
   function openProfile(newUserID){
-    navigation.push('UserProfile', { userID: newUserID, previousPage: 'Profile' });
+    navigation.push('UserProfile', { userID: newUserID });
+  }
+
+  function openGroup(newGroupID){
+    navigation.push('GroupProfile', { groupID: newGroupID });
   }
   //retrieves user activities from the database
   function UploadActivities(isInitial){
@@ -331,7 +335,7 @@ const ProfilePage = ({ navigation }) => {
   const FriendCard = ({username, profilePicture}) => {
     return (
       <TouchableOpacity onPress={() => {openProfile(username)}}>
-        <View style={{flexDirection: "row"}}>
+        <View style={{flexDirection: "row", height: 60, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', borderRadius: 12, marginBottom: 6}}>
           <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
           <Text style={profilePageStyles.popupItemText}>{username}</Text>
         </View>
@@ -341,8 +345,8 @@ const ProfilePage = ({ navigation }) => {
 
   const GroupCard = ({groupname, profilePicture}) => {
     return (
-      <TouchableOpacity onPress={() => {/*Directs user to groups profile page page*/}}>
-        <View style={{flexDirection: "row"}}>
+      <TouchableOpacity onPress={() => {openGroup(groupname)}}>
+        <View style={{flexDirection: "row", height: 60, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', borderRadius: 12, marginBottom: 6}}>
           <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
           <Text style={profilePageStyles.popupItemText}>{groupname}</Text>
         </View>
@@ -352,7 +356,7 @@ const ProfilePage = ({ navigation }) => {
 
   const ActivityCard = ({activityname}) => {
     return (
-      <View style={{flexDirection: "row"}}>
+      <View style={{flexDirection: "row", height: 60, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', borderRadius: 12, marginBottom: 6}}>
         <View style={[profilePageStyles.popupItemProfilePicture, {backgroundColor: 'teal'}]}/>
         <Text style={profilePageStyles.popupItemText}>{activityname}</Text>
       </View>
@@ -364,6 +368,10 @@ const ProfilePage = ({ navigation }) => {
       // This function will run every time the screen is focused
       UploadPageInfo("user");
       UploadActivities(true);
+      setFriendOverlayVisable(false);
+      setGroupOverlayVisable(false);
+      setActivityOverlayVisable(false);
+      setParticipantOverlayVisible(false);
       console.log("navigated to")
     }, [])
   );
@@ -704,7 +712,8 @@ const profilePageStyles = StyleSheet.create({
     width: '70%', 
     height: '70%', 
     backgroundColor: 'white', 
-    borderRadius: 20
+    borderRadius: 20,
+    padding: 12
   },
   popupScreenTitle: {
     fontSize: 50,
@@ -731,7 +740,6 @@ const profilePageStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#1e1e1e',
-    marginBottom: 8,
     marginLeft: 10,
     textAlign: 'center',
   },

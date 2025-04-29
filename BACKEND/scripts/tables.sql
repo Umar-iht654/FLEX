@@ -38,6 +38,8 @@ CREATE TABLE activity_participants (
     score FLOAT,
     PRIMARY KEY (activity_id, user_id)
 );
+ CREATE TABLE activities (    id INT AUTO_INCREMENT PRIMARY KEY,    name VARCHAR(50) NOT NULL,    user_id INT,    FOREIGN KEY (user_id) REFERENCES userDetails(id) ON DELETE CASCADE);
+CREATE TABLE score_record (    activity_id INT,    user_id INT,    team VARCHAR(255),    score DOUBLE,   FOREIGN KEY (activity_id) REFERENCES activities(id) ON DELETE CASCADE,  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  FOREIGN KEY (user_id) REFERENCES userDetails(id) ON DELETE CASCADE);
 
 -- GROUPS table
 CREATE TABLE groups (

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { SafeAreaView, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import styles from '../styles/styles';
+import axios from 'axios';
 
 const LoginPage  = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -10,16 +11,23 @@ const LoginPage  = ({ navigation }) => {
   const validateLogin = async () => {
     setValidateError('');
     try {
-      const response = await axios.post('https://26d2-138-253-184-53.ngrok-free.app/Login', {
+      const response = await axios.post('https://93a2-138-253-184-53.ngrok-free.app/Login', {
         email: email,
         password: password
       });
-      if(response.data && response.data.user) {
+      if(response.data && response.data.message === "Login successful") {
         setValidateError('');
-        navigation.navigate('CreateAccount')
+        navigation.navigate('Home')
       }
     } catch (error) {
-      setValidateError(error.response?.data?.detail || 'Something went wrong');
+      console.log("❌ Error:", error.toJSON ? error.toJSON() : error);
+      if (error.response) {
+        setValidateError(error.response.data?.detail || 'Something went wrong');
+      } else if (error.request) {
+        setValidateError('No response from server');
+      } else {
+        setValidateError('Error setting up request');
+      };
     }
   }
 
