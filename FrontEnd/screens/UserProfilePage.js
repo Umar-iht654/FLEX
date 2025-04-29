@@ -93,7 +93,8 @@ const UserProfilePage = ({ navigation }) => {
         ];
         setActivityData(newActivityData);
 
-        setUserRelationship('notfriend');
+        const newUserRelationship = false
+        setUserRelationship('notfriend')
 
     }
 

@@ -13,7 +13,7 @@ const RecommendationPage = ( {navigation} ) => {
 
   const [mutualUsersOverlayVisable, setMutualUsersOverlayVisable] = useState(false)
   const [nearbyUsersOverlayVisable, setNearbyUsersOverlayVisable] = useState(false)
-  const [recommendedActivityCard, setRecommendedActivityCard] = useState(false)
+  const [possibleInterestsOverlayVisable, setPossibleInterestOverlayVisable] = useState(false)
 
   function getRecommendations(){
     const newMutualUsers = [
@@ -72,6 +72,17 @@ const RecommendationPage = ( {navigation} ) => {
       "Football","Tennis","Hockey","Rugby","Table Tennis","Archery"
     ]
     setRecommendedActivities(newRecommendedActivities);
+
+    const newLocalActivities = [
+      {activityName: "Football", date: '3d'},
+      {activityName: "Tennis", date: '6d'},
+      {activityName: "Soccer", date: '2w'},
+      {activityName: "Dumblesort", date: '2w'},
+      {activityName: "Goofball", date: '3w'},
+      {activityName: "Slackerwacker", date: '3w'}
+    ]
+    
+    setLocalActivities(newLocalActivities);
   }
 
   function openProfile(newUserID){
@@ -118,6 +129,23 @@ const RecommendationPage = ( {navigation} ) => {
       </View>
     );
   };
+
+  const PreviewRecommendedActivityCard = ({activityName}) => {
+    return (
+      <View style={{width: '100%', flexDirection: "row", height: 50, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', borderRadius: 12, marginBottom: 6}}>
+        <Text style={recommendationPageStyles.popupItemText}>{activityName}</Text>
+      </View>
+    );
+  };
+
+  const PreviewLocalActivityCard = ({activityName, date}) => {
+    return (
+      <View style={{width: '100%', flexDirection: "row", height: 50, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', justifyContent: 'space-between', borderRadius: 12, marginBottom: 6}}>
+        <Text style={recommendationPageStyles.popupItemText}>{activityName}</Text>
+        <Text style={recommendationPageStyles.popupItemDateText}>{date}</Text>
+      </View>
+    );
+  };
   return (
     <SafeAreaView style={[styles.safeAreaView, {alignItems: 'center', justifyContent: 'center'}]}>
       <View style={recommendationPageStyles.overlayBox}>
@@ -150,18 +178,42 @@ const RecommendationPage = ( {navigation} ) => {
             </TouchableOpacity>
             
             {/*Local Activities*/}
-            <View style={{width: '45%', height: 335, backgroundColor: 'white', borderWidth: 3, borderRadius: 12, padding: 12}}>
-              <Text style={recommendationPageStyles.widgetTitle}numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>Local Activities</Text>
-            </View>
+            <TouchableOpacity style={{width: '45%'}} onPress={() => {setPossibleInterestOverlayVisable(true)}}>
+              <View style={{width: '100%',height: 335, backgroundColor: 'white', borderWidth: 3, borderRadius: 12, padding: 12}}>
+                <Text style={recommendationPageStyles.widgetTitle}numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>Local Activities</Text>
+                <View style={{width: '100%',height: '85%',alignItems: 'center', marginTop: 12, backgroundColor: '#9e9e9e', padding: 8, borderRadius: 12}}>
+                  {getPreview(localActivities, 4).map((thisActivity, index)=> (
+                  <PreviewLocalActivityCard
+                      key = {index}
+                      activityName = {thisActivity.activityName}
+                      date = {thisActivity.date}
+                  />
+                  ))}
+                  <Text style={recommendationPageStyles.widgetTitle}>...</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
 
           </View>
 
           <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-evenly'}}>
 
             {/*Possible Interests*/}
-            <View style={{width: '45%', height: 335, backgroundColor: 'white', borderWidth: 3, borderRadius: 12, padding: 12}}>
-              <Text style={recommendationPageStyles.widgetTitle} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>Possible Interests</Text>
-            </View>
+
+            <TouchableOpacity style={{width: '45%'}} onPress={() => {setPossibleInterestOverlayVisable(true)}}>
+              <View style={{width: '100%',height: 335, backgroundColor: 'white', borderWidth: 3, borderRadius: 12, padding: 12}}>
+                <Text style={recommendationPageStyles.widgetTitle}numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>Possible Interests</Text>
+                <View style={{width: '100%',height: '85%',alignItems: 'center', marginTop: 12, backgroundColor: '#9e9e9e', padding: 8, borderRadius: 12}}>
+                  {getPreview(recommendedActivities, 4).map((thisActivity, index)=> (
+                  <PreviewRecommendedActivityCard
+                      key = {index}
+                      activityName = {thisActivity}
+                  />
+                  ))}
+                  <Text style={recommendationPageStyles.widgetTitle}>...</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
             
             {/*Nearby Users*/}
             <TouchableOpacity style={{width: '45%'}} onPress={() => {setNearbyUsersOverlayVisable(true)}}>
@@ -224,6 +276,27 @@ const RecommendationPage = ( {navigation} ) => {
           </View>
         </TouchableOpacity>
       </Modal>
+
+      <Modal animationType='fade' transparent={true} visible={possibleInterestsOverlayVisable} onRequestClose={() => setPossibleInterestOverlayVisable(false)}>
+        <TouchableOpacity style={recommendationPageStyles.popupScreenBackground} activeOpacity={1} onPress={() => setPossibleInterestOverlayVisable(false)}>
+          <View style={recommendationPageStyles.popupScreenOutline}>
+              <Text style={recommendationPageStyles.popupScreenTitle}>Local Activities</Text>
+              <ScrollView>
+                <View style={{width: '100%',alignItems: 'center'}}>
+                  {localActivities.map((thisActivity, index)=> (
+                  <PreviewLocalActivityCard
+                      key = {index}
+                      activityName = {thisActivity.activityName}
+                      date = {thisActivity.date}
+                  />
+                  ))}
+                </View>
+              </ScrollView>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
+      
     </SafeAreaView>
   );
 };
@@ -297,6 +370,14 @@ const recommendationPageStyles = StyleSheet.create({
       color: '#1e1e1e',
       marginLeft: 10,
       textAlign: 'center',
+    },
+    popupItemDateText: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: '#1e1e1e',
+      marginLeft: 10,
+      textAlign: 'center',
+      marginRight: 10
     },
     participantNameText: {
       fontSize: 16,

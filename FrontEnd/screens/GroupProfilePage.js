@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, StyleSheet, } from "react-native";
 import { useFocusEffect, useRoute } from '@react-navigation/native';
@@ -8,7 +7,7 @@ import styles from '../styles/styles';
 const GroupProfilePage = ({ navigation }) => {
 
     const route = useRoute();
-    const { groupID } = route.params;
+    const { groupID = null } = route.params || {};
 
 
     const [memberData, setMemberData] = useState([]);
@@ -41,6 +40,10 @@ const GroupProfilePage = ({ navigation }) => {
         navigation.push('GroupProfile', { userID: newGroupID});
     }
 
+    function openProfile(newProfileID){
+        navigation.push('UserProfile', { userID: newProfileID});
+    }
+
 
     function UploadPageInfo() {
         const newGroupInfo = {
@@ -48,7 +51,6 @@ const GroupProfilePage = ({ navigation }) => {
             bio: 'We are a small lil tiny group by the name of this name and blah blah blah, we hope you enjoy our content thank you much',
             profilePic: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',
             activityName: 'Tennis',
-            location: 'United Kingdom, Liverpool',
             isPrivate: 0,
         };
         setGroupInfo(newGroupInfo);
@@ -143,8 +145,7 @@ const GroupProfilePage = ({ navigation }) => {
                         {/*Username and Bio*/}
     
                         <Text style={groupProfileStyles.usernameText}>{groupInfo.username}</Text>
-                        <Text style={groupProfileStyles.locationText}>{groupInfo.location}</Text>
-                        <Text style={groupProfileStyles.activityText}>{groupInfo.activityName}</Text>
+                        <Text style={groupProfileStyles.locationText}>{groupInfo.activityName}</Text>
                         <Text style={groupProfileStyles.bioText}>{groupInfo.bio}</Text>
                     </View>
                     {groupInfo.isPrivate === 1 &&(
