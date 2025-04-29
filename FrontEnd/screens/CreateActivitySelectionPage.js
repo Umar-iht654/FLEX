@@ -3,23 +3,26 @@ import { SafeAreaView, View, Text, TouchableOpacity, FlatList } from 'react-nati
 import styles from '../styles/styles';
 import axios from 'axios';
 
-const CreateActivitySelectionPage = ({ navigation }) => {
- 
+const CreateActivitySelectionPage = ({ navigation, route }) => {
+    const { email } = route.params;
     const [selectedActivities, setSelectedActivities] = useState([]);
     const [validateError, setValidateError] = useState('');
 
     const uploadData =  async () => {
-      // setValidateError('');
+      const activityNames = data.activities
+      .filter(activity => selectedActivities.includes(activity.id)).map(activity => activity.name);
 
-      // try {
-      //   const response = await axios.post('https://ca1b-138-253-184-53.ngrok-free.app/create_activity', selectedActivities);
-      //   if (response.data && response.data.data) {
-      //     setValidateError('');
-          navigation.navigate('GoalSetting');
-      //   }
-      // } catch (error) {
-      //   setValidateError(error.response?.data?.detail || 'Something went wrong');
-      // }
+      setValidateError('');
+      try{
+        const response = await axios.post('https://93a2-138-253-184-53.ngrok-free.app/activityLog', {activities: activityNames, email:email});
+        if(response.data && response.data.message){
+          setValidateError('');
+          const {userId} = response.data.userId
+          navigation.navigate('GoalSetting', {userId:userId});
+        }
+      } catch (error) {
+        setValidateError(error.response?.data?.detail || 'Something went wrong');
+      }
     }
 
     const handleActivityPress = (activity) => {
