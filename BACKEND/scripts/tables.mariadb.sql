@@ -66,6 +66,7 @@ CREATE TABLE `groups` (
     bio TEXT,
     activity_type VARCHAR(255),
     member_count INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
