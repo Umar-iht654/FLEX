@@ -36,7 +36,7 @@ class Message(Base):
     # Relationships
     sender = relationship("User", back_populates="messages", foreign_keys=[sender_id])
     group = relationship("Group", back_populates="messages")
-    recipient = relationship("User", foreign_keys=[recipient_id])
+    recipient = relationship("User", foreign_keys=[recipient_id]) 
 
 class MessageBase(BaseModel):
     content: str
@@ -71,8 +71,8 @@ class MessageList(BaseModel):
     messages: list[MessageResponse]
     total: int
     page: int
-    size: int
-
+    size: int 
+    
 class UserNotFoundError(Exception):
     pass
 
