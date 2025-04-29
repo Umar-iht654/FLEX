@@ -43,7 +43,7 @@ const CreateAccountPage = ({ navigation }) => {
     setValidateError('');
 
     try {
-      const response = await axios.post('https://0d7f-138-253-184-53.ngrok-free.app/checkEmail', { email: newEmail });
+      const response = await axios.post('https://1383-138-253-184-53.ngrok-free.app/checkEmail', { email: newEmail });
       console.log("✅ Server response:", response.data);
       if(response.data.message === "email is available") {
         setEmailError('');
@@ -105,7 +105,7 @@ const CreateAccountPage = ({ navigation }) => {
       };
 
       try {
-        const response = await axios.post('https://0d7f-138-253-184-53.ngrok-free.app/register', userData);
+        const response = await axios.post('https://1383-138-253-184-53.ngrok-free.app/register', userData);
         if (response.data && response.data.data) {
           navigation.navigate('CreateActivitySelection', { email: newEmail });
         }
