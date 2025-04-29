@@ -22,21 +22,21 @@ const MessagesPage = ({ navigation, route }) => {
 
   function UploadPageInfo(username){
     const newGroupsInfo = [
-      {groupID: 1, groupName: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 5},
-      {groupID: 2, groupName: 'Group2', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 2},
-      {groupID: 3, groupName: 'Group3', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 0,},
+      {groupID: 1, groupName: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 5},
+      {groupID: 2, groupName: 'Group2', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 2},
+      {groupID: 3, groupName: 'Group3', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 0,},
     ]
     setGroupsInfo(newGroupsInfo);
 
     const newFriendsInfo = [
-      {friendID: 1, friendName: 'Friend1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 2},
-      {friendID: 2, friendName: 'Friend2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 5},
-      {friendID: 3, friendName: 'Friend3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 5},
-      {friendID: 4, friendName: 'Stan the man',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/2023_Watter_Holger_Prof._Dr._x1_53_Quadrat.jpg', pinned: false, unreadMessageCount: 10},
-      {friendID: 5, friendName: 'Friend5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
-      {friendID: 6, friendName: 'Friend6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
-      {friendID: 7, friendName: 'Friend7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
-      {friendID: 8, friendName: 'Friend8',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 1},
+      {friendID: 1, friendName: 'Friend1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 2},
+      {friendID: 2, friendName: 'Friend2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 5},
+      {friendID: 3, friendName: 'Friend3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 5},
+      {friendID: 4, friendName: 'Stan the man',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/2023_Watter_Holger_Prof._Dr._x1_53_Quadrat.jpg', unreadMessageCount: 10},
+      {friendID: 5, friendName: 'Friend5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 0},
+      {friendID: 6, friendName: 'Friend6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 0},
+      {friendID: 7, friendName: 'Friend7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 0},
+      {friendID: 8, friendName: 'Friend8',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 1},
     ]
     setFriendsInfo(newFriendsInfo);
   }
@@ -67,10 +67,6 @@ const MessagesPage = ({ navigation, route }) => {
               </View>
             )}
 
-            {/*shows the pinned chat icon if the chat is pinned*/}
-            {pinned && (
-              <Image style={messagesPageStyles.pinnedIcon} source={require('../assets/PinIcon.png')}/>
-            )}
           </View>
         </View>
       </TouchableOpacity>
@@ -100,11 +96,6 @@ const MessagesPage = ({ navigation, route }) => {
               <View style={messagesPageStyles.numOfMessagesContainer}>
                 <Text style={messagesPageStyles.numOfMessagesText}>{unreadMessageCount}</Text>
               </View>
-            )}
-
-            {/*shows the pinned chat icon if the chat is pinned*/}
-            {pinned && (
-              <Image style={messagesPageStyles.pinnedIcon} source={require('../assets/PinIcon.png')}/>
             )}
           </View>
         </View>

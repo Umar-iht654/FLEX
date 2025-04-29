@@ -517,9 +517,9 @@ const ProfilePage = ({ navigation, route }) => {
           <View style={profilePageStyles.popupScreenOutline}>
               <Text style={profilePageStyles.popupScreenTitle}>Friends</Text>
               <ScrollView>
-                {friendData.map(friend=> (
+                {friendData.map((friend, index)=> (
                 <FriendCard
-                    key = {friend.userID}
+                    key = {index}
                     username = {friend.username}
                     profilePicture = {friend.profilePicture}
                 />
@@ -537,9 +537,9 @@ const ProfilePage = ({ navigation, route }) => {
           <View style={profilePageStyles.popupScreenOutline}>
               <Text style={profilePageStyles.popupScreenTitle}>Groups</Text>
               <ScrollView>
-                {groupData.map(group=> (
+                {groupData.map((group, index)=> (
                 <GroupCard
-                    key = {group.groupname}
+                    key = {index}
                     groupname = {group.groupname}
                     profilePicture = {group.profilePicture}
                 />
@@ -555,9 +555,9 @@ const ProfilePage = ({ navigation, route }) => {
           <View style={profilePageStyles.popupScreenOutline}>
               <Text style={profilePageStyles.popupScreenTitle}>Activities</Text>
               <ScrollView>
-                {activityData.map(activity=> (
+                {activityData.map((activity, index)=> (
                 <ActivityCard
-                    key = {activity.activityname}
+                    key = {index}
                     activityname = {activity.activityname}
                 />
                 ))}

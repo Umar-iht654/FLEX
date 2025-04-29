@@ -51,6 +51,12 @@ def get_user_messages(user_id):
             WHERE (m.sender_id = %s OR m.recipient_id = %s) AND m.group_id IS NULL
             ORDER BY m.created_at DESC
         """, (user_id, user_id))
+        # This query:
+        # 1. Retrieves all direct messages where the user is either sender or recipient
+        # 2. Joins with users table twice - once for sender info, once for recipient info
+        # 3. Uses LEFT JOIN for recipient because in some cases there might not be a recipient
+        # 4. Ensures we're only getting direct messages (group_id IS NULL)
+        # 5. Orders results by creation time descending (newest first)
         direct_messages = cursor.fetchall()
         
         # Get group messages for groups the user is a member of
@@ -63,6 +69,12 @@ def get_user_messages(user_id):
             WHERE gm.user_id = %s
             ORDER BY m.created_at DESC
         """, (user_id,))
+        # This query:
+        # 1. Retrieves all group messages from groups the user is a member of
+        # 2. Joins with users table to get sender information
+        # 3. Joins with groups table to get group information
+        # 4. Joins with group_members to check if the user is a member of the group
+        # 5. Orders results by creation time descending (newest first)
         group_messages = cursor.fetchall()
         
         cursor.close()
@@ -92,10 +104,18 @@ def get_conversation(user_id, other_user_id):
                 AND m.group_id IS NULL
             ORDER BY m.created_at
         """, (user_id, other_user_id, other_user_id, user_id))
+        # This query:
+        # 1. Retrieves all direct messages exchanged between two specific users
+        # 2. Gets messages sent in both directions (from user1→user2 and user2→user1)
+        # 3. Joins with users table to get the sender's username
+        # 4. Ensures we're only getting direct messages (group_id IS NULL)
+        # 5. Orders results chronologically (oldest first) for conversation display
         messages = cursor.fetchall()
         
         # Get other user details
         cursor.execute("SELECT username FROM users WHERE id = %s", (other_user_id,))
+        # This query:
+        # 1. Gets the username of the other user in the conversation for display purposes
         other_user = cursor.fetchone()
         
         cursor.close()
@@ -123,6 +143,9 @@ def get_group_messages(user_id, group_id):
             SELECT * FROM group_members
             WHERE group_id = %s AND user_id = %s
         """, (group_id, user_id))
+        # This query:
+        # 1. Verifies that the user is a member of the group before showing messages
+        # 2. Acts as a security check to prevent unauthorized access to group messages
         
         if not cursor.fetchone():
             cursor.close()
@@ -138,10 +161,17 @@ def get_group_messages(user_id, group_id):
             WHERE m.group_id = %s
             ORDER BY m.created_at
         """, (group_id,))
+        # This query:
+        # 1. Retrieves all messages for a specific group
+        # 2. Joins with users table to get sender information
+        # 3. Joins with groups table to get group name
+        # 4. Orders results chronologically (oldest first) for conversation display
         messages = cursor.fetchall()
         
         # Get group info
         cursor.execute("SELECT name FROM `groups` WHERE id = %s", (group_id,))
+        # This query:
+        # 1. Gets the group name for display purposes
         group = cursor.fetchone()
         
         cursor.close()
@@ -178,6 +208,8 @@ def send_message():
         # For direct message, check recipient exists
         if data.recipient_id:
             cursor.execute("SELECT id FROM users WHERE id = %s", (data.recipient_id,))
+            # This query:
+            # 1. Verifies that the recipient user exists before sending a direct message
             if not cursor.fetchone():
                 cursor.close()
                 conn.close()
@@ -189,6 +221,9 @@ def send_message():
                 SELECT gm.* FROM group_members gm
                 WHERE gm.group_id = %s AND gm.user_id = %s
             """, (data.group_id, sender_id))
+            # This query:
+            # 1. Verifies that the group exists and the sender is a member
+            # 2. Acts as a security check to prevent unauthorized messages to groups
             if not cursor.fetchone():
                 cursor.close()
                 conn.close()
@@ -209,6 +244,11 @@ def send_message():
             now,
             now
         ))
+        # This query:
+        # 1. Inserts a new message into the database
+        # 2. Sets either group_id or recipient_id based on message type
+        # 3. Sets initial read status to false
+        # 4. Sets creation and update timestamps
         
         message_id = cursor.lastrowid
         conn.commit()
@@ -220,6 +260,9 @@ def send_message():
             JOIN users sender ON m.sender_id = sender.id
             WHERE m.id = %s
         """, (message_id,))
+        # This query:
+        # 1. Retrieves the newly created message with sender information
+        # 2. Used to return the complete message object in the response
         message = cursor.fetchone()
         
         cursor.close()
@@ -246,6 +289,9 @@ def mark_message_read(message_id):
             SELECT * FROM messages
             WHERE id = %s AND recipient_id = %s
         """, (message_id, user_id))
+        # This query:
+        # 1. Verifies that the user is the recipient of the message
+        # 2. Acts as a security check to prevent unauthorized marking of messages as read
         
         if not cursor.fetchone():
             cursor.close()
@@ -259,6 +305,9 @@ def mark_message_read(message_id):
             SET is_read = TRUE, updated_at = %s
             WHERE id = %s
         """, (now, message_id))
+        # This query:
+        # 1. Updates the message to mark it as read
+        # 2. Updates the 'updated_at' timestamp to track when it was read
         
         conn.commit()
         cursor.close()

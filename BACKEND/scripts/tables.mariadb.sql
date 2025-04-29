@@ -65,6 +65,8 @@ CREATE TABLE `groups` (
     name VARCHAR(255) NOT NULL,
     bio VARCHAR (255),
     activity_type VARCHAR(255),
+    member_count INT DEFAULT 0,
+    PRIMARY KEY (id)
 );
 
 -- GROUP MEMBERS table

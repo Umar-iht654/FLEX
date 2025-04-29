@@ -227,17 +227,12 @@ const SearchPage = ( {navigation}) => {
           </View>
 
           {/*Search settings button*/}
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15}}>
+          <View style={{flexDirection: 'row', justifyContent: 'flex-start', paddingVertical: 15}}>
             <TouchableOpacity onPress={() => {setActivityOptionsVisable(true)}}>
                 <View style={{width: 100, height: 40, backgroundColor: 'teal', borderWidth: 1, borderRadius: 5, justifyContent: 'center'}}>
                   <Text style={searchPageStyles.customizeSearchButtons}>Activity</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={{width: 100, height: 40, backgroundColor: 'teal', borderWidth: 1, borderRadius: 5, justifyContent: 'center'}}>
-                  <Text style={searchPageStyles.customizeSearchButtons}>Location</Text>
-                </View>
-            </TouchableOpacity>
           </View>
 
           {/*Main overlay box*/}

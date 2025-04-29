@@ -16,11 +16,16 @@ const CreateGroupPage = ({ navigation }) => {
     const activities = data.activities.map(activity => activity.name);
     const [activitiesVisable, setActivitiesVisable] = useState(false);
 
+    function createGroup(){
+        navigation.goBack();
+    }
     const ActivityCard = ({ activityName }) => {
         return(
-            <View style={{width: '100%', height: 60, backgroundColor: '#fff', borderRadius: 12, borderWidth: 2, justifyContent: 'center', padding: 24}}>
-                <Text style={createGroupPageStyles.activityTitle}>{activityName}</Text>
-            </View>
+            <TouchableOpacity onPress={()=>{setActivitiesVisable(false); setGroupActivity(activityName)}}>
+                <View style={{width: '100%', height: 60, backgroundColor: '#fff', borderRadius: 12, borderWidth: 2, justifyContent: 'center', padding: 16, marginBottom: 10}}>
+                    <Text style={createGroupPageStyles.activityTitle}>{activityName}</Text>
+                </View>
+            </TouchableOpacity>
         )
     }
     return (
@@ -67,14 +72,23 @@ const CreateGroupPage = ({ navigation }) => {
 
                     {activitiesVisable && (
                         <View style={{alignItems: 'center', padding: 24}}>
-                            {activities.map((activity, index)=> (
-                            <ActivityCard
-                                key = {index}
-                                activityName = {activity}
-                            />
-                            ))}
+                            <View style={{width: '100%', padding: 16, backgroundColor: 'gray', borderRadius: 12}}>
+                                {activities.map((activity, index)=> (
+                                <ActivityCard
+                                    key = {index}
+                                    activityName = {activity}
+                                />
+                                ))}
+                            </View>
                         </View>
                     )}
+                    <View style={{width: '100%', padding: 24}}>
+                    <TouchableOpacity onPress={()=>{createGroup()}}>
+                        <View style={createGroupPageStyles.selectActivitiesButton}>
+                            <Text style={{}}>Create Group</Text>
+                        </View>
+                    </TouchableOpacity>
+                    </View>
                 </ScrollView>
             </View>
         </SafeAreaView>
@@ -123,7 +137,7 @@ const createGroupPageStyles = StyleSheet.create({
     selectActivitiesButton:{
         height: 60,
         width: '100%',
-        backgroundColor: '#fff',
+        backgroundColor: 'teal',
         paddingHorizontal: 16,
         borderRadius: 12,
         elevation: 10,
@@ -132,7 +146,7 @@ const createGroupPageStyles = StyleSheet.create({
     },
     form: {
         marginBottom: 24,
-        flex: 1
+        flex: 1,
     },
     formAction: {
         marginTop: 50,
@@ -159,12 +173,12 @@ const createGroupPageStyles = StyleSheet.create({
 
     },
     activityTitle: {
-        fontSize: 24,
+        fontSize: 16,
         fontWeight: '700',
-        color: '#1e1e1e',
+        color: 'gray',
         marginBottom: 2,
-        textAlign: 'flex-start',
-    }
+        textAlign: 'left',
+    },
     
 });
 export default CreateGroupPage;
