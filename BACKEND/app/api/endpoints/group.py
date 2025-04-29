@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -8,14 +8,15 @@ from app.models.group import Group, group_members
 from app.models.user import User
 from app.schemas.group import GroupCreate, GroupUpdate, GroupResponse
 
-group_router = APIRouter()
+bp = Blueprint('groups', __name__)
 
-@group_router.post("/groups", response_model=GroupResponse)
-def create_group(
-    group: GroupCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+@bp.route("/", methods=['POST'])
+def create_group():
+    db = next(get_db())
+    current_user = get_current_user()
+    data = request.get_json()
+    group = GroupCreate(**data)
+    
     db_group = Group(
         **group.dict(),
         created_by=current_user.id
@@ -23,64 +24,62 @@ def create_group(
     db.add(db_group)
     db.commit()
     db.refresh(db_group)
-    return db_group
+    return jsonify(GroupResponse.from_orm(db_group).dict())
 
-@group_router.get("/groups", response_model=List[GroupResponse])
-def list_groups(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    return db.query(Group).all()
+@bp.route("/", methods=['GET'])
+def list_groups():
+    db = next(get_db())
+    current_user = get_current_user()
+    groups = db.query(Group).all()
+    return jsonify([GroupResponse.from_orm(g).dict() for g in groups])
 
-@group_router.put("/groups/{group_id}", response_model=GroupResponse)
-def update_group(
-    group_id: int,
-    group_update: GroupUpdate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+@bp.route("/<int:group_id>", methods=['PUT'])
+def update_group(group_id):
+    db = next(get_db())
+    current_user = get_current_user()
+    data = request.get_json()
+    group_update = GroupUpdate(**data)
+    
     group = db.query(Group).filter(Group.id == group_id).first()
     if not group:
-        raise HTTPException(status_code=404, detail="Group not found")
+        return jsonify({"error": "Group not found"}), 404
     if group.created_by != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized")
+        return jsonify({"error": "Not authorized"}), 403
 
     for field, value in group_update.dict(exclude_unset=True).items():
         setattr(group, field, value)
 
     db.commit()
     db.refresh(group)
-    return group
+    return jsonify(GroupResponse.from_orm(group).dict())
 
-@group_router.post("/groups/{group_id}/join")
-def join_group(
-    group_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+@bp.route("/<int:group_id>/join", methods=['POST'])
+def join_group(group_id):
+    db = next(get_db())
+    current_user = get_current_user()
+    
     group = db.query(Group).filter(Group.id == group_id).first()
     if not group:
-        raise HTTPException(status_code=404, detail="Group not found")
+        return jsonify({"error": "Group not found"}), 404
 
     exists = db.query(group_members).filter(
         group_members.c.group_id == group_id,
         group_members.c.user_id == current_user.id
     ).first()
     if exists:
-        raise HTTPException(status_code=400, detail="Already a member")
+        return jsonify({"error": "Already a member"}), 400
 
     db.execute(
         group_members.insert().values(group_id=group_id, user_id=current_user.id, role="member")
     )
     db.commit()
-    return {"message": "Joined group successfully"}
+    return jsonify({"message": "Joined group successfully"})
 
-@group_router.post("/groups/{group_id}/leave")
-def leave_group(
-    group_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
+@bp.route("/<int:group_id>/leave", methods=['POST'])
+def leave_group(group_id):
+    db = next(get_db())
+    current_user = get_current_user()
+    
     db.execute(
         group_members.delete().where(
             group_members.c.group_id == group_id,
@@ -88,4 +87,4 @@ def leave_group(
         )
     )
     db.commit()
-    return {"message": "Left group successfully"} 
+    return jsonify({"message": "Left group successfully"}) 

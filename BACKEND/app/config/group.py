@@ -19,13 +19,10 @@ class Group(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
-    description = Column(String)
+    bio = Column(String)
     activity_type = Column(String)
-    location = Column(String)
-    latitude = Column(Float)
-    longitude = Column(Float)
+    member_count = Column(Integer, default=0)
     is_private = Column(Boolean, default=False)
-    created_by = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

@@ -1,34 +1,37 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from flask import Flask
+from flask_cors import CORS
 from app.config.settings import get_settings
-from app.config.database import engine, Base
-from app.api.v1.router import api_router
+from app.config.database import db
+from app.api.router import register_blueprints
+from app.api.endpoints import activities
 
 # Load settings
 settings = get_settings()
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
-
-# Create FastAPI app
-app = FastAPI(
-    title="FLEX API",
-    description="Backend API for FLEX application",
-    version="1.0.0"
-)
+# Create Flask app
+app = Flask(__name__)
 
 # Configure CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
-    allow_credentials=settings.CORS_CREDENTIALS,
-    allow_methods=settings.CORS_METHODS,
-    allow_headers=settings.CORS_HEADERS,
-)
+CORS(app, 
+     resources={r"/*": {
+         "origins": settings.CORS_ORIGINS,
+         "supports_credentials": settings.CORS_CREDENTIALS,
+         "methods": settings.CORS_METHODS,
+         "allow_headers": settings.CORS_HEADERS
+     }})
 
-# Include API router
-app.include_router(api_router, prefix="/api/v1")
+# Configure database
+app.config['SQLALCHEMY_DATABASE_URI'] = settings.DATABASE_URL
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
 
-@app.get("/")
-async def root():
-    return {"message": "Welcome to FLEX API"} 
+# Register blueprints
+register_blueprints(app)
+app.register_blueprint(activities.bp, url_prefix='/activities')
+
+@app.route('/')
+def root():
+    return {"message": "Welcome to FLEX API"}
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000, debug=True) 

@@ -1,18 +1,20 @@
-from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
+from flask import Blueprint, request, jsonify
+from flask_socketio import emit, disconnect
 from sqlalchemy.orm import Session
-from app.db.session import get_db
+from app.config.database import get_db
 from app.models.message import Message
 from app.schemas.message import MessageCreate, MessageResponse
 from app.websocket.connection_manager import ConnectionManager
 
-router = APIRouter()
+bp = Blueprint('messaging', __name__)
 manager = ConnectionManager()
 
-@router.post("/send", response_model=MessageResponse)
-async def send_message(
-    message: MessageCreate,
-    db: Session = Depends(get_db)
-):
+@bp.route('/send', methods=['POST'])
+def send_message():
+    db = next(get_db())
+    data = request.get_json()
+    message = MessageCreate(**data)
+    
     db_message = Message(
         content=message.content,
         sender_id=message.sender_id,
@@ -22,18 +24,24 @@ async def send_message(
     db.commit()
     db.refresh(db_message)
     
-    # Notify WebSocket clients
-    await manager.broadcast_message(db_message)
-    return db_message
+    # Emit message to all connected clients
+    emit('message', MessageResponse.from_orm(db_message).dict(), broadcast=True, namespace='/ws')
+    return jsonify(MessageResponse.from_orm(db_message).dict())
 
-@router.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: str):
-    await manager.connect(websocket, client_id)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            # Handle incoming messages
-            await manager.broadcast_message(data)
-    except WebSocketDisconnect:
+# WebSocket events using Flask-SocketIO
+def init_socketio(socketio):
+    @socketio.on('connect', namespace='/ws')
+    def handle_connect():
+        client_id = request.sid
+        manager.connect(client_id, request.sid)
+        emit('message', {'data': f'Client #{client_id} joined'}, broadcast=True)
+
+    @socketio.on('disconnect', namespace='/ws')
+    def handle_disconnect():
+        client_id = request.sid
         manager.disconnect(client_id)
-        await manager.broadcast_message(f"Client #{client_id} left the chat") 
+        emit('message', {'data': f'Client #{client_id} left the chat'}, broadcast=True)
+
+    @socketio.on('message', namespace='/ws')
+    def handle_message(data):
+        emit('message', {'data': data}, broadcast=True) 

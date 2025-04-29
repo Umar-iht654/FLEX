@@ -1,10 +1,35 @@
 import React, {useState} from 'react';
 import { SafeAreaView, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import styles from '../styles/styles';
+import axios from 'axios';
 
 const LoginPage  = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [validateError, setValidateError] = useState('');
+
+  const validateLogin = async () => {
+    setValidateError('');
+    try {
+      const response = await axios.post('https://0d7f-138-253-184-53.ngrok-free.app/Login', {
+        email: email,
+        password: password
+      });
+      if(response.data && response.data.message === "Login successful") {
+        setValidateError('');
+        navigation.navigate('Home', {user: response.data.user})
+      }
+    } catch (error) {
+      console.log("❌ Error:", error.toJSON ? error.toJSON() : error);
+      if (error.response) {
+        setValidateError(error.response.data?.detail || 'Something went wrong');
+      } else if (error.request) {
+        setValidateError('No response from server');
+      } else {
+        setValidateError('Error setting up request');
+      };
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safeAreaView}> 
@@ -44,9 +69,14 @@ const LoginPage  = ({ navigation }) => {
         </View>
 
         <View style={styles.formAction}>
+          {validateError ? (
+            <Text style={{ color: 'red', fontSize: 21, marginBottom: 8 }}>
+              {validateError}
+            </Text>
+          ) : null}
           <TouchableOpacity 
             onPress={() => {
-              navigation.navigate("Home")
+              validateLogin();
             }}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Login</Text>
