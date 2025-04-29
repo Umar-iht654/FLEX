@@ -2,8 +2,7 @@ import React, {useState} from 'react';
  import { SafeAreaView, View, Text, TouchableOpacity, FlatList } from 'react-native';
  import styles from '../styles/styles';
  import axios from 'axios';
-  import data from '../styles/localdata';
-
+  
 const CreateActivitySelectionPage = ({ navigation, route }) => {
   const { email } = route.params;
   const [selectedActivities, setSelectedActivities] = useState([]);
@@ -15,7 +14,7 @@ const CreateActivitySelectionPage = ({ navigation, route }) => {
 
     setValidateError('');
     try{
-      const response = await axios.post('https://0d7f-138-253-184-53.ngrok-free.app/activityLog', {activities: activityNames, email:email});
+      const response = await axios.post('https://1383-138-253-184-53.ngrok-free.app/activityLog', {activities: activityNames, email:email});
       if(response.data && response.data.message){
         setValidateError('');
         const {user} = response.data.user
