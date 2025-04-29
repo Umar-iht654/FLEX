@@ -17,7 +17,7 @@ const LoginPage  = ({ navigation }) => {
       });
       if(response.data && response.data.message === "Login successful") {
         setValidateError('');
-        navigation.navigate('Home')
+        navigation.navigate('Home', {user: response.data.user})
       }
     } catch (error) {
       console.log("❌ Error:", error.toJSON ? error.toJSON() : error);
