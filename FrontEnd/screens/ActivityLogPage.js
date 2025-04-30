@@ -76,6 +76,10 @@ const ActivityLogPage = () => {
     setActivityLogPopupVisable(false);
   }
 
+  function getActivityInformation(){
+    
+  }
+
 
 //card which displays search suggestions while the user is typing
   const SearchResultCard = ({activityName}) => {

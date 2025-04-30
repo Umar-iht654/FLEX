@@ -9,6 +9,7 @@ import data from '../styles/localdata';
 const ExtraInformationPage = ({ navigation, route }) => {
     const { user } = route.params;
     const [bio, setBio] = useState();
+    const [profilePic, setProfilePic] = useState('https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg');
 
     function uploadBio(){
         navigation.navigate('Home', { user: user });
