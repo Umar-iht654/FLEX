@@ -41,7 +41,7 @@ const GroupProfilePage = ({ navigation, route}) => {
     }
 
     function openGroup(newGroupID){
-        navigation.push('GroupProfile', { userID: newGroupID});
+        navigation.push('GroupProfile', { user: user, userID: newGroupID});
     }
 
     function openProfile(newProfileID){
@@ -60,7 +60,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         setGroupInfo(newGroupInfo);
 
         try {
-            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/groupMembers', {user_usn: user.username ,user2_usn:group.group_name });
+            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/groupMembers', {user_usn: user.username ,user2_usn: group });
             if(response.data && response.data.message) {
                 const members = response.data.members
                 const isMember = response.data.isMember
@@ -71,7 +71,7 @@ const GroupProfilePage = ({ navigation, route}) => {
                 setMemberData(newMemberData);
             }
         } catch (error) {
-            console.error("❌ Error fetching memebers:", error.response?.data || error.message || error);
+            console.error("❌ Error fetching members:", error.response?.data || error.message || error);
         }
         // const newMemberData = [
         //     { userID: 1, username: 'Pee Pee Wherman', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },

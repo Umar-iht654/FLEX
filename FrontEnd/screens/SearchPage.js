@@ -118,7 +118,7 @@ const SearchPage = ( {navigation, route }) => {
     }
 
     function openGroup(newGroupID){
-      navigation.push('GroupProfile', { user: user, group: group});
+      navigation.push('GroupProfile', { user: user, group: group.group_name});
     }
 
     function openProfile(newUserID){
@@ -195,9 +195,6 @@ const SearchPage = ( {navigation, route }) => {
     }
 
     {/*called when the page is opened*/}
-    useEffect(() => {
-      GetSearchResults();
-    }, []);
     
     return (
       <SafeAreaView style={styles.safeAreaView}>
