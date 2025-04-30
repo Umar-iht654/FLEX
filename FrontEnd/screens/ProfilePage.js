@@ -133,6 +133,7 @@ const ProfilePage = ({ navigation, route }) => {
   
 
   function openProfile(newUserID){
+    setFriendOverlayVisable(false);
     navigation.navigate('UserProfile', { user: user, friendUSN: newUserID });
   }
 
