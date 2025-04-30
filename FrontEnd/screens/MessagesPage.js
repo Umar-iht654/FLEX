@@ -4,7 +4,7 @@ import styles from '../styles/styles';
 
 const MessagesPage = ({ navigation, route }) => {
   //contains the current screen
-  const {user} = route.params;
+  const { user } = route.params;
   const [userStreak, setUserStreak] = useState(5);
   const [weather, setWeather] = useState('4°');
 
