@@ -195,9 +195,6 @@ const SearchPage = ( {navigation, route }) => {
     }
 
     {/*called when the page is opened*/}
-    useEffect(() => {
-      GetSearchResults();
-    }, []);
     
     return (
       <SafeAreaView style={styles.safeAreaView}>

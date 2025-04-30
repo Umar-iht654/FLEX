@@ -41,7 +41,7 @@ const GroupProfilePage = ({ navigation, route}) => {
     }
 
     function openGroup(newGroupID){
-        navigation.push('GroupProfile', { userID: newGroupID});
+        navigation.push('GroupProfile', { user: user, userID: newGroupID});
     }
 
     function openProfile(newProfileID){
@@ -80,7 +80,7 @@ const GroupProfilePage = ({ navigation, route}) => {
                 setMemberData(newMemberData);
             }
         } catch (error) {
-            console.error("❌ Error fetching memebers:", error.response?.data || error.message || error);
+            console.error("❌ Error fetching members:", error.response?.data || error.message || error);
         }
         // const newMemberData = [
         //     { userID: 1, username: 'Pee Pee Wherman', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
