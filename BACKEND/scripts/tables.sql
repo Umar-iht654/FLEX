@@ -135,3 +135,8 @@ create table profile_group{
     user_username VARCHAR (255) NOT NULL,
     group_name VARCHAR(255) NOT NULl
 }
+ 
+create table group_profile(                 -
+    group_name VARCHAR(255) UNIQUE NOT NULL, bio VARCHAR(255),
+    member_count INT AUTO_INCREMENT, activity VARCHAR(255),
+)

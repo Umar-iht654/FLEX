@@ -15,6 +15,8 @@ db_config = {
     'password': 'TempasBas',
     'database': 'sgbadede'
 }
+class searchReq(BaseModel):                       # to be copied
+    search: str
 
 class ActivitiesReq(BaseModel):
     activities: List[str]
@@ -62,7 +64,6 @@ class GroupRegisterRequest(BaseModel):
     name: str
     description: str
     activity_type: str
-
 
 class ProfileRequest(BaseModel):
     username: str
@@ -163,9 +164,9 @@ def register():
         return jsonify({"data": "Registration successful"}), 201
     except mysql.connector.Error as err:
         return jsonify({"detail": "Database error occurred"}), 500
-
+    
 @app.route('/registerGroup', methods=['POST'])
-def register():
+def registerGroup():
     data = GroupRegisterRequest(**request.json)
     try:
         conn = mysql.connector.connect(**db_config)
@@ -186,7 +187,6 @@ def register():
         return jsonify({"data": "Registration successful"}), 201
     except mysql.connector.Error as err:
         return jsonify({"detail": "Database error occurred"}), 500
-
 @app.route('/getProfile', methods=['POST'])
 def get_profile():
     data = ProfileRequest(**request.json)
@@ -329,6 +329,73 @@ def setProfile():
         cursor.close()
         conn.close()
         return jsonify({"message": "Profile data stored successfully"}), 200
+    except mysql.connector.Error as err:
+        # Handle database connection or query errors
+        return jsonify({"detail": f"Database error occurred: {err}"}), 500
+
+    except Exception as e:
+        # Handle any other unexpected errors
+        return jsonify({"detail": f"Unexpected error occurred: {e}"}), 500
+    
+@app.route('/search', methods=['POST'])
+def search():
+    data = ProfileSet(**request.json)
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM userProfile WHERE username = %s", (data.search))
+        user = cursor.fetchone()
+        
+        cursor.execute("SELECT * FROM group_profile WHERE group_name = %s", (data.search))
+        group = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+        if user:
+            return jsonify({
+                "message": "data retrieved successfully",
+                "user": user
+            }), 200
+        if group:
+            return jsonify({
+                "message": "data retrieved successfully",
+                "user": user
+            }), 200
+    except mysql.connector.Error as err:
+        # Handle database connection or query errors
+        return jsonify({"detail": f"Database error occurred: {err}"}), 500
+
+    except Exception as e:
+        # Handle any other unexpected errors
+        return jsonify({"detail": f"Unexpected error occurred: {e}"}), 500
+
+@app.route('/groupMembers', methods=['POST'])
+def groupMemebers():
+    data = IsFriendReq(**request.json)
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT * FROM group_members
+            WHERE user_username = %s and group_name = %s
+        """, (data.user_usn, data.user2_usn))
+        member = cursor.fetchone()
+        isMember = bool(member)
+
+        cursor.execute("""
+            SELECT * FROM group_memebers
+            WHERE group_name = %s
+        """, (data.user2_usn,))
+        members = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+        return jsonify({
+            "message": "group data retrieved successfully",
+            "isMember": isMember,
+            "members": members
+        }), 200
+    
     except mysql.connector.Error as err:
         # Handle database connection or query errors
         return jsonify({"detail": f"Database error occurred: {err}"}), 500

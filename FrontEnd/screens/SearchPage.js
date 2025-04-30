@@ -10,6 +10,8 @@ const SearchPage = ( {navigation, route }) => {
 
     {/*Stores value in the search bar*/}
     const [searchInput, setSearchInput] = useState('');
+    const [userP, setUserP] = useState(null);
+    const [group, setGroup] = useState(null);
 
     {/*Controls visability of views within the page*/}
     const [groupsVisable, setGroupsVisable] = useState(true);
@@ -44,33 +46,49 @@ const SearchPage = ( {navigation, route }) => {
   const [userModalVisible, setUserModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-    function GetSearchResults(){
+    async function GetSearchResults(){
       {/*Again this data is just to test, a function should be called that
          searches the database based on the current search criteria*/}
-      const currentSearchResultsGroups = [
-        {key: 1, name: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences, but this is what happens if its even longer, even longer even, but what if it was eeeveeen longer that is',numberOfMembers: '355', isPrivate: true},
-        {key: 2, name: 'Group2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: '342', isPrivate: true},
-        {key: 3, name: 'Group3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: true},
-        {key: 4, name: 'Group4',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
-        {key: 5, name: 'Group5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
-        {key: 6, name: 'Group6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: '22' ,isPrivate: true},
-        {key: 7, name: 'Group7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
-        {key: 8, name: 'Group8',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
-      ]
-      setSearchResultsGroups(currentSearchResultsGroups);
+      // const currentSearchResultsGroups = [
+      //   {key: 1, name: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences, but this is what happens if its even longer, even longer even, but what if it was eeeveeen longer that is',numberOfMembers: '355', isPrivate: true},
+      //   {key: 2, name: 'Group2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: '342', isPrivate: true},
+      //   {key: 3, name: 'Group3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: true},
+      //   {key: 4, name: 'Group4',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
+      //   {key: 5, name: 'Group5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
+      //   {key: 6, name: 'Group6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: '22' ,isPrivate: true},
+      //   {key: 7, name: 'Group7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
+      //   {key: 8, name: 'Group8',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
+      // ]
+      // setSearchResultsGroups(currentSearchResultsGroups);
+      try {
+        const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/search', {search: searchInput});
+        if(response.data && response.data.message) {
+          if (response.data.message === 'user'){
+            setUserP(response.data.user);
+            const fetchedUser  = { name: userP.username, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', location: 'location'}           
+            setSearchResultsUsers([fetchedUser]);
+          }
+          else if (response.data.message === 'group'){
+            setGroup(response.data.group)
+            const fetchedGroup  = { name: group.group_name, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', location: 'location', activity: group.activity, description: group.bio, numberOfMembers: group.member_count, isPrivate: false}
+            setSearchResultsGroups([fetchedGroup]);
+          }
+        }
+      } catch (error) {
+        console.error("❌ Error fetching user:", error.response?.data || error.message || error);
+      }
+      // const currentSearchResultsUsers = [
+      //   {name: 'User1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User4',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
 
-      const currentSearchResultsUsers = [
-        {name: 'User1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User4',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-
-      ]
-      {/*Updates the lists of search results*/}
-      setSearchResultsUsers(currentSearchResultsUsers);
+      // ]
+      // {/*Updates the lists of search results*/}
+      // setSearchResultsUsers(currentSearchResultsUsers);
 
     };
 
@@ -99,11 +117,11 @@ const SearchPage = ( {navigation, route }) => {
     }
 
     function openGroup(newGroupID){
-      navigation.push('GroupProfile', { groupID: newGroupID});
+      navigation.push('GroupProfile', { user: user, group: group});
     }
 
     function openProfile(newUserID){
-      navigation.push('UserProfile', { user, newUserID});
+      navigation.push('UserProfile', { user: user, friendUSN: userP.username });
     }
 
 

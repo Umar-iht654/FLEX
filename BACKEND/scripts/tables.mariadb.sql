@@ -71,10 +71,9 @@ CREATE TABLE `groups` (
 
 -- GROUP MEMBERS table
 CREATE TABLE group_members (
-    group_id INT PRIMARY KEY,
-    user_username INT,
-    role VARCHAR(50) DEFAULT 'member',
-    FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE
+    group_name UNIQUE NOT NULL,
+    user_username UNIQUE NOT NULL,
+    role VARCHAR(50) DEFAULT 'member'    
 );
 
 -- MESSAGES table
