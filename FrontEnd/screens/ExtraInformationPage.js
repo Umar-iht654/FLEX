@@ -4,6 +4,7 @@ import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, S
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 import styles from '../styles/styles';
 import data from '../styles/localdata';
+import axios from 'axios';
 
 
 const ExtraInformationPage = ({ navigation, route }) => {
@@ -11,8 +12,15 @@ const ExtraInformationPage = ({ navigation, route }) => {
     const [bio, setBio] = useState();
     const [profilePic, setProfilePic] = useState('https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg');
 
-    function uploadBio(){
-        navigation.navigate('Home', { user: user });
+    async function uploadBio(){
+        try {
+            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/setProfile', {username: user.username ,bio:friendUSN, profile:profilePic});
+            if(response.data && response.data.message) {
+                navigation.navigate('Home', {user: user});
+            }
+        } catch (error) {
+        }
+                
     };
 
     return (
