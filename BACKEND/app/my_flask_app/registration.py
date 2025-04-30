@@ -244,6 +244,63 @@ def removeMember():
     except mysql.connector.Error as err:
         return jsonify({"detail": "Database error occurred"}), 500
     
+@app.route('/addFriend', methods=['POST'])
+def addFriend():
+    data = IsFriendReq(**request.json)
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO friends (user_username, friend_username)
+            VALUES (%s, %s), (%s, %s)
+        """, (
+            data.user_usn,
+            data.user2_usn,
+            data.user2_usn,
+            data.user_usn
+        ))
+
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({"data": "Registration successful"}), 201
+    except mysql.connector.Error as err:
+        return jsonify({"detail": "Database error occurred"}), 500
+
+@app.route('/removeFriend', methods=['POST'])
+def removeFriend():
+    data = IsFriendReq(**request.json)
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            DELETE FROM friends
+            WHERE (user_username = %s AND friend_username = %s)
+        """, (
+            data.user_usn,
+            data.user2_usn,
+        ))
+
+        cursor.execute("""
+            DELETE FROM friends
+            WHERE (user_username = %s AND friend_username = %s)
+        """, (
+            data.user2_usn,
+            data.user_usn
+        ))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({"data": "Friend removed successfully"}), 200
+    except mysql.connector.Error as err:
+        return jsonify({"detail": "Database error occurred"}), 500
+
 @app.route('/getProfile', methods=['POST'])
 def get_profile():
     data = ProfileRequest(**request.json)
