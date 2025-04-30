@@ -44,6 +44,7 @@ class IsFriendReq(BaseModel):
     user_usn: str
     user2_usn: str
 
+
 @validator("password")
 def strong_password(cls, value):
     pattern = r"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
@@ -67,6 +68,10 @@ class GroupRegisterRequest(BaseModel):
 
 class ProfileRequest(BaseModel):
     username: str
+
+class AddMemberRequest(BaseModel):
+    username: str
+    groupname: str
 
 @app.route('/')
 def home():
@@ -187,6 +192,29 @@ def registerGroup():
         return jsonify({"data": "Registration successful"}), 201
     except mysql.connector.Error as err:
         return jsonify({"detail": "Database error occurred"}), 500
+        
+@app.route('/addMember', methods=['POST'])
+def registerGroup():
+    data = AddMemberRequest(**request.json)
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO group_members (group_name, user_username)
+            VALUES (%s, %s)
+        """, (
+            data.groupname,
+            data.username,
+        ))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({"data": "Registration successful"}), 201
+    except mysql.connector.Error as err:
+        return jsonify({"detail": "Database error occurred"}), 500
+        
 @app.route('/getProfile', methods=['POST'])
 def get_profile():
     data = ProfileRequest(**request.json)

@@ -18,19 +18,14 @@ const GroupProfilePage = ({ navigation, route}) => {
         navigation.goBack();
     }
 
-    function sendFriendRequest(){
-        setUserRelationship('pending')
-        console.log("friend request sent")
+    function addMember(){
+        setUserRelationship(true)
+        console.log("Member Added")
     }
 
-    function pullFriendRequest(){
-        setUserRelationship('notmember')
-        console.log("Friend request pulled")
-    }
-
-    function removeFriend(){
-        setUserRelationship('notmember')
-        console.log("Friend removed")
+    function removeMember(){
+        setUserRelationship(false)
+        console.log("Member Removed")
     }
 
     function openGroup(newGroupID){
@@ -93,7 +88,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         // ];
         // setMemberData(newMemberData);
 
-        setUserRelationship('notmember');
+        setUserRelationship(true);
 
     }
 
@@ -160,34 +155,25 @@ const GroupProfilePage = ({ navigation, route}) => {
                         <Text style={groupProfileStyles.locationText}>{groupInfo.activityName}</Text>
                         <Text style={groupProfileStyles.bioText}>{groupInfo.bio}</Text>
                     </View>
-                    {groupInfo.isPrivate === 1 &&(
-                        <View style={{flexDirection: 'row', width: '100%', marginTop: 24}}>
-                            {userRelationship === 'notmember' && (
-                                <TouchableOpacity style={{width: '100%'}} onPress={()=> {sendFriendRequest()}}>
-                                    <View style={{width: '100%', height: 60, backgroundColor: 'teal', borderRadius: 12, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={groupProfileStyles.joinButtonText}>Join Group</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )}
-                            {userRelationship === 'member' && (
-                                <TouchableOpacity style={{width: '100%'}} onPress={()=> {removeFriend()}}>
-                                    <View style={{width: '100%', height: 60, backgroundColor: 'teal', borderRadius: 12, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={groupProfileStyles.joinButtonText}>Leave Group</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )}
-                            {userRelationship === 'pending' && (
-                                <TouchableOpacity style={{width: '100%'}} onPress={()=> {pullFriendRequest()}}>
-                                    <View style={{width: '100%', height: 60, backgroundColor: 'teal', borderRadius: 12, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={groupProfileStyles.joinButtonText}>Request Pending</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )}
-                            
-                        </View>
-                    )}
+                    <View style={{flexDirection: 'row', width: '100%', marginTop: 24}}>
+                        {!userRelationship && (
+                            <TouchableOpacity style={{width: '100%'}} onPress={()=> {addMember()}}>
+                                <View style={{width: '100%', height: 60, backgroundColor: 'teal', borderRadius: 12, alignItems: 'center', justifyContent: 'center'}}>
+                                    <Text style={groupProfileStyles.joinButtonText}>Join Group</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                        {userRelationship && (
+                            <TouchableOpacity style={{width: '100%'}} onPress={()=> {removeMember()}}>
+                                <View style={{width: '100%', height: 60, backgroundColor: 'teal', borderRadius: 12, alignItems: 'center', justifyContent: 'center'}}>
+                                    <Text style={groupProfileStyles.joinButtonText}>Leave Group</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                        
+                    </View>
                     <View style={{marginVertical: 24, width: '100%', height: 2, backgroundColor: '#383838'}}/>
-                    {((groupInfo.isPrivate === 0) || (userRelationship === 'member')) && (
+                    {((userRelationship)) && (
                         <View style={{width: '100%'}}>
                             {memberData.map(member=> (
                             <FriendCard

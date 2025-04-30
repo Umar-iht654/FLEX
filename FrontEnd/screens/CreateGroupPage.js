@@ -7,7 +7,9 @@ import data from '../styles/localdata';
 import axios from 'axios';
 
 
-const CreateGroupPage = ({ navigation }) => {
+const CreateGroupPage = ({ navigation, route }) => {
+
+    const { user } = route.params;
 
     const [groupName, setGroupName] = useState();
     const [bio, setBio] = useState();
@@ -19,9 +21,10 @@ const CreateGroupPage = ({ navigation }) => {
 
     const createGroup = async () => {
         const groupData = {
-            groupName: groupName,
-            bio: bio,
-            activityType: groupActivity,
+            name: groupName,
+            description: bio,
+            activity_type: groupActivity, 
+            user: user.username
         };
     
         try {

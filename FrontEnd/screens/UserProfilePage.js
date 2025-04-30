@@ -480,21 +480,21 @@ const UserProfilePage = ({ navigation, route }) => {
                     {/*Shows Friend, Group and Activity Number*/}
                     <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'flex-start', marginTop: 15}}>
                         <TouchableOpacity onPress={() => {
-                            if((userRelationship == 'friend') || (userRelationship == 'self')){
+                            if((userRelationship == 'friend')){
                                 setFriendOverlayVisable(true)
                             }
                             }}>
                             <InfoBox name='Friends' count={friendData.length}/>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
-                            if((userRelationship == 'friend') || (userRelationship == 'self')){
+                            if((userRelationship == 'friend')){
                                 setGroupOverlayVisable(true)
                             }
                             }}>
                             <InfoBox name='Groups' count={groupData.length}/>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
-                            if((userRelationship == 'friend') || (userRelationship == 'self')){
+                            if((userRelationship == 'friend')){
                                 setActivityOverlayVisable(true)
                             }
                             }}>
@@ -502,25 +502,25 @@ const UserProfilePage = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
 
-                    {!(userRelationship == 'self') && (
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between', padding: 20}}>
-                            {userRelationship && (
-                                <TouchableOpacity style={{width: '100%'}} onPress={() => {removeFriend()}}>
-                                    <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
-                                        <Text style={[profilePageStyles.title, {fontSize: 20}]}>Unfriend</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )}
-                            {!userRelationship && (
-                                <TouchableOpacity style={{width: '100%'}} onPress={() => {addFriend()}}>
-                                    <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
-                                        <Text style={[profilePageStyles.title, {fontSize: 20}]}>Add Friend</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )}
+                    
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between', padding: 20}}>
+                        {userRelationship && (
+                            <TouchableOpacity style={{width: '100%'}} onPress={() => {removeFriend()}}>
+                                <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
+                                    <Text style={[profilePageStyles.title, {fontSize: 20}]}>Unfriend</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                        {!userRelationship && (
+                            <TouchableOpacity style={{width: '100%'}} onPress={() => {addFriend()}}>
+                                <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
+                                    <Text style={[profilePageStyles.title, {fontSize: 20}]}>Add Friend</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
 
-                        </View>
-                    )}
+                    </View>
+                    
 
                     {!(userRelationship === true ) && (
                         <View style={{ alignItems: 'center' }}>
