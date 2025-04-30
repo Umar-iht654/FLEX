@@ -26,7 +26,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         };
     
         try {
-            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/addMember', addData);
+            const response = await axios.post('https://54e5-138-253-184-53.ngrok-free.app/addMember', addData);
             if (response.data && response.data.data) {
                 window.location.reload(false)
             }

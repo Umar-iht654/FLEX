@@ -33,7 +33,7 @@ const CreateGroupPage = ({ navigation, route }) => {
         };
     
         try {
-            const response = await axios.post('https://7ee8-138-253-184-53.ngrok-free.app/registerGroup', groupData);
+            const response = await axios.post('https://54e5-138-253-184-53.ngrok-free.app/registerGroup', groupData);
             if (response.data && response.data.data) {
                 navigation.goBack();
             }
