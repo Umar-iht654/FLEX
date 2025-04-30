@@ -1,6 +1,7 @@
 import React, {useState, useEffect, act} from 'react';
 import { SafeAreaView, View, Text,Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal,Alert } from 'react-native';
 import styles from '../styles/styles';
+import axios from 'axios';
 
 const SearchPage = ( {navigation, route }) => {
     const { user } = route.params;

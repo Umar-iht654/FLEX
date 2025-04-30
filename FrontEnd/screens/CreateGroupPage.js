@@ -4,6 +4,7 @@ import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, S
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 import styles from '../styles/styles';
 import data from '../styles/localdata';
+import axios from 'axios';
 
 
 const CreateGroupPage = ({ navigation }) => {
@@ -29,7 +30,7 @@ const CreateGroupPage = ({ navigation }) => {
                 navigation.goBack();
             }
         } catch (error) {
-
+            console.error("❌ Error creating group:", error);
         }
     }
 

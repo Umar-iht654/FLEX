@@ -173,7 +173,7 @@ def registerGroup():
         cursor = conn.cursor()
 
         cursor.execute("""
-            INSERT INTO groups (name, description, activity_type)
+            INSERT INTO groups (group_name, bio, activity)
             VALUES (%s, %s, %s)
         """, (
             data.name,
