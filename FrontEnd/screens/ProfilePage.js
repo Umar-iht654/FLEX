@@ -138,7 +138,7 @@ const ProfilePage = ({ navigation, route }) => {
   }
 
   function openGroup(newGroupID){
-    navigation.push('GroupProfile', { groupID: newGroupID });
+    navigation.push('GroupProfile', { user: user,groupID: newGroupID });
   }
   //retrieves user activities from the database
   function UploadActivities(isInitial){
