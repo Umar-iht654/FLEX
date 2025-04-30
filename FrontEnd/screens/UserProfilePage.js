@@ -139,7 +139,7 @@ const UserProfilePage = ({ navigation, route }) => {
     }
 
     function openProfile(newUserID){
-        navigation.push('UserProfile', { userID: newUserID});
+        navigation.push('UserProfile', { user, newUserID});
     }
 
     function openGroup(newGroupID){

@@ -4,7 +4,9 @@ import styles from '../styles/styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 
-const RecommendationPage = ( {navigation} ) => {
+const RecommendationPage = ( {navigation, route} ) => {
+  const { user } = route.params;
+  console.log(user.username);
 
   const [mutualUsers, setMutualUsers] = useState([]);
   const [localActivities, setLocalActivities] = useState([]);
@@ -86,7 +88,7 @@ const RecommendationPage = ( {navigation} ) => {
   }
 
   function openProfile(newUserID){
-    navigation.push('UserProfile', { userID: newUserID });
+    navigation.push('UserProfile', { user, newUserID });
   }
 
   function getPreview(thisArray, x){

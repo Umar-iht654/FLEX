@@ -2,7 +2,8 @@ import React, {useState, useEffect, act} from 'react';
 import { SafeAreaView, View, Text,Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal,Alert } from 'react-native';
 import styles from '../styles/styles';
 
-const SearchPage = ( {navigation}) => {
+const SearchPage = ( {navigation, route }) => {
+    const { user } = route.params;
     {/*top bar data*/}
     const [userStreak, setUserStreak] = useState(5);
     const [weather, setWeather] = useState('4°');
@@ -102,7 +103,7 @@ const SearchPage = ( {navigation}) => {
     }
 
     function openProfile(newUserID){
-      navigation.push('UserProfile', { userID: newUserID});
+      navigation.push('UserProfile', { user, newUserID});
     }
 
 
@@ -196,7 +197,7 @@ const SearchPage = ( {navigation}) => {
             <Image style={styles.weatherIcon} source={require('../assets/WeatherIcon.png')}/>
 
             {/*Displays User Recommendation button*/}
-            <TouchableOpacity onPress={() => {navigation.navigate("Recommendation")}}>
+            <TouchableOpacity onPress={() => {navigation.push('Recommendation', { user });}}>
               <Image style={styles.magicWandIcon} source={require('../assets/MagicWandButton.png')}/>
             </TouchableOpacity>
           </View>
