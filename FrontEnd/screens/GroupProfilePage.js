@@ -26,12 +26,12 @@ const GroupProfilePage = ({ navigation, route}) => {
         };
     
         try {
-            const response = await axios.post('https://54e5-138-253-184-53.ngrok-free.app/addMember', addData);
+            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/addMember', addData);
             if (response.data && response.data.data) {
                 window.location.reload(false)
             }
         } catch (error) {
-            console.error("❌ Error creating group:", error);
+            console.error("❌ Error adding group:", error);
         }
     }
 
@@ -42,12 +42,12 @@ const GroupProfilePage = ({ navigation, route}) => {
         };
     
         try {
-            const response = await axios.post('https://54e5-138-253-184-53.ngrok-free.app/addMember', removeData);
+            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/removeMember', removeData);
             if (response.data && response.data.data) {
                 window.location.reload(false)
             }
         } catch (error) {
-            console.error("❌ Error creating group:", error);
+            console.error("❌ Error removing member:", error);
         }
     }
 
@@ -61,6 +61,9 @@ const GroupProfilePage = ({ navigation, route}) => {
 
 
     async function UploadPageInfo() {
+        try {
+            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/groupProfile', {user_usn: user.username ,user2_usn:group });
+
         try {
             const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/groupProfile', {user_usn: user.username ,user2_usn:group });
             if(response.data && response.data.message) {
@@ -198,9 +201,9 @@ const GroupProfilePage = ({ navigation, route}) => {
                     <View style={{marginVertical: 24, width: '100%', height: 2, backgroundColor: '#383838'}}/>
                     {((userRelationship)) && (
                         <View style={{width: '100%'}}>
-                            {memberData.map(member=> (
+                            {memberData.map((member, index)=> (
                             <FriendCard
-                                key = {member.userID}
+                                key = {index}
                                 username = {member.username}
                                 profilePicture = {member.profilePicture}
                             />
