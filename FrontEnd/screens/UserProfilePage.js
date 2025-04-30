@@ -36,15 +36,16 @@ const UserProfilePage = ({ navigation, route }) => {
     //should upload the user data from the database
     async function UploadPageInfo() {
       try {
-        const response = await axios.post('https://8ad0-138-253-184-53.ngrok-free.app/getUserProf', { friendUSN:friendUSN });
+        const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/getUserProf', {user_usn: user.username ,user2_usn:friendUSN });
         if(response.data && response.data.message) {
           const userProf = response.data.userP;
           const friends = response.data.friends;
+          const isFriend = response.data.isFriend
           const groups = response.data.groups;
           const activities = response.data.activities;
 
           const newUserInfo = {
-            username: user.username,
+            username: friendUSN,
             bio: userProf.bio,
             loggedActivitiesCount: response.data.activityCount,
             profilePic: userProf.profile_picture || ''
@@ -68,6 +69,7 @@ const UserProfilePage = ({ navigation, route }) => {
         }));
         setActivityData(newActivityData);
       }
+      setUserRelationship(isFriend)
     } catch (error) {
     }
         // const newFriendData = [
@@ -108,39 +110,38 @@ const UserProfilePage = ({ navigation, route }) => {
         // ];
         // setGroupData(newGroupData);
 
-        const newActivityData = [
-            { activityname: 'Tennis'},
-            { activityname: 'Football'},
-            { activityname: 'Cycling'},
-            { activityname: 'Running'},
-            { activityname: 'Shuffle Board'},
-            { activityname: 'Tap Dancing'},
-        ];
-        setActivityData(newActivityData);
+        // const newActivityData = [
+        //     { activityname: 'Tennis'},
+        //     { activityname: 'Football'},
+        //     { activityname: 'Cycling'},
+        //     { activityname: 'Running'},
+        //     { activityname: 'Shuffle Board'},
+        //     { activityname: 'Tap Dancing'},
+        // ];
+        // setActivityData(newActivityData);
 
-        const newUserRelationship = false
-        setUserRelationship('notfriend')
+        // const newUserRelationship = false
+        // setUserRelationship('notfriend')
 
     }
 
     function addFriend(){
-        setUserRelationship(true)
-        console.log("friend added sent")
+      setUserRelationship(true)
+      console.log("friend added sent")
     }
 
     function removeFriend(){
-        setUserRelationship(false)
+      setUserRelationship(false)
         console.log("Friend removed")
-    }
-
+    } 
     function isUser(otherUser){
-        if(user.username === otherUser){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
+      if(user.username === otherUser){
+          return true;
+      }
+      else{
+          return false;
+      }
+  }
 
     function openProfile(newUserID){
         navigation.push('UserProfile', { user, newUserID});
@@ -384,11 +385,10 @@ const UserProfilePage = ({ navigation, route }) => {
 
     const FriendCard = ({username, profilePicture}) => {
         return (
-            
-            <TouchableOpacity onPress={() => {
-                if(!isUser(username)){
-                    openProfile(username)}}
-                }>
+          <TouchableOpacity onPress={() => {
+            if(!isUser(username)){
+                openProfile(username)}}
+            }>
                 <View style={{flexDirection: "row"}}>
                     <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
                     <Text style={profilePageStyles.popupItemText}>{username}</Text>
@@ -416,7 +416,6 @@ const UserProfilePage = ({ navigation, route }) => {
             </View>
         );
     };
-    
 
     useFocusEffect(
         useCallback(() => {
