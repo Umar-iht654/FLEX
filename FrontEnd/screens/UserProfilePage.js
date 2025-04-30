@@ -36,7 +36,7 @@ const UserProfilePage = ({ navigation, route }) => {
     //should upload the user data from the database
     async function UploadPageInfo() {
       try {
-        const response = await axios.post('https://1383-138-253-184-53.ngrok-free.app/getProfile', { friendUSN:friendUSN });
+        const response = await axios.post('https://8ad0-138-253-184-53.ngrok-free.app/getUserProf', { friendUSN:friendUSN });
         if(response.data && response.data.message) {
           const userProf = response.data.userP;
           const friends = response.data.friends;

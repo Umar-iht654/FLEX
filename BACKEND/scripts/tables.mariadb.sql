@@ -79,9 +79,9 @@ CREATE TABLE group_members (
 
 -- MESSAGES table
 CREATE TABLE messages (
-    id INT AUTO_INCREMENT,
+    user_usn VARCHAR(50) NOT NULL,
+    chat_usn VARCHAR(100) DEFAULT NULL
     content TEXT NOT NULL,
-    sender_id INT NOT NULL,
     group_id INT,
     recipient_id INT,
     is_read BOOLEAN DEFAULT FALSE,
