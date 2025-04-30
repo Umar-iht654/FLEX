@@ -404,7 +404,7 @@ const ProfilePage = ({ navigation, route }) => {
   useFocusEffect(
     useCallback(() => {
       // This function will run every time the screen is focused
-      UploadPageInfo("user");
+      UploadPageInfo();
       UploadActivities(true);
       setFriendOverlayVisable(false);
       setGroupOverlayVisable(false);

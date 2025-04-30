@@ -116,7 +116,7 @@ const ActivityLogPage = () => {
     return(
       <View style={{width: 70, height: 60, backgroundColor: thisBackgroundColor, marginRight: 10, borderRadius: 8, borderWidth: 2,justifyContent: 'center', alignItems: 'center'  }}>
         <TextInput
-            style={{flex: 1, borderRadius: 6, paddingHorizontal: 8, textAlign: 'center', textAlignVertical: 'center', fontSize: 28, fontWeight: 500}}
+            style={{width: 70, height: 60, borderRadius: 6, paddingHorizontal: 8, textAlign: 'center', textAlignVertical: 'center', fontSize: 28, fontWeight: 500}}
             value={score}
             placeholder="X"
             onChangeText={(text) => onChangePlayerScore(id, text)}
