@@ -18,9 +18,21 @@ const GroupProfilePage = ({ navigation, route}) => {
         navigation.goBack();
     }
 
-    function addMember(){
-        setUserRelationship(true)
-        console.log("Member Added")
+
+    const addMember = async () => {
+        const addData = {
+            groupname: group,
+            username: user.username
+        };
+    
+        try {
+            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/addMember', addData);
+            if (response.data && response.data.data) {
+                window.location.reload(false)
+            }
+        } catch (error) {
+            console.error("❌ Error creating group:", error);
+        }
     }
 
     function removeMember(){
@@ -48,7 +60,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         setGroupInfo(newGroupInfo);
 
         try {
-            const response = await axios.post('https://7ee8-138-253-184-53.ngrok-free.app/groupMembers', {user_usn: user.username ,user2_usn:group.group_name });
+            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/groupMembers', {user_usn: user.username ,user2_usn:group.group_name });
             if(response.data && response.data.message) {
                 const members = response.data.members
                 const isMember = response.data.isMember
@@ -57,8 +69,6 @@ const GroupProfilePage = ({ navigation, route}) => {
                     username: member.user_username, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'
                 }))
                 setMemberData(newMemberData);
-
-                setUserRelationship(isMember);
             }
         } catch (error) {
             console.error("❌ Error fetching memebers:", error.response?.data || error.message || error);
@@ -90,7 +100,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         // ];
         // setMemberData(newMemberData);
 
-        // setUserRelationship(true);
+        setUserRelationship(true);
 
     }
 

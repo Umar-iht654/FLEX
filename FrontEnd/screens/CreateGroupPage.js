@@ -19,7 +19,12 @@ const CreateGroupPage = ({ navigation, route }) => {
     const activities = data.activities.map(activity => activity.name);
     const [activitiesVisable, setActivitiesVisable] = useState(false);
 
+    
     const createGroup = async () => {
+        console.log(user.username);
+        console.log(groupName);
+        console.log(bio);
+        console.log(groupActivity);
         const groupData = {
             name: groupName,
             description: bio,
@@ -32,9 +37,9 @@ const CreateGroupPage = ({ navigation, route }) => {
             if (response.data && response.data.data) {
                 navigation.goBack();
             }
-        } catch (error) {
-            console.error("❌ Error creating group:", error);
-        }
+            } catch (error) {
+                console.error("❌ Error creating group:", error);
+            }
     }
 
     const ActivityCard = ({ activityName }) => {
