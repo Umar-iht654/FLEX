@@ -60,8 +60,17 @@ const GroupProfilePage = ({ navigation, route}) => {
         setGroupInfo(newGroupInfo);
 
         try {
-            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/groupMembers', {user_usn: user.username ,user2_usn:group.group_name });
+            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/groupProfile', {user_usn: user.username ,user2_usn:group.group_name });
             if(response.data && response.data.message) {
+                const newGroupInfo = {
+                    username: response.data.group.group_name,
+                    bio: response.data.group.bio,
+                    profilePic: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',
+                    activityName: response.data.group.activity,
+                    isPrivate: 0,
+                };
+                setGroupInfo(newGroupInfo);
+
                 const members = response.data.members
                 const isMember = response.data.isMember
 
