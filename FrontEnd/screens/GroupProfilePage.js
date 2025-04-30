@@ -61,17 +61,8 @@ const GroupProfilePage = ({ navigation, route}) => {
 
 
     async function UploadPageInfo() {
-        const newGroupInfo = {
-            username: group.group_name,
-            bio: group.bio,
-            profilePic: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',
-            activityName: group.activity,
-            isPrivate: 0,
-        };
-        setGroupInfo(newGroupInfo);
-
         try {
-            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/groupProfile', {user_usn: user.username ,user2_usn:group.group_name });
+            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/groupProfile', {user_usn: user.username ,user2_usn:group });
             if(response.data && response.data.message) {
                 const newGroupInfo = {
                     username: response.data.group.group_name,
