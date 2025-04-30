@@ -35,9 +35,20 @@ const GroupProfilePage = ({ navigation, route}) => {
         }
     }
 
-    function removeMember(){
-        setUserRelationship(false)
-        console.log("Member Removed")
+    const removeMember = async () => {
+        const removeData = {
+            groupname: group,
+            username: user.username
+        };
+    
+        try {
+            const response = await axios.post('https://54e5-138-253-184-53.ngrok-free.app/addMember', removeData);
+            if (response.data && response.data.data) {
+                window.location.reload(false)
+            }
+        } catch (error) {
+            console.error("❌ Error creating group:", error);
+        }
     }
 
     function openGroup(newGroupID){
