@@ -36,7 +36,7 @@ const ProfilePage = ({ navigation, route }) => {
   //should upload the user data from the database
   async function UploadPageInfo () {
     try {
-      const response = await axios.post('https://54e5-138-253-184-53.ngrok-free.app/getProfile', { username: user.username });
+      const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/getProfile', { username: user.username });
       if(response.data && response.data.message) {
 
         const userProf = response.data.userP;

@@ -71,7 +71,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         setGroupInfo(newGroupInfo);
 
         try {
-            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/groupProfile', {user_usn: user.username ,user2_usn:group.group_name });
+            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/groupProfile', {user_usn: user.username ,user2_usn:group.group_name });
             if(response.data && response.data.message) {
                 const newGroupInfo = {
                     username: response.data.group.group_name,

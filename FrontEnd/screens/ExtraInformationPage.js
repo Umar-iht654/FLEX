@@ -14,7 +14,7 @@ const ExtraInformationPage = ({ navigation, route }) => {
 
     async function uploadBio(){
         try {
-            const response = await axios.post('https://54e5-138-253-184-53.ngrok-free.app/setProfile', {username: user.username ,bio:bio, profile:profilePic});
+            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/setProfile', {username: user.username ,bio:bio, profile:profilePic});
             if(response.data && response.data.message) {
                 navigation.navigate('Home', { user: user });
             }
