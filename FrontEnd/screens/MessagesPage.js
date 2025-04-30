@@ -146,7 +146,7 @@ const MessagesPage = ({ navigation, route }) => {
         {currentScreen === 'groups' && (
           <ScrollView>
             <View style={{width: '100%', alignItems: 'flex-end', padding: 16}}>
-              <TouchableOpacity style={{width: '100%'}}onPress={()=>{navigation.getParent().navigate("CreateGroup")}}>
+              <TouchableOpacity style={{width: '100%'}}onPress={()=>{navigation.getParent().navigate("CreateGroup", {user:user})}}>
                 <View style={{height: 60, width: '100%', backgroundColor: 'teal', borderRadius: 12, borderWidth: 2, alignItems: 'center', justifyContent: 'center'}}>
                   <Text style={messagesPageStyles.buttonText}>Create Group</Text>
                 </View>

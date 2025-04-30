@@ -62,7 +62,7 @@ const SearchPage = ( {navigation, route }) => {
       // ]
       // setSearchResultsGroups(currentSearchResultsGroups);
       try {
-        const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/search', {search: searchInput});
+        const response = await axios.post('https://7ee8-138-253-184-53.ngrok-free.app/search', {search: searchInput});
         if(response.data && response.data.message) {
           if (response.data.message === 'user'){
             setUserP(response.data.user);
