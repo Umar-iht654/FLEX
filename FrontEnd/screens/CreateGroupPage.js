@@ -11,8 +11,8 @@ const CreateGroupPage = ({ navigation, route }) => {
 
     const { user } = route.params;
 
-    const [groupName, setGroupName] = useState();
-    const [bio, setBio] = useState();
+    const [groupName, setGroupName] = useState('');
+    const [bio, setBio] = useState('');
     const [groupActivity, setGroupActivity] = useState();
 
 
