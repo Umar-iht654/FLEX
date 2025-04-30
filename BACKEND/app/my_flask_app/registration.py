@@ -58,6 +58,12 @@ class RegisterRequest(BaseModel):
     DOB: str
     full_name: str
 
+class GroupRegisterRequest(BaseModel):
+    name: str
+    description: str
+    activity_type: str
+
+
 class ProfileRequest(BaseModel):
     username: str
 
@@ -149,6 +155,29 @@ def register():
             data.address,
             data.DOB,
             data.full_name
+        ))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({"data": "Registration successful"}), 201
+    except mysql.connector.Error as err:
+        return jsonify({"detail": "Database error occurred"}), 500
+
+@app.route('/registerGroup', methods=['POST'])
+def register():
+    data = GroupRegisterRequest(**request.json)
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO groups (name, description, activity_type)
+            VALUES (%s, %s, %s)
+        """, (
+            data.name,
+            data.description,
+            data.activity_type,  # You should hash this in production!
         ))
         conn.commit()
         cursor.close()

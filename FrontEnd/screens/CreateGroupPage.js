@@ -16,9 +16,23 @@ const CreateGroupPage = ({ navigation }) => {
     const activities = data.activities.map(activity => activity.name);
     const [activitiesVisable, setActivitiesVisable] = useState(false);
 
-    function createGroup(){
-        navigation.goBack();
+    const createGroup = async () => {
+        const groupData = {
+            groupName: groupName,
+            bio: bio,
+            activityType: groupActivity,
+        };
+    
+        try {
+            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/registerGroup', groupData);
+            if (response.data && response.data.data) {
+                navigation.goBack();
+            }
+        } catch (error) {
+
+        }
     }
+
     const ActivityCard = ({ activityName }) => {
         return(
             <TouchableOpacity onPress={()=>{setActivitiesVisable(false); setGroupActivity(activityName)}}>
