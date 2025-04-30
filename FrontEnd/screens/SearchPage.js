@@ -71,7 +71,7 @@ const SearchPage = ( {navigation, route }) => {
           }
           else if (response.data.message === 'group'){
             setGroup(response.data.group)
-            const fetchedGroup  = { name: group.group_name, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', location: 'location', activity: group.activity, description: group.bio, numberOfMembers: group.member_count, isPrivate: false}
+            const fetchedGroup  = { name: group.group_name, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', location: 'location', activity: group.activity, description: group.bio, numberOfMembers: response.data.memberCount, isPrivate: false}
             setSearchResultsGroups([fetchedGroup]);
           }
         }
