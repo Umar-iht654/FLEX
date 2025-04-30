@@ -3,11 +3,13 @@ import React, { useState, useCallback } from "react";
 import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, StyleSheet, } from "react-native";
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 import styles from '../styles/styles';
+import axios from 'axios';
 
 
 const UserProfilePage = ({ navigation, route }) => {
     const { user, friendUSN } = route.params;
     console.log(user.username);
+    console.log(friendUSN);
     const [friendOverlayVisable, setFriendOverlayVisable] = useState(false);
     const [groupOverlayVisable, setGroupOverlayVisable] = useState(false);
     const [activityOverlayVisable, setActivityOverlayVisable] = useState(false);
@@ -15,7 +17,6 @@ const UserProfilePage = ({ navigation, route }) => {
 
     const [currentParticipants, setCurrentParticipants] = useState([]);
     //this is a placeholder, there should be a function that can be called to collect all the data below from the database
-
 
     const [userInfo, setUserInfo] = useState({
         username: '',
@@ -144,7 +145,7 @@ const UserProfilePage = ({ navigation, route }) => {
   }
 
     function openProfile(newUserID){
-        navigation.push('UserProfile', { user, newUserID});
+        navigation.navigate('UserProfile', { user: user, friendUSN: newUserID });
     }
 
     function openGroup(newGroupID){
