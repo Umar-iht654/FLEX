@@ -17,6 +17,7 @@ import HomeTabs from './HomeTabs';
 import ActivityLogPage from '../screens/ActivityLogPage';
 import GroupChatInfoPage from '../screens/GroupChatInfoPage.js';
 import CreateGroupPage from '../screens/CreateGroupPage.js';
+import ExtraInformationPage from '../screens/ExtraInformationPage';
 
 const Stack = createStackNavigator();
 
@@ -37,6 +38,7 @@ const AppNavigator = () =>{
                 <Stack.Screen name="GroupProfile" component={GroupProfilePage} options={{headerShown:false}}/>
                 <Stack.Screen name="GroupChatInfo" component={GroupChatInfoPage} options={{headerShown:false}}/>
                 <Stack.Screen name="CreateGroup" component={CreateGroupPage} options={{headerShown:false}}/>
+                <Stack.Screen name="ExtraInformation" component={ExtraInformationPage} options={{headerShown:false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     );
