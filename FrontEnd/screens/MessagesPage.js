@@ -16,8 +16,8 @@ const MessagesPage = ({ navigation, route }) => {
   const [friendsInfo, setFriendsInfo] = useState([]);
 
   //opens the chat page
-  function OpenChat( chatType, chatName, chatID, chatPF){
-    navigation.navigate('Chat', { chatType, chatName, chatID, chatPF, user })
+  function OpenChat( chatType, chatName){
+    navigation.navigate('Chat', { chatType, chatName, user })
   }
 
   function UploadPageInfo(username){
@@ -44,7 +44,7 @@ const MessagesPage = ({ navigation, route }) => {
   //renders the chat card
   const GroupChatCard = ({ID, name, profilePicture, pinned, unreadMessageCount}) => {
     return(
-      <TouchableOpacity onPress={() => {OpenChat("group", name, ID, profilePicture)}}>
+      <TouchableOpacity onPress={() => {OpenChat("group", name)}}>
 
         {/*chat card container*/}
         <View style={messagesPageStyles.infoCardContainer}>
@@ -75,7 +75,7 @@ const MessagesPage = ({ navigation, route }) => {
 
   const FriendChatCard = ({ID, name, profilePicture, pinned, unreadMessageCount}) => {
     return(
-      <TouchableOpacity onPress={() => {OpenChat("friend", name, ID, profilePicture)}}>
+      <TouchableOpacity onPress={() => {OpenChat("friend", name)}}>
 
         {/*chat card container*/}
         <View style={messagesPageStyles.infoCardContainer}>

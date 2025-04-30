@@ -5,7 +5,7 @@ import React, {useState} from 'react';
   
 const CreateActivitySelectionPage = ({ navigation, route }) => {
   const { email } = route.params;
-  const [selectedActivities, setSelectedActivities] = useState([]);
+  const [selectedActivities, setSelectedActivities] = useState(data.activities);
   const [validateError, setValidateError] = useState('');
  
   const uploadData =  async () => {
@@ -55,7 +55,7 @@ const CreateActivitySelectionPage = ({ navigation, route }) => {
         <FlatList
           data={data.activities}
           renderItem={renderActivities}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item) => item.id}
           numColumns={3}
           contentContainerStyle={styles.container}
         />
@@ -78,5 +78,39 @@ const CreateActivitySelectionPage = ({ navigation, route }) => {
     </SafeAreaView>
   );
 }
+
+
+const data = {
+  activities: [
+    { id: 'a1', name: 'Archery' },
+    { id: 'a2', name: 'Badminton'  },
+    { id: 'a3', name: 'Baseball' },
+    { id: 'a4', name: 'Basketball' },
+    { id: 'a5', name: 'Boxing' },
+    { id: 'a6', name: 'Basketball' },
+    { id: 'a7', name: 'Cricket' },
+    { id: 'a8', name: 'Cycling' },
+    { id: 'a9', name: 'Fencing' },
+    { id: 'a10', name: 'Golf' },
+    { id: 'a11', name: 'Gymnastics' },
+    { id: 'a12', name: 'Hockey' },
+    { id: 'a13', name: 'Mixed Martial Arts' },
+    { id: 'a14', name: 'Rowing' },
+    { id: 'a15', name: 'Rugby' },
+    { id: 'a16', name: 'Running' },
+    { id: 'a17', name: 'Mixed Martial Arts' },
+    { id: 'a18', name: 'Skiing' },
+    { id: 'a19', name: 'Snowboarding' },
+    { id: 'a20', name: 'Swimming' },
+    { id: 'a21', name: 'Table Tennis' },
+    { id: 'a22', name: 'Tennis' },
+    { id: 'a23', name: 'Volleyball' },
+    { id: 'a24', name: 'Weight Lifting' },
+    { id: 'a25', name: 'Wrestling' },
+    { id: 'a26', name: 'Weight Lifting' }
+  ]
+};
+
+
 
 export default CreateActivitySelectionPage;

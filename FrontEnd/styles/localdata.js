@@ -193,14 +193,6 @@ const data = {
         winner: 'high',
       },
       {
-        name: 'Weightlifting',
-        type: 'weight',
-        initialPlayers: 1,
-        maxPlayers: 1,
-        pointName: 'kg',
-        winner: 'high',
-      },
-      {
         name: 'Wrestling',
         type: '1v1',
         initialPlayers: 2,

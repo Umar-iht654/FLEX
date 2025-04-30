@@ -7,7 +7,11 @@ const ChatPage = ({ navigation }) => {
     //collects information chat information needed to load the messages
     //the chat id should be used to identify the chat
     const route = useRoute();
-    const { chatType, chatName, chatID, chatPF, user } = route.params;
+    const { chatType, chatName, user } = route.params;
+
+    
+    const chatPF = 'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg';
+
 
     //contains the message being typed in the message input field
     const [message, setMessage] = useState();
@@ -188,7 +192,7 @@ const ChatPage = ({ navigation }) => {
                 {/*chat profile picture and name*/}
                 <TouchableOpacity onPress={() => {
                     if(chatType == "friend"){
-                        navigation.navigate('UserProfile', { userID: chatName, previousPage: 'Chat' })
+                        navigation.navigate('UserProfile', { chatName, user })
                     }else{
                         navigation.navigate('GroupChatInfo', { groupName: chatName, groupPF: chatPF})
                     }}}>
