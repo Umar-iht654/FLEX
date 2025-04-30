@@ -18,7 +18,7 @@ const CreateActivitySelectionPage = ({ navigation, route }) => {
       if(response.data && response.data.message){
         setValidateError('');
         const user = response.data.user
-        navigation.navigate('ExtraInformation', {create_user: user});
+        navigation.navigate('ExtraInformation', {user: user});
       }
     } catch (error) {
       setValidateError(error.response?.data?.detail || 'Something went wrong');

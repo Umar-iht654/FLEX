@@ -14,11 +14,12 @@ const ExtraInformationPage = ({ navigation, route }) => {
 
     async function uploadBio(){
         try {
-            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/setProfile', {username: user.username ,bio:friendUSN, profile:profilePic});
+            const response = await axios.post('https://933c-138-253-184-53.ngrok-free.app/setProfile', {username: user.username ,bio:bio, profile:profilePic});
             if(response.data && response.data.message) {
-                navigation.navigate('Home', {user: user});
+                navigation.navigate('Home', { user: user });
             }
         } catch (error) {
+            console.error("❌ Error uploading bio:", error.response?.data || error.message || error);
         }
                 
     };
