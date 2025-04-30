@@ -71,8 +71,8 @@ CREATE TABLE `groups` (
 
 -- GROUP MEMBERS table
 CREATE TABLE group_members (
-    group_name UNIQUE NOT NULL,
-    user_username UNIQUE NOT NULL,
+    group_name NOT NULL,
+    user_username NOT NULL,
     role VARCHAR(50) DEFAULT 'member'    
 );
 

@@ -64,14 +64,14 @@ const SearchPage = ( {navigation, route }) => {
       try {
         const response = await axios.post('https://54e5-138-253-184-53.ngrok-free.app/search', {search: searchInput});
         if(response.data && response.data.message) {
-          if (response.data.message === 'user'){
+          if (response.data.user){
             setUserP(response.data.user);
-            const fetchedUser  = { name: userP.username, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', location: 'location'}           
+            const fetchedUser  = { name: response.data.user.username, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', location: 'location'}           
             setSearchResultsUsers([fetchedUser]);
           }
-          else if (response.data.message === 'group'){
+          else if (response.data.group){
             setGroup(response.data.group)
-            const fetchedGroup  = { name: group.group_name, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', location: 'location', activity: group.activity, description: group.bio, numberOfMembers: response.data.memberCount, isPrivate: false}
+            const fetchedGroup  = { name: response.data.group.group_name, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', location: 'location', activity: group.activity, description: group.bio, numberOfMembers: response.data.memberCount, isPrivate: false}
             setSearchResultsGroups([fetchedGroup]);
           }
         }
