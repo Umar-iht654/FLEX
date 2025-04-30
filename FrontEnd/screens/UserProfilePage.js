@@ -123,19 +123,23 @@ const UserProfilePage = ({ navigation, route }) => {
 
     }
 
-    function sendFriendRequest(){
-        setUserRelationship('pending')
-        console.log("friend request sent")
-    }
-
-    function pullFriendRequest(){
-        setUserRelationship('notfriend')
-        console.log("Friend request pulled")
+    function addFriend(){
+        setUserRelationship(true)
+        console.log("friend added sent")
     }
 
     function removeFriend(){
-        setUserRelationship('notfriend')
+        setUserRelationship(false)
         console.log("Friend removed")
+    }
+
+    function isUser(otherUser){
+        if(user.username === otherUser){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     function openProfile(newUserID){
@@ -380,7 +384,11 @@ const UserProfilePage = ({ navigation, route }) => {
 
     const FriendCard = ({username, profilePicture}) => {
         return (
-            <TouchableOpacity onPress={() => {openProfile(username)}}>
+            
+            <TouchableOpacity onPress={() => {
+                if(!isUser(username)){
+                    openProfile(username)}}
+                }>
                 <View style={{flexDirection: "row"}}>
                     <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
                     <Text style={profilePageStyles.popupItemText}>{username}</Text>
@@ -408,6 +416,7 @@ const UserProfilePage = ({ navigation, route }) => {
             </View>
         );
     };
+    
 
     useFocusEffect(
         useCallback(() => {
@@ -495,22 +504,15 @@ const UserProfilePage = ({ navigation, route }) => {
 
                     {!(userRelationship == 'self') && (
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', padding: 20}}>
-                            {userRelationship == 'friend' && (
+                            {userRelationship && (
                                 <TouchableOpacity style={{width: '70%'}} onPress={() => {removeFriend()}}>
                                     <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
                                         <Text style={[profilePageStyles.title, {fontSize: 20}]}>Unfriend</Text>
                                     </View>
                                 </TouchableOpacity>
                             )}
-                            {userRelationship == 'pending' && (
-                                <TouchableOpacity style={{width: '70%'}} onPress={() => {pullFriendRequest()}}>
-                                    <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
-                                        <Text style={[profilePageStyles.title, {fontSize: 20}]}>Request Pending</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )}
-                            {userRelationship == 'notfriend' && (
-                                <TouchableOpacity style={{width: '70%'}} onPress={() => {sendFriendRequest()}}>
+                            {!userRelationship && (
+                                <TouchableOpacity style={{width: '70%'}} onPress={() => {addFriend()}}>
                                     <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
                                         <Text style={[profilePageStyles.title, {fontSize: 20}]}>Add Friend</Text>
                                     </View>

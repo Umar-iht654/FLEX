@@ -77,7 +77,7 @@ const ActivityLogPage = () => {
   }
 
   function getActivityInformation(){
-    
+
   }
 
 
@@ -222,6 +222,11 @@ const ActivityLogPage = () => {
                       onChangePlayerScore={ChangePlayerScore}
                     />
                   ))}
+                  {activityInfo.type === 'time/distance' && (
+                    <View style={{alignItems: 'center'}}>
+                      <Text style={{fontSize: 28, fontWeight: 500}}>km</Text>
+                    </View>
+                  )}
                 </View>
               </ScrollView>
 

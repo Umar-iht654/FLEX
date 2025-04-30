@@ -40,7 +40,7 @@ const ExtraInformationPage = ({ navigation, route }) => {
                     <View style={{width: '100%', padding: 24}}>
                     <TouchableOpacity onPress={()=>{uploadBio()}}>
                         <View style={createGroupPageStyles.selectActivitiesButton}>
-                            <Text style={{}}>Create Group</Text>
+                            <Text style={{}}>Create Account</Text>
                         </View>
                     </TouchableOpacity>
                     </View>
