@@ -505,29 +505,24 @@ const UserProfilePage = ({ navigation, route }) => {
                     {!(userRelationship == 'self') && (
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', padding: 20}}>
                             {userRelationship && (
-                                <TouchableOpacity style={{width: '70%'}} onPress={() => {removeFriend()}}>
+                                <TouchableOpacity style={{width: '100%'}} onPress={() => {removeFriend()}}>
                                     <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
                                         <Text style={[profilePageStyles.title, {fontSize: 20}]}>Unfriend</Text>
                                     </View>
                                 </TouchableOpacity>
                             )}
                             {!userRelationship && (
-                                <TouchableOpacity style={{width: '70%'}} onPress={() => {addFriend()}}>
+                                <TouchableOpacity style={{width: '100%'}} onPress={() => {addFriend()}}>
                                     <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
                                         <Text style={[profilePageStyles.title, {fontSize: 20}]}>Add Friend</Text>
                                     </View>
                                 </TouchableOpacity>
                             )}
 
-                            <TouchableOpacity style={{width: '28%'}} onPress={() => {setUserRelationship('friend')}}>
-                                <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
-                                    <Text style={[profilePageStyles.title, {fontSize: 20}]}>Message</Text>
-                                </View>
-                            </TouchableOpacity>
                         </View>
                     )}
 
-                    {!(userRelationship === 'notfriend' || userRelationship === 'pending') && (
+                    {!(userRelationship === true ) && (
                         <View style={{ alignItems: 'center' }}>
                             {/* Displays recent activities */}
                             <Text style={profilePageStyles.recentActivitiesHeader}>Recent Activities</Text>
