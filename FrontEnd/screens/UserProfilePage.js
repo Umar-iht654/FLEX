@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, StyleSheet, } from "react-native";
 import { useFocusEffect, useRoute } from '@react-navigation/native';
@@ -41,7 +40,7 @@ const UserProfilePage = ({ navigation, route }) => {
         if(response.data && response.data.message) {
           const userProf = response.data.userP;
           const friends = response.data.friends;
-          const isFriend = response.data.isFriend
+          const isFriend = response.data.isFriend;
           const groups = response.data.groups;
           const activities = response.data.activities;
 
@@ -51,79 +50,31 @@ const UserProfilePage = ({ navigation, route }) => {
             loggedActivitiesCount: response.data.activityCount,
             profilePic: userProf.profile_picture || ''
           }
-        setUserInfo(newUserInfo);
+          setUserInfo(newUserInfo);
 
         const newFriendData = friends.map(friend => ({
           username: friend.friend_username,
           profilePicture:'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'
         }));
+        console.log(isFriend)
         setFriendData(newFriendData);
 
-        const newGroupData = groups.map(group => ({
-          groupname: group.group_name,
-          profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'
-        }));
-        setGroupData(newGroupData);
+          const newGroupData = groups.map(group => ({
+            groupname: group.group_name,
+            profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'
+          }));
+          setGroupData(newGroupData);
 
-        const newActivityData = activities.map(activity => ({
-          activityname: activity.name
-        }));
-        setActivityData(newActivityData);
+          const newActivityData = activities.map(activity => ({
+            activityname: activity.name
+          }));
+          setActivityData(newActivityData);
+          
+          setUserRelationship(isFriend);
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
       }
-      setUserRelationship(isFriend)
-    } catch (error) {
-    }
-        // const newFriendData = [
-        //     { userID: 1, username: 'Pee Pee Wherman', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 2, username: 'Dan Scooterist', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 3, username: 'Luka Scumperlot', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 4, username: 'Gooper Gooperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 5, username: 'Sickalicka trying', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 6, username: 'Sir Yemen', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 7, username: 'Timothy Skelton', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 8, username: 'Lenny Crapperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 9, username: 'Milo Biggers', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 10, username: 'Carlos Swindler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 11, username: 'Jimmy Pickles', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 12, username: 'Billy McNugget', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 13, username: 'Maddie Two-Times', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 14, username: 'Vince Vermin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 15, username: 'Fiona Biggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 16, username: 'Chuck Banter', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 17, username: 'Zane Crankford', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 18, username: 'Bea Wiggler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 19, username: 'Oscar Baggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 20, username: 'Tina Wallflower', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 21, username: 'Zoe Fizzbin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 22, username: 'Alex Sweets', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { userID: 23, username: 'Nina Stepperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' }
-        // ];
-        // setFriendData(newFriendData);
-
-        // const newGroupData = [
-        //     { groupname: 'The Footy Dwellers', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { groupname: 'Scarcity Tennis', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { groupname: 'Manchester Maddens', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Sai_mahotsav_manjhanpur.jpg?20231128214559' },
-        //     { groupname: 'Badboyminton', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { groupname: 'Cycling Skeletons', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { groupname: 'Krazy Kenyans', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        //     { groupname: 'Slapping Sailors', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-        // ];
-        // setGroupData(newGroupData);
-
-        // const newActivityData = [
-        //     { activityname: 'Tennis'},
-        //     { activityname: 'Football'},
-        //     { activityname: 'Cycling'},
-        //     { activityname: 'Running'},
-        //     { activityname: 'Shuffle Board'},
-        //     { activityname: 'Tap Dancing'},
-        // ];
-        // setActivityData(newActivityData);
-
-        // const newUserRelationship = false
-        // setUserRelationship('notfriend')
-
     }
 
     const addFriend = async () => {
@@ -135,7 +86,7 @@ const UserProfilePage = ({ navigation, route }) => {
         try {
             const response = await axios.post('https://a19e-138-253-184-53.ngrok-free.app/addFriend', addData);
             if (response.data && response.data.data) {
-                navigation.navigate("UserProfile", { user: user, friendUSN: friendUSN});
+                await UploadPageInfo();
             }
         } catch (error) {
             console.error("❌ Error adding friend:", error);
@@ -152,7 +103,7 @@ const UserProfilePage = ({ navigation, route }) => {
         try {
             const response = await axios.post('https://a19e-138-253-184-53.ngrok-free.app/removeFriend', removeData);
             if (response.data && response.data.data) {
-                navigation.navigate("UserProfile", { user: user, friendUSN: friendUSN});
+                await UploadPageInfo();
             }
         } catch (error) {
             console.error("❌ Error removing friend:", error);
@@ -167,13 +118,15 @@ const UserProfilePage = ({ navigation, route }) => {
       }
   }
 
-    function openProfile(newUserID){
-        navigation.navigate('UserProfile', { user: user, friendUSN: newUserID });
-    }
+  function openProfile(newUserID){
+    setFriendOverlayVisable(false);
+    navigation.push('UserProfile', { user: user, friendUSN: newUserID });
+  }
 
-    function openGroup(newGroupID){
-        navigation.push('GroupProfile', { groupID: newGroupID });
-      }
+  function openGroup(newGroupID){
+    setGroupOverlayVisable(false);
+    navigation.push('GroupProfile', { user: user,group: newGroupID });
+  }
 
     function returnToPage(){
         navigation.goBack();
@@ -409,22 +362,21 @@ const UserProfilePage = ({ navigation, route }) => {
 
     const FriendCard = ({username, profilePicture}) => {
         return (
-          <TouchableOpacity onPress={() => {
-            if(!isUser(username)){
-                openProfile(username)}}
-            }>
-                <View style={{flexDirection: "row"}}>
-                    <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
-                    <Text style={profilePageStyles.popupItemText}>{username}</Text>
-                </View>
+          (!(user.username === username)) && (
+            <TouchableOpacity onPress={() => {openProfile(username)}}>
+            <View style={{flexDirection: "row", height: 60, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', borderRadius: 12, marginBottom: 6}}>
+              <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
+              <Text style={profilePageStyles.popupItemText}>{username}</Text>
+            </View>
             </TouchableOpacity>
+          )
         );
-    };
+      };
 
     const GroupCard = ({groupname, profilePicture}) => {
         return (
             <TouchableOpacity onPress={() => {openGroup(groupname)}}>
-                <View style={{flexDirection: "row"}}>
+                <View style={{flexDirection: "row", height: 60, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', borderRadius: 12, marginBottom: 6}}>
                     <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
                     <Text style={profilePageStyles.popupItemText}>{groupname}</Text>
                 </View>
@@ -503,21 +455,21 @@ const UserProfilePage = ({ navigation, route }) => {
                     {/*Shows Friend, Group and Activity Number*/}
                     <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'flex-start', marginTop: 15}}>
                         <TouchableOpacity onPress={() => {
-                            if((userRelationship == 'friend')){
+                            if((userRelationship)){
                                 setFriendOverlayVisable(true)
                             }
                             }}>
                             <InfoBox name='Friends' count={friendData.length}/>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
-                            if((userRelationship == 'friend')){
+                            if((userRelationship)){
                                 setGroupOverlayVisable(true)
                             }
                             }}>
                             <InfoBox name='Groups' count={groupData.length}/>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
-                            if((userRelationship == 'friend')){
+                            if((userRelationship)){
                                 setActivityOverlayVisable(true)
                             }
                             }}>
@@ -527,25 +479,23 @@ const UserProfilePage = ({ navigation, route }) => {
 
                     
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', padding: 20}}>
-                        {userRelationship && (
+                        {userRelationship ? (
                             <TouchableOpacity style={{width: '100%'}} onPress={() => {removeFriend()}}>
                                 <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
                                     <Text style={[profilePageStyles.title, {fontSize: 20}]}>Unfriend</Text>
                                 </View>
                             </TouchableOpacity>
-                        )}
-                        {!userRelationship && (
+                        ) : (
                             <TouchableOpacity style={{width: '100%'}} onPress={() => {addFriend()}}>
                                 <View style={{height: 60, backgroundColor: 'teal', borderRadius: 16, justifyContent: 'center', alignItems: 'center'}}>
                                     <Text style={[profilePageStyles.title, {fontSize: 20}]}>Add Friend</Text>
                                 </View>
                             </TouchableOpacity>
                         )}
-
                     </View>
                     
 
-                    {!(userRelationship === true ) && (
+                    {(userRelationship) && (
                         <View style={{ alignItems: 'center' }}>
                             {/* Displays recent activities */}
                             <Text style={profilePageStyles.recentActivitiesHeader}>Recent Activities</Text>
@@ -577,9 +527,9 @@ const UserProfilePage = ({ navigation, route }) => {
                     <View style={profilePageStyles.popupScreenOutline}>
                             <Text style={profilePageStyles.popupScreenTitle}>Friends</Text>
                             <ScrollView>
-                                {friendData.map(friend=> (
+                                {friendData.map((friend, index)=> (
                                 <FriendCard
-                                        key = {friend.userID}
+                                        key = {index}
                                         username = {friend.username}
                                         profilePicture = {friend.profilePicture}
                                 />
@@ -597,9 +547,9 @@ const UserProfilePage = ({ navigation, route }) => {
                     <View style={profilePageStyles.popupScreenOutline}>
                             <Text style={profilePageStyles.popupScreenTitle}>Groups</Text>
                             <ScrollView>
-                                {groupData.map(group=> (
+                                {groupData.map((group, index)=> (
                                 <GroupCard
-                                        key = {group.groupname}
+                                        key = {index}
                                         groupname = {group.groupname}
                                         profilePicture = {group.profilePicture}
                                 />

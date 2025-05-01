@@ -28,7 +28,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         try {
             const response = await axios.post('https://a19e-138-253-184-53.ngrok-free.app/addMember', addData);
             if (response.data && response.data.data) {
-                navigation.navigate("GroupProfile", {user: user, group: group})
+                await UploadPageInfo();
             }
         } catch (error) {
             console.error("❌ Error adding group:", error);
@@ -44,7 +44,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         try {
             const response = await axios.post('https://a19e-138-253-184-53.ngrok-free.app/removeMember', removeData);
             if (response.data && response.data.data) {
-                navigation.navigate("GroupProfile", {user: user, group: group})
+                await UploadPageInfo();
             }
         } catch (error) {
             console.error("❌ Error removing member:", error);
@@ -58,7 +58,6 @@ const GroupProfilePage = ({ navigation, route}) => {
     function openProfile(newProfileID){
         navigation.push('UserProfile', {user: user, friendUSN: newProfileID});
     }
-
 
     async function UploadPageInfo() {
         try {
@@ -80,6 +79,7 @@ const GroupProfilePage = ({ navigation, route}) => {
                     username: member.user_username, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'
                 }))
                 setMemberData(newMemberData);
+                setUserRelationship(isMember);
             }
         } catch (error) {
             console.error("❌ Error fetching members:", error.response?.data || error.message || error);
@@ -111,18 +111,19 @@ const GroupProfilePage = ({ navigation, route}) => {
         // ];
         // setMemberData(newMemberData);
 
-        setUserRelationship(true);
 
     }
 
     const FriendCard = ({username, profilePicture}) => {
         return (
-            <TouchableOpacity onPress={() => {openProfile(username)}}>
-                <View style={{flexDirection: "row", height: 60, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', borderRadius: 12, marginBottom: 6}}>
-                    <Image style={groupProfileStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
-                    <Text style={groupProfileStyles.popupItemText}>{username}</Text>
-                </View>
-            </TouchableOpacity>
+            (!(user.username === username) && (
+                <TouchableOpacity onPress={() => {openProfile(username)}}>
+                    <View style={{flexDirection: "row", height: 60, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', borderRadius: 12, marginBottom: 6}}>
+                        <Image style={groupProfileStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
+                        <Text style={groupProfileStyles.popupItemText}>{username}</Text>
+                    </View>
+                </TouchableOpacity>
+            ))
         );
     };
 
@@ -130,9 +131,8 @@ const GroupProfilePage = ({ navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             // This function will run every time the screen is focused
-            UploadPageInfo("group");
-            console.log("navigated to")
-        }, [])
+            UploadPageInfo();
+        }, [group, user])
     );
     return (
         <SafeAreaView style={[styles.safeAreaView, {justifyContent: 'flex-start', alignItems: 'center'}]}>

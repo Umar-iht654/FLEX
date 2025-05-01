@@ -71,7 +71,18 @@ const SearchPage = ( {navigation, route }) => {
           }
           else if (response.data.group){
             setGroup(response.data.group)
-            const fetchedGroup  = { name: response.data.group.group_name, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', location: 'location', activity: response.data.group.activity, description: response.data.group.bio, numberOfMembers: response.data.memberCount, isPrivate: false}
+            const memberCount = typeof response.data.memberCount === 'object' 
+              ? response.data.memberCount.Member_count 
+              : response.data.memberCount;
+            const fetchedGroup  = { 
+              name: response.data.group.group_name, 
+              profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', 
+              location: 'location', 
+              activity: response.data.group.activity, 
+              description: response.data.group.bio, 
+              numberOfMembers: memberCount, 
+              isPrivate: false
+            }
             setSearchResultsGroups([fetchedGroup]);
           }
         }
@@ -262,9 +273,9 @@ const SearchPage = ( {navigation, route }) => {
               </TouchableOpacity>
               {(groupsVisable) && (
                 <View>
-                  {searchResultsGroups.map(group=> (
+                  {searchResultsGroups.map((group, index)=> (
                     <GroupCard
-                    key={group.key}
+                    key={index}
                     group={group}
                   />
                   ))}
@@ -277,9 +288,9 @@ const SearchPage = ( {navigation, route }) => {
               </TouchableOpacity>
               {(usersVisable) && (
                 <View>
-                  {searchResultsUsers.map(user=> (
+                  {searchResultsUsers.map((user, index)=> (
                     <UserCard
-                    key={user.name}
+                    key={index}
                     user={user}
                   />
                   ))}
