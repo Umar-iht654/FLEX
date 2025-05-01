@@ -26,7 +26,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         };
     
         try {
-            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/addMember', addData);
+            const response = await axios.post('https://a19e-138-253-184-53.ngrok-free.app/addMember', addData);
             if (response.data && response.data.data) {
                 navigation.navigate("GroupProfile", {user: user, group: group})
             }
@@ -42,7 +42,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         };
     
         try {
-            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/removeMember', removeData);
+            const response = await axios.post('https://a19e-138-253-184-53.ngrok-free.app/removeMember', removeData);
             if (response.data && response.data.data) {
                 navigation.navigate("GroupProfile", {user: user, group: group})
             }
@@ -62,7 +62,7 @@ const GroupProfilePage = ({ navigation, route}) => {
 
     async function UploadPageInfo() {
         try {
-            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/groupProfile', {user_usn: user.username ,user2_usn:group });
+            const response = await axios.post('https://a19e-138-253-184-53.ngrok-free.app/groupProfile', {user_usn: user.username ,user2_usn:group });
             if(response.data && response.data.message) {
                 const newGroupInfo = {
                     username: response.data.group.group_name,
