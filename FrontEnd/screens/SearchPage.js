@@ -69,8 +69,10 @@ const SearchPage = ( {navigation, route }) => {
             setUserP(response.data.user);
             const fetchedUser  = { name: response.data.user.username, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', location: 'location'}           
             setSearchResultsUsers([fetchedUser]);
+          }else{
+            setSearchResultsUsers([])
           }
-          else if (response.data.group){
+          if (response.data.group){
             setGroup(response.data.group)
             const memberCount = typeof response.data.memberCount === 'object' 
               ? response.data.memberCount.Member_count 
@@ -85,6 +87,8 @@ const SearchPage = ( {navigation, route }) => {
               isPrivate: false
             }
             setSearchResultsGroups([fetchedGroup]);
+          }else{
+            setSearchResultsGroups([])
           }
         }
       } catch (error) {
@@ -209,6 +213,9 @@ const SearchPage = ( {navigation, route }) => {
     {/*called when the page is opened*/}
     useFocusEffect(
         useCallback(() => {
+          setSearchInput('');
+          setSearchResultsGroups([]);
+          setSearchResultsUsers([]);
           // This function will run every time the screen is focused
           if(searchInput != '')
             GetSearchResults();
