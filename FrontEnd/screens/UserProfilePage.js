@@ -133,7 +133,7 @@ const UserProfilePage = ({ navigation, route }) => {
         };
     
         try {
-            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/addFriend', addData);
+            const response = await axios.post('https://a19e-138-253-184-53.ngrok-free.app/addFriend', addData);
             if (response.data && response.data.data) {
                 navigation.navigate("UserProfile", { user: user, friendUSN: friendUSN});
             }
@@ -150,7 +150,7 @@ const UserProfilePage = ({ navigation, route }) => {
         };
     
         try {
-            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/removeFriend', removeData);
+            const response = await axios.post('https://a19e-138-253-184-53.ngrok-free.app/removeFriend', removeData);
             if (response.data && response.data.data) {
                 navigation.navigate("UserProfile", { user: user, friendUSN: friendUSN});
             }
