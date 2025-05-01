@@ -262,9 +262,9 @@ const SearchPage = ( {navigation, route }) => {
               </TouchableOpacity>
               {(groupsVisable) && (
                 <View>
-                  {searchResultsGroups.map(group=> (
+                  {searchResultsGroups.map((group, index)=> (
                     <GroupCard
-                    key={group.key}
+                    key={index}
                     group={group}
                   />
                   ))}
