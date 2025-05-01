@@ -15,7 +15,6 @@ db_config = {
     'password': 'TempasBas',
     'database': 'sgbadede'
 }
-
 class searchReq(BaseModel):                       
     search: str
 
@@ -300,6 +299,7 @@ def removeFriend():
         return jsonify({"data": "Friend removed successfully"}), 200
     except mysql.connector.Error as err:
         return jsonify({"detail": "Database error occurred"}), 500
+
 
 @app.route('/getProfile', methods=['POST'])
 def get_profile():
