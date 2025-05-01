@@ -28,7 +28,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         try {
             const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/addMember', addData);
             if (response.data && response.data.data) {
-                window.location.reload(false)
+                navigation.navigate("GroupProfile", {user: user, group: group})
             }
         } catch (error) {
             console.error("❌ Error adding group:", error);
@@ -44,7 +44,7 @@ const GroupProfilePage = ({ navigation, route}) => {
         try {
             const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/removeMember', removeData);
             if (response.data && response.data.data) {
-                window.location.reload(false)
+                navigation.navigate("GroupProfile", {user: user, group: group})
             }
         } catch (error) {
             console.error("❌ Error removing member:", error);

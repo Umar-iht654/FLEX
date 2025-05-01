@@ -126,15 +126,38 @@ const UserProfilePage = ({ navigation, route }) => {
 
     }
 
-    function addFriend(){
-      setUserRelationship(true)
-      console.log("friend added sent")
+    const addFriend = async () => {
+        const addData = {
+            user_usn: user.username,
+            user2_usn: friendUSN
+        };
+    
+        try {
+            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/addFriend', addData);
+            if (response.data && response.data.data) {
+                navigation.navigate("UserProfile", { user: user, friendUSN: friendUSN});
+            }
+        } catch (error) {
+            console.error("❌ Error adding friend:", error);
+        }
     }
+    
 
-    function removeFriend(){
-      setUserRelationship(false)
-        console.log("Friend removed")
-    } 
+    const removeFriend = async () => {
+        const removeData = {
+            user_usn: user.username,
+            user2_usn: friendUSN
+        };
+    
+        try {
+            const response = await axios.post('https://390d-138-253-184-53.ngrok-free.app/removeFriend', removeData);
+            if (response.data && response.data.data) {
+                navigation.navigate("UserProfile", { user: user, friendUSN: friendUSN});
+            }
+        } catch (error) {
+            console.error("❌ Error removing friend:", error);
+        }
+    }
     function isUser(otherUser){
       if(user.username === otherUser){
           return true;
