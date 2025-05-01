@@ -1,6 +1,7 @@
-import React, {useState, useEffect, act} from 'react';
-import { SafeAreaView, View, Text,Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal,Alert } from 'react-native';
+import React, {useState, useEffect, act, useCallback} from 'react';
+import { SafeAreaView, View, Text,Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal} from 'react-native';
 import styles from '../styles/styles';
+import { useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 const SearchPage = ( {navigation, route }) => {
@@ -206,7 +207,13 @@ const SearchPage = ( {navigation, route }) => {
     }
 
     {/*called when the page is opened*/}
-    
+    useFocusEffect(
+        useCallback(() => {
+          // This function will run every time the screen is focused
+          if(searchInput != '')
+            GetSearchResults();
+        }, [])
+    );
     return (
       <SafeAreaView style={styles.safeAreaView}>
         {/*TopBar*/}
