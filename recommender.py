@@ -14,7 +14,7 @@ class Recommender:
         # Optional: Load ML model for activity recommendations
         self.model = joblib.load(model_path) if model_path else None
         self.EARTH_RADIUS_KM = 6371
-
+#calculate the distance between 2 points using a formula
     def calculate_distance(self, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
         """Calculate distance between two points using Haversine formula"""
         lat1, lon1, lat2, lon2 = map(np.radians, [lat1, lon1, lat2, lon2])
