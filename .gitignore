@@ -52,3 +52,4 @@ Desktop.ini
 .parcel-cache/
 .tmp/
 tmp/
+credentials.env 
