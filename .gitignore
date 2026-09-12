@@ -1,0 +1,58 @@
+# Dependencies
+*node_modules/
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# React Native / Metro
+.metro-health-check*
+*.jsbundle
+
+# Native build output
+android/.gradle/
+android/app/build/
+android/build/
+ios/build/
+DerivedData/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Coverage / test output
+coverage/
+
+# IDE / editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc caches
+.cache/
+.parcel-cache/
+.tmp/
+tmp/
+<<<<<<< HEAD
+credentials.env 
+=======
+>>>>>>> origin/main

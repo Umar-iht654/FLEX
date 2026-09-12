@@ -1,14 +1,19 @@
-import React, {useState, useEffect, act} from 'react';
-import { SafeAreaView, View, Text,Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
+import React, {useState, useEffect, act, useCallback} from 'react';
+import { SafeAreaView, View, Text,Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal} from 'react-native';
 import styles from '../styles/styles';
+import { useFocusEffect} from '@react-navigation/native';
+import axios from 'axios';
 
-const SearchPage = ( {navigation}) => {
+const SearchPage = ( {navigation, route }) => {
+    const { user } = route.params;
     {/*top bar data*/}
     const [userStreak, setUserStreak] = useState(5);
     const [weather, setWeather] = useState('4°');
 
     {/*Stores value in the search bar*/}
     const [searchInput, setSearchInput] = useState('');
+    const [userP, setUserP] = useState(null);
+    const [group, setGroup] = useState(null);
 
     {/*Controls visability of views within the page*/}
     const [groupsVisable, setGroupsVisable] = useState(true);
@@ -38,39 +43,77 @@ const SearchPage = ( {navigation}) => {
     const [searchResultsGroups, setSearchResultsGroups] = useState([]);
     const [searchResultsUsers, setSearchResultsUsers] = useState([]);
 
-    function GetSearchResults(){
+
+    // Modal states
+  const [userModalVisible, setUserModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+    async function GetSearchResults(){
       {/*Again this data is just to test, a function should be called that
          searches the database based on the current search criteria*/}
-      const currentSearchResultsGroups = [
-        {key: 1, name: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: '355', isPrivate: true},
-        {key: 2, name: 'Group2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: '342', isPrivate: true},
-        {key: 3, name: 'Group3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: true},
-        {key: 4, name: 'Group4',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
-        {key: 5, name: 'Group5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
-        {key: 6, name: 'Group6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: '22' ,isPrivate: true},
-        {key: 7, name: 'Group7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
-        {key: 8, name: 'Group8',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
-      ]
-      setSearchResultsGroups(currentSearchResultsGroups);
+      // const currentSearchResultsGroups = [
+      //   {key: 1, name: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences, but this is what happens if its even longer, even longer even, but what if it was eeeveeen longer that is',numberOfMembers: '355', isPrivate: true},
+      //   {key: 2, name: 'Group2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: '342', isPrivate: true},
+      //   {key: 3, name: 'Group3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: true},
+      //   {key: 4, name: 'Group4',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
+      //   {key: 5, name: 'Group5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
+      //   {key: 6, name: 'Group6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: '22' ,isPrivate: true},
+      //   {key: 7, name: 'Group7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
+      //   {key: 8, name: 'Group8',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location',activity: 'activity',description: 'this is a long description isnt it, the description should be now more than 2 sentences',numberOfMembers: 'x', isPrivate: false},
+      // ]
+      // setSearchResultsGroups(currentSearchResultsGroups);
+      try {
+        const response = await axios.post('https://a19e-138-253-184-53.ngrok-free.app/search', {search: searchInput});
+        if(response.data && response.data.message) {
+          if (response.data.user){
+            setUserP(response.data.user);
+            const fetchedUser  = { name: response.data.user.username, profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', location: 'location'}           
+            setSearchResultsUsers([fetchedUser]);
+          }else{
+            setSearchResultsUsers([])
+          }
+          if (response.data.group){
+            setGroup(response.data.group)
+            const memberCount = typeof response.data.memberCount === 'object' 
+              ? response.data.memberCount.Member_count 
+              : response.data.memberCount;
+            const fetchedGroup  = { 
+              name: response.data.group.group_name, 
+              profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', 
+              location: 'location', 
+              activity: response.data.group.activity, 
+              description: response.data.group.bio, 
+              numberOfMembers: memberCount, 
+              isPrivate: false
+            }
+            setSearchResultsGroups([fetchedGroup]);
+          }else{
+            setSearchResultsGroups([])
+          }
+        }
+      } catch (error) {
+        console.error("❌ Error fetching user:", error.response?.data || error.message || error);
+      }
+      // const currentSearchResultsUsers = [
+      //   {name: 'User1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User4',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      //   {name: 'User7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
 
-      const currentSearchResultsUsers = [
-        {name: 'User1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User4',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
-        {name: 'User7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',location: 'location'},
+      // ]
+      // {/*Updates the lists of search results*/}
+      // setSearchResultsUsers(currentSearchResultsUsers);
 
-      ]
-      {/*Updates the lists of search results*/}
-      setSearchResultsUsers(currentSearchResultsUsers);
-      
     };
 
     function ClearSearch(){
       setSearchInput('');
     }
+
+    
 
     function ToggleActivity(activityName){
       setActivitiesSelected(prevActivities =>
@@ -90,65 +133,71 @@ const SearchPage = ( {navigation}) => {
       );
     }
 
-    {/*Displays group information*/}
-    const GroupCard = ({ groupName, groupProfilePicture, groupLocation, groupActivity, groupDescription, groupNumberOfMembers, groupIsPrivate }) => {
-      return(
-        <TouchableOpacity>
-          <View style={searchPageStyles.groupCardContainer}>
-            <View style={{flexDirection: 'row'}}>
+    function openGroup(newGroupID){
+      navigation.push('GroupProfile', { user: user, group: group.group_name});
+    }
 
-              {/*Group Profile Picture*/}
-              <Image style={searchPageStyles.groupProfilePicture} source={{ uri: groupProfilePicture}}/>
-              {/*Group Information*/}
-              <View style={{width: 180}}>
-                <Text style={searchPageStyles.groupCardTitle}>{groupName}</Text>
-                <Text style={searchPageStyles.groupCardInfoText}>{groupLocation}</Text>
-                <Text style={searchPageStyles.groupCardInfoText}>{groupActivity}</Text>
-                <Text style={searchPageStyles.groupCardDescriptionText}>{groupDescription}</Text>
-              </View>
-            </View>
-            <View>
+    function openProfile(newUserID){
+      navigation.push('UserProfile', { user: user, friendUSN: userP.username });
+    }
 
-              {/*Displays if the group is private*/}
-              {groupIsPrivate && (
-                  <View style={{height: '100%', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <Image style={searchPageStyles.padlockIcon} source={require('../assets/PadlockIcon.png')}/>
-                    <Text style={searchPageStyles.numberOfMembersText}>{groupNumberOfMembers}</Text>
-                  </View>
-                )}
 
-              {/*Displays if the group is public*/}
-              {!groupIsPrivate && (
-                <View style={{height: '100%',justifyContent: 'flex-end', alignItems: 'center'}}>
-                  <Text style={searchPageStyles.numberOfMembersText}>{groupNumberOfMembers}</Text>
-                </View>
-              )}
+  const GroupCard = ({ group }) => (
+    <TouchableOpacity onPress={() => openGroup(group.name)}>
+      <View style={searchPageStyles.groupCardContainer}>
+        <View style={{ flexDirection: 'row' }}>
+          <Image
+            style={searchPageStyles.groupProfilePicture}
+            source={{ uri: group.profilePicture }}
+          />
+          <View style={{ width: 180 }}>
+            <Text style={searchPageStyles.groupCardTitle}>{group.name}</Text>
+            <Text style={searchPageStyles.groupCardInfoText}>{group.location}</Text>
+            <Text style={searchPageStyles.groupCardInfoText}>{group.activity}</Text>
+            <Text
+              style={searchPageStyles.groupCardDescriptionText}
+              numberOfLines={2}
+            >
+              {group.description}
+            </Text>
+          </View>
+        </View>
+        <View style={searchPageStyles.iconColumn}>
+          {group.isPrivate && (
+            <Image
+              style={searchPageStyles.padlockIcon}
+              source={require('../assets/PadlockIcon.png')}
+            />
+          )}
+          <Text style={searchPageStyles.numberOfMembersText}>
+            {group.numberOfMembers}
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+  
+    const UserCard = ({ user }) => (
+      <TouchableOpacity onPress={() => {openProfile(user.name)}}>
+        <View style={searchPageStyles.userCardContainer}>
+          <View style={{ flexDirection: 'row' }}>
+            <Image
+              style={searchPageStyles.userProfilePicture}
+              source={{ uri: user.profilePicture }}
+            />
+            <View style={{ width: 180 }}>
+              <Text style={searchPageStyles.groupCardTitle}>
+                {user.name}
+              </Text>
+              <Text style={searchPageStyles.groupCardInfoText}>
+                {user.location}
+              </Text>
             </View>
           </View>
-        </TouchableOpacity>
-      );
-    };
+        </View>
+      </TouchableOpacity>
+    );
 
-    {/*Displays user information*/}
-    const UserCard = ({ userName, userProfilePicture, userLocation }) => {
-      return(
-        <TouchableOpacity>
-          <View style={searchPageStyles.userCardContainer}>
-            <View style={{flexDirection: 'row'}}>
-
-              {/*User profile picture*/}
-              <Image style={searchPageStyles.userProfilePicture} source={{ uri: userProfilePicture}}/>
-              <View style={{width: 180}}>
-
-                {/*User information*/}
-                <Text style={searchPageStyles.groupCardTitle}>{userName}</Text>
-                <Text style={searchPageStyles.groupCardInfoText}>{userLocation}</Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      );
-    };
 
     const ActivityCard = ({ activityName, isSelected }) => {
       return(
@@ -162,10 +211,16 @@ const SearchPage = ( {navigation}) => {
     }
 
     {/*called when the page is opened*/}
-    useEffect(() => {
-      GetSearchResults();
-    }, []);
-    
+    useFocusEffect(
+        useCallback(() => {
+          setSearchInput('');
+          setSearchResultsGroups([]);
+          setSearchResultsUsers([]);
+          // This function will run every time the screen is focused
+          if(searchInput != '')
+            GetSearchResults();
+        }, [])
+    );
     return (
       <SafeAreaView style={styles.safeAreaView}>
         {/*TopBar*/}
@@ -183,7 +238,7 @@ const SearchPage = ( {navigation}) => {
             <Image style={styles.weatherIcon} source={require('../assets/WeatherIcon.png')}/>
 
             {/*Displays User Recommendation button*/}
-            <TouchableOpacity onPress={() => {navigation.navigate("Recommendation")}}>
+            <TouchableOpacity onPress={() => {navigation.push('Recommendation', { user });}}>
               <Image style={styles.magicWandIcon} source={require('../assets/MagicWandButton.png')}/>
             </TouchableOpacity>
           </View>
@@ -214,17 +269,12 @@ const SearchPage = ( {navigation}) => {
           </View>
 
           {/*Search settings button*/}
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15}}>
+          <View style={{flexDirection: 'row', justifyContent: 'flex-start', paddingVertical: 15}}>
             <TouchableOpacity onPress={() => {setActivityOptionsVisable(true)}}>
                 <View style={{width: 100, height: 40, backgroundColor: 'teal', borderWidth: 1, borderRadius: 5, justifyContent: 'center'}}>
                   <Text style={searchPageStyles.customizeSearchButtons}>Activity</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={{width: 100, height: 40, backgroundColor: 'teal', borderWidth: 1, borderRadius: 5, justifyContent: 'center'}}>
-                  <Text style={searchPageStyles.customizeSearchButtons}>Location</Text>
-                </View>
-            </TouchableOpacity>
           </View>
 
           {/*Main overlay box*/}
@@ -237,17 +287,11 @@ const SearchPage = ( {navigation}) => {
               </TouchableOpacity>
               {(groupsVisable) && (
                 <View>
-                  {searchResultsGroups.map(group=> (
+                  {searchResultsGroups.map((group, index)=> (
                     <GroupCard
-                      key = {group.key}
-                      groupName = {group.name}
-                      groupProfilePicture = {group.profilePicture}
-                      groupLocation = {group.location}
-                      groupActivity = {group.activity}
-                      groupDescription = {group.description}
-                      groupNumberOfMembers = {group.numberOfMembers}
-                      groupIsPrivate = {group.isPrivate}
-                    />
+                    key={index}
+                    group={group}
+                  />
                   ))}
                 </View>
               )}
@@ -258,19 +302,18 @@ const SearchPage = ( {navigation}) => {
               </TouchableOpacity>
               {(usersVisable) && (
                 <View>
-                  {searchResultsUsers.map(user=> (
+                  {searchResultsUsers.map((user, index)=> (
                     <UserCard
-                      key = {user.name}
-                      userName = {user.name}
-                      userProfilePicture = {user.profilePicture}
-                      userLocation = {user.location}
-                    />
+                    key={index}
+                    user={user}
+                  />
                   ))}
                 </View>
               )}
             </ScrollView>
           </View>
         </View>
+
         {/*Options Menu Display*/}
         <Modal animationType='fade' transparent={true} visible={activityOptionsVisable} onRequestClose={() => setActivityOptionsVisable(false)}>
           <TouchableOpacity style={searchPageStyles.optionsMenuBackground} activeOpacity={1} onPress={() => setActivityOptionsVisable(false)}>
@@ -385,7 +428,7 @@ const searchPageStyles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 10,
     width: '100%', 
-    height: 140, 
+    height: 180, 
     backgroundColor: 'white', 
     borderWidth: 1, 
     borderRadius: 15, 
@@ -415,7 +458,6 @@ const searchPageStyles = StyleSheet.create({
     marginLeft: 5,
   },
   groupCardDescriptionText: {
-    fontSize: 12,
     fontWeight: '500',
     color: '#929292',
     marginLeft: 5,
@@ -425,11 +467,21 @@ const searchPageStyles = StyleSheet.create({
     fontWeight: '500',
     color: '#1e1e1e',
     marginLeft: 5,
+    textAlign: 'right'
   },
   padlockIcon: {
     width: 35,
     height: 35
   },
+  iconColumn: { height: '100%', justifyContent: 'space-between', alignItems: 'center' },
+  modalBackground: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
+  modalContainer: { width: '80%', backgroundColor: 'white', borderRadius: 20, padding: 20, alignItems: 'center' },
+  modalProfilePicture: { width: 100, height: 100, borderRadius: 50, marginBottom: 15 },
+  modalTitle: { fontSize: 24, fontWeight: '600', marginBottom: 10 },
+  modalDescription: { fontSize: 16, color: '#666', marginBottom: 20, textAlign: 'center' },
+  modalButton: { backgroundColor: 'teal', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 10 },
+  modalButtonText: { fontSize: 16, fontWeight: '500', color: 'white' },
+
   optionsMenuBackground: {
     flex: 1,
     justifyContent: 'center',
@@ -439,7 +491,9 @@ const searchPageStyles = StyleSheet.create({
     width: '70%', 
     height: '50%', 
     backgroundColor: 'white', 
-    borderRadius: 20
+    borderRadius: 20,
+    overflow: 'hidden',
+    borderWidth: 2
   },
   activityCardText: {
     fontSize: 16,
@@ -455,3 +509,4 @@ const searchPageStyles = StyleSheet.create({
 })
 
 export default SearchPage;
+

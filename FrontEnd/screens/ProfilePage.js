@@ -1,99 +1,331 @@
-
-import React, { useState, useEffect } from "react";
-import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, StyleSheet } from "react-native";
+import React, { useState, useCallback } from "react";
+import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, StyleSheet, } from "react-native";
+import { useFocusEffect, useRoute } from '@react-navigation/native';
 import styles from '../styles/styles';
+import axios from 'axios';
 
 
-const ProfilePage = ({ navigation }) => {
+const ProfilePage = ({ navigation, route }) => {
+  const { user } = route.params;
+
+
   const [friendOverlayVisable, setFriendOverlayVisable] = useState(false);
   const [groupOverlayVisable, setGroupOverlayVisable] = useState(false);
   const [activityOverlayVisable, setActivityOverlayVisable] = useState(false);
+  const [participantOverlayVisable, setParticipantOverlayVisible] = useState(false);
   //this is a placeholder, there should be a function that can be called to collect all the data below from the database
 
 
   const [userInfo, setUserInfo] = useState({
-    username: 'John Segway',
-    bio: 'Hi im a small time jazzz singer from new rock california and I enjoy sports of many types, like swimming and cycling and others',
-    profilePic: 'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg',
-    loggedActivitiesCount: 24,
+    username: '',
+    bio: '',
+    profilePic: '',
+    loggedActivitiesCount: 0,
   });
+
   const [activityLog, setActivityLog] = useState([]);
+  const [currentActivityNumber, setCurrentActivityNumber] = useState(5);
   
   const [userStreak, setUserStreak] = useState('5');
   const [weather, setWeather] = useState('4°');
   const [friendData, setFriendData] = useState([]);
   const [groupData, setGroupData] = useState([]);
   const [activityData, setActivityData] = useState([]);
+  const [userRelationship, setUserRelationship] = useState([]);
+  const [currentParticipants, setCurrentParticipants] = useState([[]]);
+  //should upload the user data from the database
+  async function UploadPageInfo () {
+    try {
+      const response = await axios.post('https://a19e-138-253-184-53.ngrok-free.app/getProfile', { username: user.username });
+      if(response.data && response.data.message) {
 
+        const userProf = response.data.userP;
+        const friends = response.data.friends;
+        const groups = response.data.groups;
+        const activities = response.data.activities;
 
-  function UploadPageInfo(username) {
-    const newUserInfo = {
-      username: 'John Segway',
-      bio: 'Hi im a small time jazzz singer from new rock california and I enjoy sports of many types, like swimming and cycling and others',
-      profilePic: 'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg',
-      loggedActivitiesCount: 24,
-    };
-    setUserInfo(newUserInfo);
-    //realistically should only contain the last 10 activities logged, 
-    //if the user pressed the "See More" option then this list will be updated to also contain the next 10
-    const newActivityLog = [
-      {activityID: 1, activityType: '1v1',activityName: 'Activity 1',dateTime: 'Date/Time',age: 'Xd',duration: 'duration',scores: [5,3]},
-      {activityID: 2, activityType: 'solo', activityName: 'Activity 2', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [12]},
-      {activityID: 3, activityType: '1v1', activityName: 'Activity 3', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [8,8]},
-      {activityID: 4,activityType: '1v1v1', activityName: 'Activity 4', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', scores: [1,3,6]},
-      {activityID: 5, activityType: '1v1', activityName: 'Activity 5', dateTime: 'Date/Time', age: 'Xd', duration: 'duration',scores: [9,3]}
-    ];
-    setActivityLog(newActivityLog);
+        const newUserInfo = {
+          username: user.username,
+          bio: userProf.bio,
+          loggedActivitiesCount: response.data.activityCount,
+          profilePic: userProf.profile_picture || ''
+        }
+        setUserInfo(newUserInfo);
 
-    const newFriendData = [
-      { username: 'Pee Pee Wherman', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Dan Scooterist', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Luka Scumperlot', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Gooper Gooperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Sickalicka trying', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Sir Yemen', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Timothy Skelton', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Lenny Crapperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Milo Biggers', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Carlos Swindler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Jimmy Pickles', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Billy McNugget', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Maddie Two-Times', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Vince Vermin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Fiona Biggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Chuck Banter', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Zane Crankford', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Bea Wiggler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Oscar Baggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Tina Wallflower', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Zoe Fizzbin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Alex Sweets', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { username: 'Nina Stepperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' }
-    ];
-    setFriendData(newFriendData);
+        const newFriendData = friends.map(friend => ({
+          username: friend.friend_username,
+          profilePicture:'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'
+        }));
+        setFriendData(newFriendData);
 
-    const newGroupData = [
-      { groupname: 'The Footy Dwellers', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { groupname: 'Scarcity Tennis', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { groupname: 'Manchester Maddens', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Sai_mahotsav_manjhanpur.jpg?20231128214559' },
-      { groupname: 'Badboyminton', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { groupname: 'Cycling Skeletons', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { groupname: 'Krazy Kenyans', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-      { groupname: 'Slapping Sailors', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
-    ];
-    setGroupData(newGroupData);
+        const newGroupData = groups.map(group => ({
+          groupname: group.group_name,
+          profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'
+        }));
+        setGroupData(newGroupData);
 
-    const newActivityData = [
-      { activityname: 'Tennis'},
-      { activityname: 'Football'},
-      { activityname: 'Cycling'},
-      { activityname: 'Running'},
-      { activityname: 'Shuffle Board'},
-      { activityname: 'Tap Dancing'},
-    ];
-    setActivityData(newActivityData);
+        const newActivityData = activities.map(activity => ({
+          activityname: activity.name
+        }));
+        setActivityData(newActivityData);
+
+        setUserRelationship('friend');
+      }
+    } catch (error) {
+    }
+
+  //  profilePic: 'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg'
+     
+   
+
+    // const newFriendData = [
+    //   { userID: 1, username: 'Pee Pee Wherman', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 2, username: 'Dan Scooterist', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 3, username: 'Luka Scumperlot', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 4, username: 'Gooper Gooperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 5, username: 'Sickalicka trying', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 6, username: 'Sir Yemen', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 7, username: 'Timothy Skelton', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 8, username: 'Lenny Crapperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 9, username: 'Milo Biggers', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 10, username: 'Carlos Swindler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 11, username: 'Jimmy Pickles', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 12, username: 'Billy McNugget', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 13, username: 'Maddie Two-Times', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 14, username: 'Vince Vermin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 15, username: 'Fiona Biggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 16, username: 'Chuck Banter', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 17, username: 'Zane Crankford', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 18, username: 'Bea Wiggler', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 19, username: 'Oscar Baggins', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 20, username: 'Tina Wallflower', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 21, username: 'Zoe Fizzbin', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 22, username: 'Alex Sweets', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { userID: 23, username: 'Nina Stepperson', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' }
+    // ];
+    // setFriendData(newFriendData);
+
+    // const newGroupData = [
+    //   { groupname: 'The Footy Dwellers', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { groupname: 'Scarcity Tennis', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { groupname: 'Manchester Maddens', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Sai_mahotsav_manjhanpur.jpg?20231128214559' },
+    //   { groupname: 'Badboyminton', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { groupname: 'Cycling Skeletons', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { groupname: 'Krazy Kenyans', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    //   { groupname: 'Slapping Sailors', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' },
+    // ];
+    // setGroupData(newGroupData);
+
+    // const newActivityData = [
+    //   { activityname: 'Tennis'},
+    //   { activityname: 'Football'},
+    //   { activityname: 'Cycling'},
+    //   { activityname: 'Running'},
+    //   { activityname: 'Shuffle Board'},
+    //   { activityname: 'Tap Dancing'},
+    // ];
+    // setActivityData(newActivityData);
+
+    setUserRelationship('friend');
 
   }
+
+  
+
+  function openProfile(newUserID){
+    setFriendOverlayVisable(false);
+    navigation.navigate('UserProfile', { user: user, friendUSN: newUserID });
+  }
+
+  function openGroup(newGroupID){
+    setGroupOverlayVisable(false);
+    navigation.push('GroupProfile', { user: user,group: newGroupID });
+  }
+  //retrieves user activities from the database
+  function UploadActivities(isInitial){
+    const newActivityLog = [
+      {
+        activityID: 1, activityName: 'Activity 1', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 2, activityName: 'Activity 2', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 5],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 18],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 3, activityName: 'Activity 3', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'] ], 2],
+        ]
+      },
+      {
+        activityID: 4, activityName: 'Activity 4', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 2],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'], [0,'user3'] ], 9],
+        ]
+      },
+      {
+        activityID: 5, activityName: 'Activity 5', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 27],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 2],
+        ]
+      },
+      {
+        activityID: 6, activityName: 'Activity 6', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+          
+        ]
+      },
+      {
+        activityID: 7, activityName: 'Activity 7', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 8, activityName: 'Activity 8', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 9, activityName: 'Activity 9', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 10, activityName: 'Activity 10', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 11, activityName: 'Activity 11', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 12, activityName: 'Activity 12', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 13, activityName: 'Activity 13', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 14, activityName: 'Activity 14', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 15, activityName: 'Activity 15', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 16, activityName: 'Activity 16', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 17, activityName: 'Activity 17', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 18, activityName: 'Activity 18', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 19, activityName: 'Activity 19', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 20, activityName: 'Activity 20', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 21, activityName: 'Activity 21', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 22, activityName: 'Activity 22', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 23, activityName: 'Activity 23', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+      {
+        activityID: 24, activityName: 'Activity 24', dateTime: 'Date/Time', age: 'Xd', duration: 'duration', participants: [
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 3],
+          [ [ [0,'user1'], [1,'user2'], [0,'user3'] ], 7],
+        ]
+      },
+    ]
+    if(isInitial){
+      setCurrentActivityNumber(5)
+    }
+    setActivityLog(newActivityLog.slice(0, currentActivityNumber));
+    setCurrentActivityNumber(prev => prev+5);
+
+  }
+
+  const ParticipantCard = ({participant}) => {
+    return(
+      <View style={{width: '90%', height: 60, backgroundColor: '#b5bdb5', borderRadius: 12, padding: 12, marginBottom: 10, justifyContent: 'center', alignItems: 'flex-start'}}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{width: 30, height: 30, borderRadius: 50, backgroundColor: 'gray'}}></View>
+          <Text style={profilePageStyles.participantNameText}>{participant[1]}</Text>
+        </View>
+      </View>
+    )
+  }
+  const ActivityScoreCard = ({participantCount, participant}) => {
+    const thisBackgroundColor = participantCount === 0 ? 'green'
+      : participantCount === 1 ? 'orange'
+      : participantCount === 2 ? 'blue'
+      : participantCount === 3 ? 'yellow'
+      : 'gray';
+    return(
+      <TouchableOpacity onPress={() => {
+        setCurrentParticipants(participant[0])
+        setParticipantOverlayVisible(true)
+      }}>
+        <View style={[profilePageStyles.activityScoreContainer1, {backgroundColor: thisBackgroundColor}]}>
+          <Text style={profilePageStyles.activityScoreText}>{participant[1]}</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
   //The card that shows details about the users activities
   const ActivityDataCard = (props) => {
     return (
@@ -111,54 +343,20 @@ const ProfilePage = ({ navigation }) => {
           <Text style={profilePageStyles.activityAge}>{props.age}</Text>
         </View>
 
-        {/*Displays the scores if the activity only has 1 score*/}
-        {props.activityType == 'solo' && (
-          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 10}}>
-            <View style={profilePageStyles.activityScoreContainer2}>
-              <Text style={profilePageStyles.activityScoreText}>{props.scores[0]}</Text>
-            </View>
+        {/*Display scores*/}
+        <View styles={{width: '100%', alignItems: 'center'}}>
+          <Text style={[profilePageStyles.activityTitle, {textDecorationLine: 'underline', color: '#8f8f8f'}]}>Scores</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 10}}>
+          {props.participants.map((participant, index) => (
+            <ActivityScoreCard
+              key={index}
+              participantCount={index}
+              participant={participant}
+            />
+          ))}
+        </View>
 
-
-          </View>
-        )}
-
-        {/*Displays the scores if the activity has 2 scores*/}
-        {props.activityType == '1v1' && (
-          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 10}}>
-            {/*First score*/}
-            <View style={profilePageStyles.activityScoreContainer1}>
-              <Text style={profilePageStyles.activityScoreText}>{props.scores[0]}</Text>
-            </View>
-            {/*Second score*/}
-            <View style={profilePageStyles.activityScoreContainer2}>
-              <Text style={profilePageStyles.activityScoreText}>{props.scores[1]}</Text>
-            </View>
-
-          </View>
-        )}
-
-        {/*Displays the scores if the activity has 3 scores*/}
-        {props.activityType == '1v1v1' && (
-          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 10}}>
-            {/*First score*/}
-            <View style={profilePageStyles.activityScoreContainer1}>
-              <Text style={profilePageStyles.activityScoreText}>{props.scores[0]}</Text>
-            </View>
-            {/*Second score*/}
-            <View style={profilePageStyles.activityScoreContainer2}>
-              <Text style={profilePageStyles.activityScoreText}>{props.scores[1]}</Text>
-            </View>
-            {/*Third score*/}
-            <View style={profilePageStyles.activityScoreContainer3}>
-              <Text style={profilePageStyles.activityScoreText}>{props.scores[2]}</Text>
-            </View>
-          </View>
-        )}
-
-        {/*Contributing Users button, if pressed displays all users involved in activity*/}
-        <TouchableOpacity>
-          <Text style={profilePageStyles.contributingUsersButton}>Contributing Users</Text>
-        </TouchableOpacity>
       </View>
     );
   };
@@ -175,8 +373,8 @@ const ProfilePage = ({ navigation }) => {
 
   const FriendCard = ({username, profilePicture}) => {
     return (
-      <TouchableOpacity onPress={() => {/*Directs user to friends profile page*/}}>
-        <View style={{flexDirection: "row"}}>
+      <TouchableOpacity onPress={() => {openProfile(username)}}>
+        <View style={{flexDirection: "row", height: 60, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', borderRadius: 12, marginBottom: 6}}>
           <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
           <Text style={profilePageStyles.popupItemText}>{username}</Text>
         </View>
@@ -186,8 +384,8 @@ const ProfilePage = ({ navigation }) => {
 
   const GroupCard = ({groupname, profilePicture}) => {
     return (
-      <TouchableOpacity onPress={() => {/*Directs user to groups profile page page*/}}>
-        <View style={{flexDirection: "row"}}>
+      <TouchableOpacity onPress={() => {openGroup(groupname)}}>
+        <View style={{flexDirection: "row", height: 60, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', borderRadius: 12, marginBottom: 6}}>
           <Image style={profilePageStyles.popupItemProfilePicture} source={{ uri: profilePicture}}/>
           <Text style={profilePageStyles.popupItemText}>{groupname}</Text>
         </View>
@@ -197,16 +395,25 @@ const ProfilePage = ({ navigation }) => {
 
   const ActivityCard = ({activityname}) => {
     return (
-      <View style={{flexDirection: "row"}}>
+      <View style={{flexDirection: "row", height: 60, backgroundColor: '#d1d1d1', borderWidth: 1, alignItems: 'center', borderRadius: 12, marginBottom: 6}}>
         <View style={[profilePageStyles.popupItemProfilePicture, {backgroundColor: 'teal'}]}/>
         <Text style={profilePageStyles.popupItemText}>{activityname}</Text>
       </View>
     );
   };
 
-  useEffect(() => {
-    UploadPageInfo("user");
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      // This function will run every time the screen is focused
+      UploadPageInfo();
+      UploadActivities(true);
+      setFriendOverlayVisable(false);
+      setGroupOverlayVisable(false);
+      setActivityOverlayVisable(false);
+      setParticipantOverlayVisible(false);
+      console.log("navigated to")
+    }, [])
+  );
 
 
   return (
@@ -237,10 +444,11 @@ const ProfilePage = ({ navigation }) => {
           <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', marginTop: 24}}>
 
             {/*Profile picture*/}
-            <Image 
-              style={profilePageStyles.profilePicture}
-              source={{uri: userInfo.profilePic}}
-            />
+            {userInfo.profilePic ? (
+              <Image style={profilePageStyles.profilePicture} source={{ uri: userInfo.profilePic }} />
+            ) : (
+              <View style={[profilePageStyles.profilePicture, {backgroundColor: 'gray'}]}/>
+            )}
 
             {/*Username and Bio*/}
             <View style={{marginLeft: 20}}>
@@ -248,41 +456,60 @@ const ProfilePage = ({ navigation }) => {
               <Text style={[styles.title, {fontSize:12, textAlign: 'left', width: 200}]}>{userInfo.bio}</Text>
             </View>
           </View>
-
+              {/*edit profile button*/}
+          <View style={styles.formAction}>
+            <TouchableOpacity onPress={() => { navigation.navigate('Settings'); }}>
+              <View style={styles.button}>
+                <Text style={styles.buttonText}>Edit Profile</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
           {/*Shows Friend, Group and Activity Number*/}
           <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'flex-start', marginTop: 15}}>
-            <TouchableOpacity onPress={() => {setFriendOverlayVisable(true)}}>
+            <TouchableOpacity onPress={() => {
+              if((userRelationship == 'friend') || (userRelationship == 'self')){
+                setFriendOverlayVisable(true)
+              }
+              }}>
               <InfoBox name='Friends' count={friendData.length}/>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {setGroupOverlayVisable(true)}}>
+            <TouchableOpacity onPress={() => {
+              if((userRelationship == 'friend') || (userRelationship == 'self')){
+                setGroupOverlayVisable(true)
+              }
+              }}>
               <InfoBox name='Groups' count={groupData.length}/>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {setActivityOverlayVisable(true)}}>
+            <TouchableOpacity onPress={() => {
+              if((userRelationship == 'friend') || (userRelationship == 'self')){
+                setActivityOverlayVisable(true)
+              }
+              }}>
               <InfoBox name='Activities' count={activityData.length}/>
             </TouchableOpacity>
           </View>
 
-          {/*Displays recent activities*/}
-          <View style={{alignItems:'center'}}>
+          <View style={{ alignItems: 'center' }}>
+            {/* Displays recent activities */}
             <Text style={profilePageStyles.recentActivitiesHeader}>Recent Activities</Text>
-            {activityLog.map(activity=> (
+            {activityLog.map(activity => (
               <ActivityDataCard
-                  key={activity.activityID}
-                  activityType={activity.activityType}
-                  activityName={activity.activityName}
-                  dateTime={activity.dateTime}
-                  age={activity.age}
-                  duration={activity.duration}
-                  scores={activity.scores}
+                key={activity.activityID}
+                activityName={activity.activityName}
+                dateTime={activity.dateTime}
+                age={activity.age}
+                duration={activity.duration}
+                participants={activity.participants}
               />
             ))}
-          </View>
 
-          {/*Displays show more button, the button disappears once all activities are shown*/}
-          {userInfo.loggedActivitiesCount > activityLog.length && (
-          <TouchableOpacity>
-            <Text style={profilePageStyles.showMoreButton}>Show More</Text>
-          </TouchableOpacity>)}
+            {/* Displays show more button, the button disappears once all activities are shown */}
+            {userInfo.loggedActivitiesCount > activityLog.length && (
+              <TouchableOpacity onPress={() => UploadActivities(false)}>
+                <Text style={profilePageStyles.showMoreButton}>Show More</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </ScrollView>
       </View>
 
@@ -292,14 +519,14 @@ const ProfilePage = ({ navigation }) => {
           <View style={profilePageStyles.popupScreenOutline}>
               <Text style={profilePageStyles.popupScreenTitle}>Friends</Text>
               <ScrollView>
-                {friendData.map(friend=> (
+                {friendData.map((friend, index)=> (
                 <FriendCard
-                    key = {friend.username}
+                    key = {index}
                     username = {friend.username}
                     profilePicture = {friend.profilePicture}
                 />
                 ))}
-              </ScrollView>
+            </ScrollView>
           </View>
         </TouchableOpacity>
       </Modal>
@@ -312,9 +539,9 @@ const ProfilePage = ({ navigation }) => {
           <View style={profilePageStyles.popupScreenOutline}>
               <Text style={profilePageStyles.popupScreenTitle}>Groups</Text>
               <ScrollView>
-                {groupData.map(group=> (
+                {groupData.map((group, index)=> (
                 <GroupCard
-                    key = {group.groupname}
+                    key = {index}
                     groupname = {group.groupname}
                     profilePicture = {group.profilePicture}
                 />
@@ -330,12 +557,31 @@ const ProfilePage = ({ navigation }) => {
           <View style={profilePageStyles.popupScreenOutline}>
               <Text style={profilePageStyles.popupScreenTitle}>Activities</Text>
               <ScrollView>
-                {activityData.map(activity=> (
+                {activityData.map((activity, index)=> (
                 <ActivityCard
-                    key = {activity.activityname}
+                    key = {index}
                     activityname = {activity.activityname}
                 />
                 ))}
+              </ScrollView>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
+      {/*Participants List Overlay*/}
+      <Modal animationType='fade' transparent={true} visible={participantOverlayVisable} onRequestClose={() => setParticipantOverlayVisible(false)}>
+        <TouchableOpacity style={profilePageStyles.popupScreenBackground} activeOpacity={1} onPress={() => setParticipantOverlayVisible(false)}>
+          <View style={profilePageStyles.popupScreenOutline}>
+              <Text style={profilePageStyles.popupScreenTitle}>Team Members</Text>
+              <ScrollView>
+                <View style={{alignItems: 'center'}}>
+                  {currentParticipants.map((thisParticipant, index)=> (
+                  <ParticipantCard
+                      key = {index}
+                      participant = {thisParticipant}
+                  />
+                  ))}
+                </View>
               </ScrollView>
           </View>
         </TouchableOpacity>
@@ -505,7 +751,8 @@ const profilePageStyles = StyleSheet.create({
     width: '70%', 
     height: '70%', 
     backgroundColor: 'white', 
-    borderRadius: 20
+    borderRadius: 20,
+    padding: 12
   },
   popupScreenTitle: {
     fontSize: 50,
@@ -532,7 +779,13 @@ const profilePageStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#1e1e1e',
-    marginBottom: 8,
+    marginLeft: 10,
+    textAlign: 'center',
+  },
+  participantNameText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1e1e1e',
     marginLeft: 10,
     textAlign: 'center',
   }

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import styles from '../styles/styles';
 
-const MessagesPage = ({ navigation }) => {
+const MessagesPage = ({ navigation, route }) => {
   //contains the current screen
+  const { user } = route.params;
   const [userStreak, setUserStreak] = useState(5);
   const [weather, setWeather] = useState('4°');
 
@@ -15,42 +16,46 @@ const MessagesPage = ({ navigation }) => {
   const [friendsInfo, setFriendsInfo] = useState([]);
 
   //opens the chat page
-  function OpenChat(chatName, chatID, chatPF){
-    navigation.navigate('Chat', { chatName, chatID, chatPF })
+  function OpenChat( chatType, chatName){
+    navigation.navigate('Chat', { chatType, chatName, user })
   }
 
   function UploadPageInfo(username){
     const newGroupsInfo = [
-      {groupID: 1, groupName: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 5},
-      {groupID: 2, groupName: 'Group2', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 2},
-      {groupID: 3, groupName: 'Group3', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 0,},
+      {groupID: 1, groupName: 'Group1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 5},
+      {groupID: 2, groupName: 'Group2', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 2},
+      {groupID: 3, groupName: 'Group3', profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 0,},
     ]
     setGroupsInfo(newGroupsInfo);
 
     const newFriendsInfo = [
-      {friendID: 1, friendName: 'Friend1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 2},
-      {friendID: 2, friendName: 'Friend2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: true, unreadMessageCount: 5},
-      {friendID: 3, friendName: 'Friend3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 5},
-      {friendID: 4, friendName: 'Stan the man',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/2023_Watter_Holger_Prof._Dr._x1_53_Quadrat.jpg', pinned: false, unreadMessageCount: 10},
-      {friendID: 5, friendName: 'Friend5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
-      {friendID: 6, friendName: 'Friend6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
-      {friendID: 7, friendName: 'Friend7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 0},
-      {friendID: 8, friendName: 'Friend8',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', pinned: false, unreadMessageCount: 1},
+      {friendID: 1, friendName: 'Friend1',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 2},
+      {friendID: 2, friendName: 'Friend2',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 5},
+      {friendID: 3, friendName: 'Friend3',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 5},
+      {friendID: 4, friendName: 'Stan the man',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/2023_Watter_Holger_Prof._Dr._x1_53_Quadrat.jpg', unreadMessageCount: 10},
+      {friendID: 5, friendName: 'Friend5',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 0},
+      {friendID: 6, friendName: 'Friend6',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 0},
+      {friendID: 7, friendName: 'Friend7',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 0},
+      {friendID: 8, friendName: 'Friend8',profilePicture: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg', unreadMessageCount: 1},
     ]
     setFriendsInfo(newFriendsInfo);
   }
 
   //renders the chat card
-  const ChatCard = ({ID, name, profilePicture, pinned, unreadMessageCount}) => {
+  const GroupChatCard = ({ID, name, profilePicture, pinned, unreadMessageCount}) => {
     return(
-      <TouchableOpacity onPress={() => {OpenChat(name, ID, profilePicture)}}>
+      <TouchableOpacity onPress={() => {OpenChat("group", name)}}>
 
         {/*chat card container*/}
         <View style={messagesPageStyles.infoCardContainer}>
 
           {/*profile picture and name*/}
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image style={messagesPageStyles.infoCardProfilePicture} source={{ uri: profilePicture}}/>
+            {profilePicture ? (
+              <Image style={messagesPageStyles.infoCardProfilePicture} source={{ uri: profilePicture }} />
+              ) : (
+                <View style={[messagesPageStyles.infoCardProfilePicture, {backgroundColor: 'gray'}]}/>
+            )}
             <Text style={messagesPageStyles.infoCardName}>{name}</Text>
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -62,9 +67,35 @@ const MessagesPage = ({ navigation }) => {
               </View>
             )}
 
-            {/*shows the pinned chat icon if the chat is pinned*/}
-            {pinned && (
-              <Image style={messagesPageStyles.pinnedIcon} source={require('../assets/PinIcon.png')}/>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  const FriendChatCard = ({ID, name, profilePicture, pinned, unreadMessageCount}) => {
+    return(
+      <TouchableOpacity onPress={() => {OpenChat("friend", name)}}>
+
+        {/*chat card container*/}
+        <View style={messagesPageStyles.infoCardContainer}>
+
+          {/*profile picture and name*/}
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            {profilePicture ? (
+              <Image style={messagesPageStyles.infoCardProfilePicture} source={{ uri: profilePicture }} />
+              ) : (
+                <View style={[messagesPageStyles.infoCardProfilePicture, {backgroundColor: 'gray'}]}/>
+            )}
+            <Text style={messagesPageStyles.infoCardName}>{name}</Text>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+
+            {/*only shows the number of unread if there are unread messages*/}
+            {unreadMessageCount != 0 && (
+              <View style={messagesPageStyles.numOfMessagesContainer}>
+                <Text style={messagesPageStyles.numOfMessagesText}>{unreadMessageCount}</Text>
+              </View>
             )}
           </View>
         </View>
@@ -75,6 +106,7 @@ const MessagesPage = ({ navigation }) => {
   useEffect(() => {
     UploadPageInfo("user");
   }, []);
+
   return (
     <SafeAreaView style={[styles.safeAreaView, {justifyContent: 'flex-start', alignItems: 'center'}]}>
 
@@ -113,10 +145,17 @@ const MessagesPage = ({ navigation }) => {
         {/*Group Screen*/}
         {currentScreen === 'groups' && (
           <ScrollView>
+            <View style={{width: '100%', alignItems: 'flex-end', padding: 16}}>
+              <TouchableOpacity style={{width: '100%'}}onPress={()=>{navigation.navigate("CreateGroup", {user:user})}}>
+                <View style={{height: 60, width: '100%', backgroundColor: 'teal', borderRadius: 12, borderWidth: 2, alignItems: 'center', justifyContent: 'center'}}>
+                  <Text style={messagesPageStyles.buttonText}>Create Group</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
             {/*Shows list of groups*/}
             <View style={{alignItems: 'center'}}>
               {groupsInfo.map(group=> (
-              <ChatCard
+              <GroupChatCard
                 key = {group.groupID}
                 ID = {group.groupID}
                 name = {group.groupName}
@@ -135,7 +174,7 @@ const MessagesPage = ({ navigation }) => {
             {/*Shows list of friends*/}
             <View style={{alignItems: 'center'}}>
             {friendsInfo.map(friend=> (
-              <ChatCard
+              <FriendChatCard
                 key = {friend.friendID}
                 ID = {friend.friendID}
                 name = {friend.friendName}
@@ -160,7 +199,8 @@ const messagesPageStyles = StyleSheet.create({
     height: '88%', 
     backgroundColor: '#E5E5E5', 
     borderRadius: 15, 
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    overflow: 'hidden'
   },
   //menu options
   MenuOptionText: {
@@ -197,6 +237,12 @@ const messagesPageStyles = StyleSheet.create({
   },
   infoCardName:{
     fontSize: 30,
+    fontWeight: '700',
+    color: '#1e1e1e',
+    marginRight: 15
+  },
+  buttonText:{
+    fontSize: 24,
     fontWeight: '700',
     color: '#1e1e1e',
     marginRight: 15

@@ -9,10 +9,15 @@ import CreateActivitySelectionPage from '../screens/CreateActivitySelectionPage'
 import SettingsPage from '../screens/SettingsPage';
 import ChatPage from '../screens/ChatPage';
 import RecommendationPage from '../screens/RecommendationPage';
+import UserProfilePage from '../screens/UserProfilePage';
+import GroupProfilePage from '../screens/GroupProfilePage';
 
 import GoalSetting from '../screens/GoalSetting';
 import HomeTabs from './HomeTabs'; 
 import ActivityLogPage from '../screens/ActivityLogPage';
+import GroupChatInfoPage from '../screens/GroupChatInfoPage.js';
+import CreateGroupPage from '../screens/CreateGroupPage.js';
+import ExtraInformationPage from '../screens/ExtraInformationPage';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +34,11 @@ const AppNavigator = () =>{
                 <Stack.Screen name="Settings" component={SettingsPage} options={{headerShown:false}}/>
                 <Stack.Screen name="Chat" component={ChatPage} options={{headerShown:false}}/>
                 <Stack.Screen name="Recommendation" component={RecommendationPage} options={{headerShown:false}}/>
+                <Stack.Screen name="UserProfile" component={UserProfilePage} options={{headerShown:false}}/>
+                <Stack.Screen name="GroupProfile" component={GroupProfilePage} options={{headerShown:false}}/>
+                <Stack.Screen name="GroupChatInfo" component={GroupChatInfoPage} options={{headerShown:false}}/>
+                <Stack.Screen name="CreateGroup" component={CreateGroupPage} options={{headerShown:false}}/>
+                <Stack.Screen name="ExtraInformation" component={ExtraInformationPage} options={{headerShown:false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     );
