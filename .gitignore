@@ -52,4 +52,7 @@ Desktop.ini
 .parcel-cache/
 .tmp/
 tmp/
+<<<<<<< HEAD
 credentials.env 
+=======
+>>>>>>> origin/main
